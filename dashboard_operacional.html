@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Operacional · Iluminação Pública 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#090d18;--surface:#101624;--card:#141d2c;--border:#1c2a40;--border2:#243450;
+  --teal:#00d4c8;--amber:#f59e0b;--red:#ef4444;--green:#22c55e;--blue:#3b82f6;
+  --purple:#a855f7;--pink:#ec4899;--orange:#f97316;--cyan:#06b6d4;
+  --text:#dde6f0;--muted:#4e6278;--label:#7e99b4;--soft:#a8bed4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ── BARRA DE MESES ── */
+.meses-bar{display:flex;flex-direction:row;align-items:center;gap:5px;
+  padding:8px 28px;background:var(--surface);border-bottom:1px solid var(--border);
+  overflow-x:auto;flex-wrap:nowrap;min-height:42px}
+.mes-tab{display:inline-block;padding:5px 12px;border-radius:6px;
+  border:1px solid var(--border);background:var(--card);color:var(--muted);
+  font-size:.72rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;
+  letter-spacing:.07em;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0}
+.mes-tab:hover{border-color:var(--amber);color:var(--soft)}
+.mes-tab.mes-active{background:var(--amber);border-color:var(--amber);color:#000;font-weight:800}
+.mes-tab.mes-empty{opacity:.3;cursor:not-allowed;pointer-events:none}
+.mes-tab.mes-has{border-color:var(--border2)}
+.mes-sep{width:1px;height:18px;background:var(--border);margin:0 2px;flex-shrink:0;display:inline-block}
+
+/* ── HEADER ── */
+.header{background:linear-gradient(135deg,#0a1628 0%,#0d1f3a 100%);
+  border-bottom:1px solid var(--border2);padding:20px 28px 16px;
+  display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}
+.h-brand{font-family:'Barlow Condensed',sans-serif;font-size:1.7rem;font-weight:900;color:#fff;line-height:1;letter-spacing:.04em}
+.h-brand em{font-style:normal;color:var(--teal)}
+.h-sub{color:var(--muted);font-size:.72rem;margin-top:3px}
+.h-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.badge{font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:800;padding:5px 14px;border-radius:5px;letter-spacing:.1em}
+.badge-teal{background:rgba(0,212,200,.12);border:1px solid rgba(0,212,200,.3);color:var(--teal)}
+.badge-amber{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:var(--amber)}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 28px;
+  background:var(--surface);overflow-x:auto}
+.tab{padding:13px 20px;font-family:'Barlow Condensed',sans-serif;font-size:.82rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;cursor:pointer;color:var(--muted);
+  border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+.tab:hover{color:var(--soft)}
+.tab.active{color:var(--teal);border-bottom-color:var(--teal)}
+
+/* ── CONTENT ── */
+.content{display:none;padding:22px 28px}
+.content.active{display:block}
+
+/* ── CARDS ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:18px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.ct::before{background:var(--teal)}.ca::before{background:var(--amber)}
+.cr::before{background:var(--red)}.cg::before{background:var(--green)}
+.cb::before{background:var(--blue)}.cp::before{background:var(--purple)}
+.co::before{background:var(--orange)}.cpk::before{background:var(--pink)}
+.clabel{font-size:.63rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.cval{font-family:'Barlow Condensed',sans-serif;font-size:2.2rem;font-weight:800;line-height:1}
+.csub{font-size:.72rem;color:var(--muted);margin-top:5px}
+
+/* ── GRIDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:14px}
+.g6{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:14px}
+.g23{display:grid;grid-template-columns:2fr 3fr;gap:14px;margin-bottom:14px}
+.g32{display:grid;grid-template-columns:3fr 2fr;gap:14px;margin-bottom:14px}
+@media(max-width:1100px){.g4,.g5,.g6{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:900px){.g3,.g23,.g32{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.g2,.g3,.g4,.g5,.g6,.g23,.g32{grid-template-columns:1fr}}
+
+/* ── SECTION LABEL ── */
+.sec{font-family:'Barlow Condensed',sans-serif;font-size:.72rem;font-weight:700;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--muted);
+  margin-bottom:12px;margin-top:6px;display:flex;align-items:center;gap:8px}
+.sec::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── STAT ROW ── */
+.stat-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.stat-row:last-child{border-bottom:none}
+.stat-label{font-size:.78rem;color:var(--label);flex:1}
+.stat-bar{flex:2;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.stat-fill{height:100%;border-radius:3px;transition:width .9s ease}
+.stat-val{font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;width:50px;text-align:right}
+.stat-pct{font-size:.68rem;color:var(--muted);width:38px;text-align:right}
+
+/* ── MATERIAIS ── */
+.mat-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)}
+.mat-item:last-child{border-bottom:none}
+.mat-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.mat-name{font-size:.76rem;color:var(--soft);flex:1;line-height:1.3}
+.mat-qty{font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:800}
+.mat-bar-bg{height:4px;background:var(--border);border-radius:2px;margin-top:3px}
+.mat-bar-fill{height:100%;border-radius:2px}
+
+/* ── BAIRROS ── */
+.bairro-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)}
+.bairro-row:last-child{border-bottom:none}
+.bairro-num{font-family:'Barlow Condensed',sans-serif;font-size:.85rem;font-weight:700;width:20px;color:var(--muted);text-align:center}
+.bairro-name{font-size:.76rem;color:var(--soft);flex:1}
+.bairro-bar{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.bairro-fill{height:100%;border-radius:3px}
+.bairro-val{font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;width:28px;text-align:right}
+
+/* ── CANVAS ── */
+canvas{display:block;width:100%;max-height:220px}
+
+/* ── TIMELINE ── */
+.timeline{display:flex;height:32px;border-radius:6px;overflow:hidden;margin:10px 0}
+.tl-seg{display:flex;align-items:center;justify-content:center;font-size:.68rem;
+  font-weight:700;font-family:'Barlow Condensed',sans-serif;transition:flex .9s ease}
+
+/* ── PRAZO ── */
+.prazo-gauge{display:flex;flex-direction:column;align-items:center;padding:10px 0}
+.prazo-big{font-family:'Barlow Condensed',sans-serif;font-size:3.5rem;font-weight:900;line-height:1}
+.prazo-label{font-size:.72rem;color:var(--muted);margin-top:4px}
+
+/* ── PILLS ── */
+.pill{display:inline-block;padding:2px 8px;border-radius:12px;font-size:.65rem;font-weight:700}
+.pill-g{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+.pill-r{background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+.pill-a{background:rgba(245,158,11,.12);color:var(--amber);border:1px solid rgba(245,158,11,.2)}
+
+/* ── FOOTER ── */
+.footer{border-top:1px solid var(--border);padding:12px 28px;display:flex;
+  justify-content:space-between;flex-wrap:wrap;gap:6px;margin-top:4px}
+.footer p{font-size:.65rem;color:var(--muted)}
+
+/* ── UPLOAD SCREEN ── */
+#upload-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:40px;
+  background:radial-gradient(ellipse at 50% 0%,#0d1f3a 0%,#090d18 65%)}
+.up-eye{font-family:'Barlow Condensed',sans-serif;font-size:.85rem;font-weight:700;
+  letter-spacing:.35em;color:#4e6278;text-transform:uppercase;margin-bottom:24px}
+.up-eye span{color:#00d4c8}
+.up-title{font-family:'Barlow Condensed',sans-serif;font-size:3rem;font-weight:900;
+  color:#fff;text-align:center;line-height:.95;margin-bottom:10px}
+.up-title em{font-style:normal;color:#f59e0b}
+.up-sub{color:#4e6278;font-size:.84rem;text-align:center;max-width:500px;line-height:1.6;margin-bottom:32px}
+.upload-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:100%;max-width:820px;margin-bottom:24px}
+@media(max-width:700px){.upload-grid{grid-template-columns:1fr}}
+.upload-slot{background:#141d2c;border:2px dashed #243450;border-radius:14px;
+  padding:28px 20px;text-align:center;cursor:pointer;transition:all .3s;position:relative;user-select:none}
+.upload-slot:hover{border-color:#00d4c8;background:rgba(0,212,200,.04)}
+.upload-slot.done{border-color:#22c55e;border-style:solid;background:rgba(34,197,94,.04)}
+.upload-slot.drag{border-color:#00d4c8;background:rgba(0,212,200,.06)}
+.slot-icon{font-size:2rem;margin-bottom:10px;display:block}
+.slot-title{font-family:'Barlow Condensed',sans-serif;font-size:.95rem;font-weight:800;color:#a8bed4;margin-bottom:4px}
+.slot-desc{font-size:.72rem;color:#4e6278;line-height:1.4;margin-bottom:10px}
+.slot-badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:.65rem;
+  font-weight:700;background:rgba(0,212,200,.08);border:1px solid rgba(0,212,200,.2);color:#00d4c8}
+.slot-status{margin-top:10px;font-size:.72rem;font-weight:700;color:#4e6278}
+.slot-status.ok{color:#22c55e}
+.slot-status.err{color:#ef4444}
+.up-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.btn-go{padding:12px 32px;border-radius:8px;cursor:pointer;
+  background:linear-gradient(135deg,#00d4c8,#0891b2);border:none;
+  color:#000;font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;
+  letter-spacing:.05em;transition:all .25s;opacity:.4;pointer-events:none}
+.btn-go.ready{opacity:1;pointer-events:auto}
+.btn-go.ready:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,212,200,.3)}
+.btn-demo2{padding:12px 24px;border-radius:8px;cursor:pointer;background:transparent;
+  border:1px solid #243450;color:#7e99b4;font-family:'Barlow',sans-serif;font-size:.85rem;transition:all .25s}
+.btn-demo2:hover{border-color:#f59e0b;color:#f59e0b}
+#up-err{display:none;margin-top:14px;padding:10px 18px;border-radius:8px;
+  background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);
+  color:#ef4444;font-size:.78rem;text-align:center;max-width:500px}
+
+/* ── LOADING ── */
+#loading-op{position:fixed;inset:0;background:#090d18;display:none;
+  flex-direction:column;align-items:center;justify-content:center;z-index:300}
+.spin2{width:38px;height:38px;border:3px solid #1c2a40;border-top-color:#00d4c8;
+  border-radius:50%;animation:spin .75s linear infinite;margin-bottom:14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── DASH WRAPPER ── */
+#dash-wrapper{display:none}
+
+/* ── TBBTN ── */
+.tbbtn{padding:6px 13px;border-radius:6px;border:1px solid var(--border);
+  background:transparent;color:var(--muted);font-size:.72rem;cursor:pointer;
+  font-family:'Barlow',sans-serif;transition:all .2s;text-decoration:none;display:inline-block}
+.tbbtn:hover{border-color:var(--teal);color:var(--teal)}
+.tbbtn.am:hover{border-color:var(--amber);color:var(--amber)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<!-- INPUT FILES OCULTOS -->
+<input type="file" id="fi-oc"  accept=".xlsx,.xls" style="display:none"/>
+<input type="file" id="fi-mat" accept=".xlsx,.xls" style="display:none"/>
+<input type="file" id="fi-pr"  accept=".xlsx,.xls" style="display:none"/>
+
+<!-- LOADING -->
+<div id="loading-op" style="display:none">
+  <div class="spin2"></div>
+  <p style="color:#7e99b4;font-size:.82rem" id="loading-msg-op">Processando planilhas…</p>
+</div>
+
+<!-- UPLOAD SCREEN -->
+<div id="upload-screen">
+  <div class="up-eye">⚙️ Dashboard <span>Operacional</span> · Iluminação Pública</div>
+  <h1 class="up-title">IMPORTAR<br><em>PLANILHAS</em></h1>
+  <p class="up-sub">Importe as planilhas exportadas do sistema de atendimentos para atualizar o dashboard. Pelo menos o arquivo de <strong style="color:#dde6f0">Ocorrências</strong> é obrigatório.</p>
+
+  <div class="upload-grid">
+    <!-- Slot 1: Ocorrências -->
+    <div class="upload-slot" id="slot-oc" onclick="document.getElementById('fi-oc').click()">
+      <span class="slot-icon">📋</span>
+      <div class="slot-title">Ocorrências</div>
+      <div class="slot-desc">Exportação completa do sistema com todas as OS, status, motivos e bairros.<br>
+      <span style="color:var(--amber);font-weight:600">Cada arquivo = 1 mês. Importe um por vez para acumular meses.</span></div>
+      <span class="slot-badge">OBRIGATÓRIO</span>
+      <div class="slot-status" id="status-oc">Aguardando arquivo…</div>
+    </div>
+
+    <!-- Slot 2: Materiais -->
+    <div class="upload-slot" id="slot-mat" onclick="document.getElementById('fi-mat').click()">
+      <span class="slot-icon">🔧</span>
+      <div class="slot-title">Materiais</div>
+      <div class="slot-desc">Planilha de materiais aplicados dia a dia no período</div>
+      <span class="slot-badge" style="background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.2);color:#f59e0b">OPCIONAL</span>
+      <div class="slot-status" id="status-mat">Aguardando arquivo…</div>
+    </div>
+
+    <!-- Slot 3: Prazos -->
+    <div class="upload-slot" id="slot-pr" onclick="document.getElementById('fi-pr').click()">
+      <span class="slot-icon">⏱</span>
+      <div class="slot-title">Prazos</div>
+      <div class="slot-desc">Relatório de atendimentos por prazo com status e origem</div>
+      <span class="slot-badge" style="background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.2);color:#f59e0b">OPCIONAL</span>
+      <div class="slot-status" id="status-pr">Aguardando arquivo…</div>
+    </div>
+  </div>
+
+  <div id="up-err"></div>
+
+  <div class="up-actions">
+    <button class="btn-go" id="btn-go" onclick="processarTudo()">▶ Gerar Dashboard</button>
+    <button class="btn-demo2" id="btn-demo" onclick="carregarDemo()">📊 Ver demonstração (abr/26)</button>
+    <button class="btn-demo2" id="btn-voltar" onclick="voltarDash()" style="display:none">← Voltar ao Dashboard</button>
+  </div>
+</div>
+
+<!-- DASHBOARD WRAPPER -->
+<div id="dash-wrapper">
+<div class="header">
+  <div>
+    <div class="h-brand" style="color:#ffffff">OPERACIONAL · <em style="color:#7dd3fc">ILUMINAÇÃO PÚBLICA</em></div>
+    <div class="h-sub" style="color:rgba(255,255,255,.7)">Índices de Trabalho · Origens · Materiais · Prazos · Manutenções · Içara/SC</div>
+    <div id="tb-upd" style="font-size:.65rem;color:var(--green);margin-top:2px"></div>
+  </div>
+  <div class="h-right">
+    <div class="badge badge-amber" id="dyn-mes">ABRIL / 2026</div>
+    <div class="badge badge-teal" id="dyn-total-badge">240 OS</div>
+    <a class="hbtn" href="index.html" style="border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.85)">🏠 Menu</a>
+    <button class="hbtn" onclick="novaImportacao()" type="button" style="border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.85)">⬆ Importar Mês</button>
+  </div>
+</div>
+
+<!-- TABS -->
+<!-- BARRA DE MESES -->
+<div class="meses-bar" id="meses-bar" style="display:flex;flex-direction:row;flex-wrap:nowrap">
+  <span style="font-size:.68rem;color:var(--muted);font-family:'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase;margin-right:4px;flex-shrink:0;white-space:nowrap">2026 ·</span>
+  <button class="mes-tab mes-empty" disabled>jan</button><div class="mes-sep"></div>
+  <button class="mes-tab mes-empty" disabled>fev</button><div class="mes-sep"></div>
+  <button class="mes-tab mes-empty" disabled>mar</button><div class="mes-sep"></div>
+  <button class="mes-tab mes-empty" disabled>abr</button><div class="mes-sep"></div>
+  <button class="mes-tab mes-empty" disabled>mai</button><div class="mes-sep"></div>
+  <button class="mes-tab mes-empty" disabled>jun</button><div class="mes-sep"></div>
+  <button class="mes-tab mes-empty" disabled>jul</button><div class="mes-sep"></div>
+  <button class="mes-tab mes-empty" disabled>ago</button><div class="mes-sep"></div>
+  <button class="mes-tab mes-empty" disabled>set</button><div class="mes-sep"></div>
+  <button class="mes-tab mes-empty" disabled>out</button><div class="mes-sep"></div>
+  <button class="mes-tab mes-empty" disabled>nov</button><div class="mes-sep"></div>
+  <button class="mes-tab mes-empty" disabled>dez</button>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('visao')">📊 Visão Geral</div>
+  <div class="tab" onclick="showTab('trabalho')">⚙️ Índices de Trabalho</div>
+  <div class="tab" onclick="showTab('origens')">🔍 Origens & Manutenções</div>
+  <div class="tab" onclick="showTab('materiais')">🔧 Materiais</div>
+  <div class="tab" onclick="showTab('prazos')">⏱ Prazos</div>
+  <div class="tab" onclick="showTab('comparativo')">📈 Comparativo</div>
+</div>
+
+<!-- ══ TAB 1: VISÃO GERAL ══ -->
+<div class="content active" id="tab-visao">
+
+  <div class="g6">
+    <div class="card ct">
+      <div class="clabel">Total OS no Mês</div>
+      <div class="cval" style="color:var(--teal)" id="dyn-total">240</div>
+      <div class="csub">Todas as ordens registradas</div>
+    </div>
+    <div class="card cg">
+      <div class="clabel">OS Atendidas</div>
+      <div class="cval" style="color:var(--green)" id="dyn-atendidas">186</div>
+      <div class="csub">77,5% do total</div>
+    </div>
+    <div class="card cb">
+      <div class="clabel">Outros Status</div>
+      <div class="cval" style="color:var(--blue)" id="dyn-outros">54</div>
+      <div class="csub">Modernização, Projeto, Fora Escopo…</div>
+    </div>
+    <div class="card ca">
+      <div class="clabel">No Prazo</div>
+      <div class="cval" style="color:var(--amber)" id="dyn-noprazo">237</div>
+      <div class="csub">98,75% dos atendimentos</div>
+    </div>
+    <div class="card cr">
+      <div class="clabel">Fora do Prazo</div>
+      <div class="cval" style="color:var(--red)" id="dyn-foraprazo">3</div>
+      <div class="csub">1,25% — máx. 1d 11h atraso</div>
+    </div>
+    <div class="card co">
+      <div class="clabel">Tempo Médio (h)</div>
+      <div class="cval" style="color:var(--orange)" id="dyn-tempomedio">58,8h</div>
+      <div class="csub">Prazo contratual: 48h</div>
+    </div>
+  </div>
+
+  <div class="g3">
+    <!-- Distribuição de Status -->
+    <div class="card ct">
+      <div class="clabel">Distribuição de Status</div>
+      <div style="margin-top:10px">
+        <div class="stat-row">
+          <div class="stat-label">Atendido</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:77.5%;background:var(--green)"></div></div>
+          <div class="stat-val" style="color:var(--green)">186</div>
+          <div class="stat-pct">77,5%</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Modernização</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:5%;background:var(--teal)"></div></div>
+          <div class="stat-val" style="color:var(--teal)">12</div>
+          <div class="stat-pct">5,0%</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Encontrado normal</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:4.2%;background:var(--blue)"></div></div>
+          <div class="stat-val" style="color:var(--blue)">10</div>
+          <div class="stat-pct">4,2%</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Fora do escopo</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:3.3%;background:var(--amber)"></div></div>
+          <div class="stat-val" style="color:var(--amber)">8</div>
+          <div class="stat-pct">3,3%</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Projeto</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:3.3%;background:var(--purple)"></div></div>
+          <div class="stat-val" style="color:var(--purple)">8</div>
+          <div class="stat-pct">3,3%</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Outro Atendimento</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:2.9%;background:var(--orange)"></div></div>
+          <div class="stat-val" style="color:var(--orange)">7</div>
+          <div class="stat-pct">2,9%</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Impossibilidade</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:1.7%;background:var(--red)"></div></div>
+          <div class="stat-val" style="color:var(--red)">4</div>
+          <div class="stat-pct">1,7%</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Repetido</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:1.7%;background:var(--pink)"></div></div>
+          <div class="stat-val" style="color:var(--pink)">4</div>
+          <div class="stat-pct">1,7%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Origens -->
+    <div class="card cb">
+      <div class="clabel">Origem das Ocorrências</div>
+      <canvas id="c-origens" style="margin-top:12px;max-height:180px"></canvas>
+      <div style="margin-top:14px">
+        <div class="stat-row">
+          <div class="stat-label">🚐 Ronda própria</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:75.8%;background:var(--teal)"></div></div>
+          <div class="stat-val" style="color:var(--teal)">182</div>
+          <div class="stat-pct">75,8%</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">📞 Call Center</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:17.1%;background:var(--blue)"></div></div>
+          <div class="stat-val" style="color:var(--blue)">41</div>
+          <div class="stat-pct">17,1%</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">🤖 Chatbot</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:3.75%;background:var(--purple)"></div></div>
+          <div class="stat-val" style="color:var(--purple)">9</div>
+          <div class="stat-pct">3,75%</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">📱 App</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:3.33%;background:var(--amber)"></div></div>
+          <div class="stat-val" style="color:var(--amber)">8</div>
+          <div class="stat-pct">3,33%</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">📡 Tele Gestão</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:0%;background:var(--cyan)"></div></div>
+          <div class="stat-val" style="color:var(--muted)" id="tg-visao">0</div>
+          <div class="stat-pct" id="tg-visao-pct">0%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Bairros -->
+    <div class="card cp">
+      <div class="clabel">Top 10 Bairros com Ocorrências</div>
+      <div style="margin-top:10px">
+        <div class="bairro-row"><div class="bairro-num">1</div><div class="bairro-name">Centro</div><div class="bairro-bar"><div class="bairro-fill" style="width:100%;background:var(--teal)"></div></div><div class="bairro-val" style="color:var(--teal)">30</div></div>
+        <div class="bairro-row"><div class="bairro-num">2</div><div class="bairro-name">Vila São José</div><div class="bairro-bar"><div class="bairro-fill" style="width:90%;background:var(--blue)"></div></div><div class="bairro-val" style="color:var(--blue)">27</div></div>
+        <div class="bairro-row"><div class="bairro-num">3</div><div class="bairro-name">Presidente Vargas</div><div class="bairro-bar"><div class="bairro-fill" style="width:80%;background:var(--green)"></div></div><div class="bairro-val" style="color:var(--green)">24</div></div>
+        <div class="bairro-row"><div class="bairro-num">4</div><div class="bairro-name">Liri</div><div class="bairro-bar"><div class="bairro-fill" style="width:66%;background:var(--purple)"></div></div><div class="bairro-val" style="color:var(--purple)">20</div></div>
+        <div class="bairro-row"><div class="bairro-num">5</div><div class="bairro-name">Demboski</div><div class="bairro-bar"><div class="bairro-fill" style="width:63%;background:var(--amber)"></div></div><div class="bairro-val" style="color:var(--amber)">19</div></div>
+        <div class="bairro-row"><div class="bairro-num">6</div><div class="bairro-name">Lombas</div><div class="bairro-bar"><div class="bairro-fill" style="width:43%;background:var(--orange)"></div></div><div class="bairro-val" style="color:var(--orange)">13</div></div>
+        <div class="bairro-row"><div class="bairro-num">7</div><div class="bairro-name">Esplanada</div><div class="bairro-bar"><div class="bairro-fill" style="width:36%;background:var(--pink)"></div></div><div class="bairro-val" style="color:var(--pink)">11</div></div>
+        <div class="bairro-row"><div class="bairro-num">8</div><div class="bairro-name">Barracão</div><div class="bairro-bar"><div class="bairro-fill" style="width:36%;background:var(--cyan)"></div></div><div class="bairro-val" style="color:var(--cyan)">11</div></div>
+        <div class="bairro-row"><div class="bairro-num">9</div><div class="bairro-name">Jaqueline</div><div class="bairro-bar"><div class="bairro-fill" style="width:26%;background:var(--label)"></div></div><div class="bairro-val" style="color:var(--label)">8</div></div>
+        <div class="bairro-row"><div class="bairro-num">10</div><div class="bairro-name">Tereza Cristina</div><div class="bairro-bar"><div class="bairro-fill" style="width:26%;background:var(--label)"></div></div><div class="bairro-val" style="color:var(--label)">8</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status bar timeline -->
+  <div class="sec">Composição das 240 OS por Status</div>
+  <div class="timeline">
+    <div class="tl-seg" style="flex:186;background:#16a34a;color:#fff">Atendido 186</div>
+    <div class="tl-seg" style="flex:12;background:#0e7490;color:#fff">Mod. 12</div>
+    <div class="tl-seg" style="flex:10;background:#1d4ed8;color:#fff">Norm. 10</div>
+    <div class="tl-seg" style="flex:8;background:#92400e;color:#fff">Esc. 8</div>
+    <div class="tl-seg" style="flex:8;background:#581c87;color:#fff">Proj. 8</div>
+    <div class="tl-seg" style="flex:7;background:#9a3412;color:#fff">Outro 7</div>
+    <div class="tl-seg" style="flex:4;background:#dc2626;color:#fff">Imp. 4</div>
+    <div class="tl-seg" style="flex:4;background:#831843;color:#fff">Rep. 4</div>
+    <div class="tl-seg" style="flex:1;background:#365314;color:#fff">N.I 1</div>
+  </div>
+
+</div>
+
+<!-- ══ TAB 2: ÍNDICES DE TRABALHO ══ -->
+<div class="content" id="tab-trabalho">
+
+  <div class="sec">Produtividade das Equipes</div>
+  <div class="g4">
+    <div class="card ct" style="text-align:center">
+      <div class="clabel">Total OS Registradas</div>
+      <div class="cval" style="color:var(--teal);font-size:3rem">240</div>
+      <div class="csub">Abril 2026 · 30 dias úteis</div>
+    </div>
+    <div class="card cg" style="text-align:center">
+      <div class="clabel">OS / Dia (média)</div>
+      <div class="cval" style="color:var(--green);font-size:3rem">8,0</div>
+      <div class="csub">240 OS ÷ 30 dias</div>
+    </div>
+    <div class="card cb" style="text-align:center">
+      <div class="clabel">Equipes em Campo</div>
+      <div class="cval" style="color:var(--blue);font-size:3rem">2</div>
+      <div class="csub">Equipe 01 e Equipe 02</div>
+    </div>
+    <div class="card ca" style="text-align:center">
+      <div class="clabel">OS / Equipe / Dia</div>
+      <div class="cval" style="color:var(--amber);font-size:3rem">4,0</div>
+      <div class="csub">240 ÷ 2 equipes ÷ 30 dias</div>
+    </div>
+  </div>
+
+  <div class="sec">Desempenho por Equipe</div>
+  <div class="g2">
+    <div class="card cg">
+      <div class="clabel">Equipe 01</div>
+      <div style="display:flex;align-items:center;gap:20px;margin-top:10px">
+        <div style="text-align:center">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:3.5rem;font-weight:900;color:var(--green)" id="dyn-eq01">175</div>
+          <div style="font-size:.72rem;color:var(--muted)">OS executadas</div>
+        </div>
+        <div style="flex:1">
+          <div class="stat-row">
+            <div class="stat-label">Participação</div>
+            <div class="stat-bar"><div class="stat-fill" style="width:72.9%;background:var(--green)"></div></div>
+            <div class="stat-val" style="color:var(--green)">72,9%</div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-label">OS / Dia</div>
+            <div class="stat-bar"><div class="stat-fill" style="width:80%;background:var(--teal)"></div></div>
+            <div class="stat-val" style="color:var(--teal)">5,8</div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-label">Índice Produt.</div>
+            <div class="stat-bar"><div class="stat-fill" style="width:72.9%;background:var(--blue)"></div></div>
+            <div class="stat-val" style="color:var(--blue)">Alto</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card cb">
+      <div class="clabel">Equipe 02</div>
+      <div style="display:flex;align-items:center;gap:20px;margin-top:10px">
+        <div style="text-align:center">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:3.5rem;font-weight:900;color:var(--blue)" id="dyn-eq02">65</div>
+          <div style="font-size:.72rem;color:var(--muted)">OS executadas</div>
+        </div>
+        <div style="flex:1">
+          <div class="stat-row">
+            <div class="stat-label">Participação</div>
+            <div class="stat-bar"><div class="stat-fill" style="width:27.1%;background:var(--blue)"></div></div>
+            <div class="stat-val" style="color:var(--blue)">27,1%</div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-label">OS / Dia</div>
+            <div class="stat-bar"><div class="stat-fill" style="width:36%;background:var(--teal)"></div></div>
+            <div class="stat-val" style="color:var(--teal)">2,2</div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-label">Índice Produt.</div>
+            <div class="stat-bar"><div class="stat-fill" style="width:27.1%;background:var(--amber)"></div></div>
+            <div class="stat-val" style="color:var(--amber)">Médio</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">Tipo de Ocorrência Atendida</div>
+  <div class="g3">
+    <div class="card co">
+      <div class="clabel">Atendimentos Avulsos</div>
+      <div class="cval" style="color:var(--orange)">155</div>
+      <div class="csub">Manutenções diversas / campo · 64,6%</div>
+      <div class="stat-bar" style="margin-top:10px"><div class="stat-fill" style="width:64.6%;background:var(--orange)"></div></div>
+    </div>
+    <div class="card cr">
+      <div class="clabel">Lâmpada Apagada</div>
+      <div class="cval" style="color:var(--red)">67</div>
+      <div class="csub">Falha detectada · 27,9%</div>
+      <div class="stat-bar" style="margin-top:10px"><div class="stat-fill" style="width:27.9%;background:var(--red)"></div></div>
+    </div>
+    <div class="card cp">
+      <div class="clabel">Outras Ocorrências</div>
+      <div class="cval" style="color:var(--purple)">18</div>
+      <div class="csub">Oscilando, N.Instalação, Chave… · 7,5%</div>
+      <div class="stat-bar" style="margin-top:10px"><div class="stat-fill" style="width:7.5%;background:var(--purple)"></div></div>
+    </div>
+  </div>
+
+  <div class="sec">Distribuição Equipes · Gráfico</div>
+  <div class="card ct" style="padding:20px">
+    <canvas id="c-equipes" style="max-height:200px"></canvas>
+  </div>
+
+</div>
+
+<!-- ══ TAB 3: ORIGENS & MANUTENÇÕES ══ -->
+<div class="content" id="tab-origens">
+
+  <div class="sec">Origem das Ocorrências</div>
+  <div class="g4">
+    <div class="card ct" style="text-align:center">
+      <div style="font-size:2rem;margin-bottom:6px">🚐</div>
+      <div class="clabel">Ronda Própria</div>
+      <div class="cval" style="color:var(--teal)">182</div>
+      <div class="csub">Detecção proativa pela equipe</div>
+      <div class="stat-bar" style="margin-top:10px"><div class="stat-fill" style="width:75.8%;background:var(--teal)"></div></div>
+      <div style="font-size:.72rem;color:var(--teal);margin-top:6px;font-weight:700">75,8%</div>
+    </div>
+    <div class="card cb" style="text-align:center">
+      <div style="font-size:2rem;margin-bottom:6px">📞</div>
+      <div class="clabel">Call Center</div>
+      <div class="cval" style="color:var(--blue)">41</div>
+      <div class="csub">Reclamação via central telefônica</div>
+      <div class="stat-bar" style="margin-top:10px"><div class="stat-fill" style="width:17.1%;background:var(--blue)"></div></div>
+      <div style="font-size:.72rem;color:var(--blue);margin-top:6px;font-weight:700">17,1%</div>
+    </div>
+    <div class="card cp" style="text-align:center">
+      <div style="font-size:2rem;margin-bottom:6px">🤖</div>
+      <div class="clabel">Chatbot</div>
+      <div class="cval" style="color:var(--purple)">9</div>
+      <div class="csub">Atendimento automático digital</div>
+      <div class="stat-bar" style="margin-top:10px"><div class="stat-fill" style="width:3.75%;background:var(--purple)"></div></div>
+      <div style="font-size:.72rem;color:var(--purple);margin-top:6px;font-weight:700">3,75%</div>
+    </div>
+    <div class="card ca" style="text-align:center">
+      <div style="font-size:2rem;margin-bottom:6px">📱</div>
+      <div class="clabel">App Mobile</div>
+      <div class="cval" style="color:var(--amber)">8</div>
+      <div class="csub">Solicitação via aplicativo</div>
+      <div class="stat-bar" style="margin-top:10px"><div class="stat-fill" style="width:3.33%;background:var(--amber)"></div></div>
+      <div style="font-size:.72rem;color:var(--amber);margin-top:6px;font-weight:700">3,33%</div>
+    </div>
+  </div>
+
+  <div class="g2" style="margin-bottom:14px">
+    <div class="card" style="border-top:2px solid var(--cyan);padding:18px">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="font-size:2.2rem">📡</div>
+        <div style="flex:1">
+          <div class="clabel">Tele Gestão</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:900;color:var(--cyan)" id="tg-ori-val">0</div>
+          <div style="font-size:.76rem;color:var(--muted)">Ocorrências detectadas pelo sistema de telegerenciamento remoto</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:800;color:var(--cyan)" id="tg-ori-pct">0%</div>
+          <div style="font-size:.65rem;color:var(--muted)">do total</div>
+        </div>
+      </div>
+      <div class="stat-bar" style="margin-top:12px"><div class="stat-fill" style="width:0%;background:var(--cyan)" id="tg-ori-bar"></div></div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:8px">
+        💡 Ao receber exportações com esta origem, o sistema atualizará automaticamente este indicador.
+      </div>
+    </div>
+    <div class="card cb" style="padding:18px">
+      <div class="clabel">Resumo das 5 Origens</div>
+      <div style="margin-top:10px">
+        <div class="stat-row"><div class="stat-label">🚐 Ronda própria</div><div class="stat-bar"><div class="stat-fill" style="width:75.8%;background:var(--teal)"></div></div><div class="stat-val" style="color:var(--teal)">182</div><div class="stat-pct">75,8%</div></div>
+        <div class="stat-row"><div class="stat-label">📞 Call Center</div><div class="stat-bar"><div class="stat-fill" style="width:17.1%;background:var(--blue)"></div></div><div class="stat-val" style="color:var(--blue)">41</div><div class="stat-pct">17,1%</div></div>
+        <div class="stat-row"><div class="stat-label">🤖 Chatbot</div><div class="stat-bar"><div class="stat-fill" style="width:3.75%;background:var(--purple)"></div></div><div class="stat-val" style="color:var(--purple)">9</div><div class="stat-pct">3,75%</div></div>
+        <div class="stat-row"><div class="stat-label">📱 App</div><div class="stat-bar"><div class="stat-fill" style="width:3.33%;background:var(--amber)"></div></div><div class="stat-val" style="color:var(--amber)">8</div><div class="stat-pct">3,33%</div></div>
+        <div class="stat-row"><div class="stat-label">📡 Tele Gestão</div><div class="stat-bar"><div class="stat-fill" style="width:0%;background:var(--cyan)" id="tg-sum-bar"></div></div><div class="stat-val" style="color:var(--cyan)" id="tg-sum-val">0</div><div class="stat-pct" id="tg-sum-pct">0%</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card cg">
+      <div class="clabel">Principais Motivos de Atendimento</div>
+      <div style="margin-top:10px">
+        <div class="stat-row">
+          <div class="stat-label">Relé queimado</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:100%;background:var(--red)"></div></div>
+          <div class="stat-val" style="color:var(--red)">106</div>
+          <div class="stat-pct">44,2%</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Lâmpada queimada</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:55.7%;background:var(--amber)"></div></div>
+          <div class="stat-val" style="color:var(--amber)">59</div>
+          <div class="stat-pct">24,6%</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Conexão</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:17.9%;background:var(--blue)"></div></div>
+          <div class="stat-val" style="color:var(--blue)">19</div>
+          <div class="stat-pct">7,9%</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Luminária LED 30W</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:11.3%;background:var(--teal)"></div></div>
+          <div class="stat-val" style="color:var(--teal)">12</div>
+          <div class="stat-pct">5,0%</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Prop. Particular</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:7.5%;background:var(--purple)"></div></div>
+          <div class="stat-val" style="color:var(--purple)">8</div>
+          <div class="stat-pct">3,3%</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Chuva / Intempérie</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:3.8%;background:var(--cyan)"></div></div>
+          <div class="stat-val" style="color:var(--cyan)">4</div>
+          <div class="stat-pct">1,7%</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Outros</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:2.8%;background:var(--muted)"></div></div>
+          <div class="stat-val" style="color:var(--muted)">3</div>
+          <div class="stat-pct">1,3%</div>
+        </div>
+      </div>
+    </div>
+    <div class="card cb">
+      <div class="clabel">Soluções Aplicadas</div>
+      <div style="margin-top:10px">
+        <div class="stat-row">
+          <div class="stat-label">🔩 Troca de Itens</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:100%;background:var(--green)"></div></div>
+          <div class="stat-val" style="color:var(--green)">175</div>
+          <div class="stat-pct">72,9%</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">🔧 Manutenção</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:13.7%;background:var(--blue)"></div></div>
+          <div class="stat-val" style="color:var(--blue)">24</div>
+          <div class="stat-pct">10,0%</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">📋 Sem ação (normal/escopo)</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:23.8%;background:var(--muted)"></div></div>
+          <div class="stat-val" style="color:var(--muted)">41</div>
+          <div class="stat-pct">17,1%</div>
+        </div>
+      </div>
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+        <div class="clabel">Reincidências Detectadas</div>
+        <div style="display:flex;align-items:center;gap:16px;margin-top:10px">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:2.5rem;font-weight:900;color:var(--pink)">4</div>
+          <div style="font-size:.76rem;color:var(--muted)">OS marcadas como <strong style="color:var(--pink)">Repetido</strong> — mesmo ponto atendido mais de uma vez no mês</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">Gráfico de Origens e Motivos</div>
+  <div class="g2">
+    <div class="card ct"><canvas id="c-motivos" style="max-height:220px"></canvas></div>
+    <div class="card cb"><canvas id="c-solucoes" style="max-height:220px"></canvas></div>
+  </div>
+
+</div>
+
+<!-- ══ TAB 4: MATERIAIS ══ -->
+<div class="content" id="tab-materiais">
+
+  <div class="g3">
+    <div class="card ct" style="text-align:center">
+      <div class="clabel">Total Itens Aplicados</div>
+      <div class="cval" style="color:var(--teal);font-size:3rem">232</div>
+      <div class="csub">Em 13 tipos de material</div>
+    </div>
+    <div class="card cg" style="text-align:center">
+      <div class="clabel">Item Mais Utilizado</div>
+      <div class="cval" style="color:var(--green);font-size:2rem">Relé SGIP</div>
+      <div class="csub">146 unidades · 62,9% do total</div>
+    </div>
+    <div class="card ca" style="text-align:center">
+      <div class="clabel">Luminárias LED Instaladas</div>
+      <div class="cval" style="color:var(--amber);font-size:3rem">58</div>
+      <div class="csub">30W(41) + 40W(5) + 70W(4) + 120W(5) + ARGOS(3)</div>
+    </div>
+  </div>
+
+  <div class="sec">Detalhamento de Materiais Aplicados · Abril/2026</div>
+  <div class="g2">
+    <div class="card cg">
+      <div class="clabel">Materiais por Quantidade</div>
+      <div style="margin-top:12px">
+
+        <div class="mat-item">
+          <div class="mat-icon" style="background:rgba(245,158,11,.15);color:var(--amber)">⚡</div>
+          <div style="flex:1">
+            <div class="mat-name">RELÉ SGIP Fotoelétrico Smartgreen</div>
+            <div class="mat-bar-bg"><div class="mat-bar-fill" style="width:100%;background:var(--amber)"></div></div>
+          </div>
+          <div class="mat-qty" style="color:var(--amber)">146</div>
+        </div>
+
+        <div class="mat-item">
+          <div class="mat-icon" style="background:rgba(0,212,200,.15);color:var(--teal)">💡</div>
+          <div style="flex:1">
+            <div class="mat-name">Luminária LED 30W · REEME</div>
+            <div class="mat-bar-bg"><div class="mat-bar-fill" style="width:28%;background:var(--teal)"></div></div>
+          </div>
+          <div class="mat-qty" style="color:var(--teal)">41</div>
+        </div>
+
+        <div class="mat-item">
+          <div class="mat-icon" style="background:rgba(59,130,246,.15);color:var(--blue)">🔌</div>
+          <div style="flex:1">
+            <div class="mat-name">Conector Cunha BT Tipo II (verde)</div>
+            <div class="mat-bar-bg"><div class="mat-bar-fill" style="width:6.8%;background:var(--blue)"></div></div>
+          </div>
+          <div class="mat-qty" style="color:var(--blue)">10</div>
+        </div>
+
+        <div class="mat-item">
+          <div class="mat-icon" style="background:rgba(34,197,94,.15);color:var(--green)">💡</div>
+          <div style="flex:1">
+            <div class="mat-name">Luminária LED 40W · REEME</div>
+            <div class="mat-bar-bg"><div class="mat-bar-fill" style="width:3.4%;background:var(--green)"></div></div>
+          </div>
+          <div class="mat-qty" style="color:var(--green)">5</div>
+        </div>
+
+        <div class="mat-item">
+          <div class="mat-icon" style="background:rgba(34,197,94,.15);color:var(--green)">💡</div>
+          <div style="flex:1">
+            <div class="mat-name">Luminária LED 120W · REEME</div>
+            <div class="mat-bar-bg"><div class="mat-bar-fill" style="width:3.4%;background:var(--green)"></div></div>
+          </div>
+          <div class="mat-qty" style="color:var(--green)">5</div>
+        </div>
+
+        <div class="mat-item">
+          <div class="mat-icon" style="background:rgba(249,115,22,.15);color:var(--orange)">🏗️</div>
+          <div style="flex:1">
+            <div class="mat-name">Braço 2 metros</div>
+            <div class="mat-bar-bg"><div class="mat-bar-fill" style="width:3.4%;background:var(--orange)"></div></div>
+          </div>
+          <div class="mat-qty" style="color:var(--orange)">5</div>
+        </div>
+
+        <div class="mat-item">
+          <div class="mat-icon" style="background:rgba(0,212,200,.15);color:var(--teal)">🔌</div>
+          <div style="flex:1">
+            <div class="mat-name">Conector Cunha BT Tipo I (cinza)</div>
+            <div class="mat-bar-bg"><div class="mat-bar-fill" style="width:2.7%;background:var(--cyan)"></div></div>
+          </div>
+          <div class="mat-qty" style="color:var(--cyan)">4</div>
+        </div>
+
+        <div class="mat-item">
+          <div class="mat-icon" style="background:rgba(34,197,94,.15);color:var(--green)">💡</div>
+          <div style="flex:1">
+            <div class="mat-name">Luminária LED 70W · REEME</div>
+            <div class="mat-bar-bg"><div class="mat-bar-fill" style="width:2.7%;background:var(--green)"></div></div>
+          </div>
+          <div class="mat-qty" style="color:var(--green)">4</div>
+        </div>
+
+        <div class="mat-item">
+          <div class="mat-icon" style="background:rgba(168,85,247,.15);color:var(--purple)">💡</div>
+          <div style="flex:1">
+            <div class="mat-name">Luminária 30W · ARGOS</div>
+            <div class="mat-bar-bg"><div class="mat-bar-fill" style="width:2%;background:var(--purple)"></div></div>
+          </div>
+          <div class="mat-qty" style="color:var(--purple)">3</div>
+        </div>
+
+        <div class="mat-item">
+          <div class="mat-icon" style="background:rgba(100,116,139,.15);color:var(--muted)">🔌</div>
+          <div style="flex:1">
+            <div class="mat-name">Conector Cunha BT Tipo III (vermelho) + Derivação + Lamp. VS + Relé NF</div>
+            <div class="mat-bar-bg"><div class="mat-bar-fill" style="width:2.7%;background:var(--muted)"></div></div>
+          </div>
+          <div class="mat-qty" style="color:var(--muted)">4</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card ca">
+      <div class="clabel">Composição de Luminárias Instaladas</div>
+      <canvas id="c-materiais" style="max-height:220px;margin-top:12px"></canvas>
+      <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
+        <div class="clabel">Tipos de Relés Aplicados</div>
+        <div class="stat-row" style="margin-top:8px">
+          <div class="stat-label">Relé SGIP Fotoelétrico Smartgreen</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:100%;background:var(--amber)"></div></div>
+          <div class="stat-val" style="color:var(--amber)">146</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Relé NF (comum)</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:.7%;background:var(--muted)"></div></div>
+          <div class="stat-val" style="color:var(--muted)">1</div>
+        </div>
+        <div style="margin-top:12px;font-size:.72rem;color:var(--muted)">
+          <strong style="color:var(--amber)">Relés SGIP</strong> representam 99,3% dos relés trocados — indicativo de programa de atualização tecnológica ativo.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ TAB 5: PRAZOS ══ -->
+<div class="content" id="tab-prazos">
+
+  <div class="g4">
+    <div class="card cg" style="text-align:center">
+      <div class="prazo-gauge">
+        <div class="prazo-big" style="color:var(--green)">98,75%</div>
+        <div class="prazo-label">Atendimentos no Prazo</div>
+      </div>
+      <div style="margin-top:10px;background:var(--surface);border-radius:8px;padding:10px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:var(--green)">237</div>
+        <div style="font-size:.7rem;color:var(--muted)">de 240 atendimentos</div>
+      </div>
+    </div>
+    <div class="card cr" style="text-align:center">
+      <div class="prazo-gauge">
+        <div class="prazo-big" style="color:var(--red)">1,25%</div>
+        <div class="prazo-label">Fora do Prazo</div>
+      </div>
+      <div style="margin-top:10px;background:var(--surface);border-radius:8px;padding:10px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:var(--red)">3</div>
+        <div style="font-size:.7rem;color:var(--muted)">ocorrências com atraso</div>
+      </div>
+    </div>
+    <div class="card ca" style="text-align:center">
+      <div class="prazo-gauge">
+        <div class="prazo-big" style="color:var(--amber)">48h</div>
+        <div class="prazo-label">Prazo Contratual</div>
+      </div>
+      <div style="margin-top:10px;background:var(--surface);border-radius:8px;padding:10px">
+        <div style="font-size:.72rem;color:var(--muted)">48 Horas Corridas para todos os chamados</div>
+      </div>
+    </div>
+    <div class="card co" style="text-align:center">
+      <div class="prazo-gauge">
+        <div class="prazo-big" style="color:var(--orange)">58,8h</div>
+        <div class="prazo-label">Tempo Médio Real</div>
+      </div>
+      <div style="margin-top:10px;background:var(--surface);border-radius:8px;padding:10px">
+        <div style="font-size:.72rem;color:var(--muted)"><span style="color:var(--red)">+10,8h</span> acima do prazo contratual na média</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">Atrasos Detalhados</div>
+  <div class="card cr" style="padding:20px">
+    <div class="clabel" style="margin-bottom:14px">Ocorrências Fora do Prazo · Detalhamento</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+      <div style="background:#fff5f5;border:1px solid rgba(212,43,43,.25);border-radius:8px;padding:14px;text-align:center">
+        <div style="font-size:.68rem;color:var(--muted);margin-bottom:6px">ATRASO 1</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:800;color:var(--red)">+12h 38min</div>
+        <div style="font-size:.68rem;color:var(--muted);margin-top:4px">0 dias e 12 horas</div>
+      </div>
+      <div style="background:#fff5f5;border:1px solid rgba(212,43,43,.25);border-radius:8px;padding:14px;text-align:center">
+        <div style="font-size:.68rem;color:var(--muted);margin-bottom:6px">ATRASO 2</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:800;color:var(--red)">+35h 7min</div>
+        <div style="font-size:.68rem;color:var(--muted);margin-top:4px">1 dia e 11 horas</div>
+      </div>
+      <div style="background:#fff5f5;border:1px solid rgba(212,43,43,.25);border-radius:8px;padding:14px;text-align:center">
+        <div style="font-size:.68rem;color:var(--muted);margin-bottom:6px">ATRASO 3</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:800;color:var(--red)">+13h 8min</div>
+        <div style="font-size:.68rem;color:var(--muted);margin-top:4px">0 dias e 13 horas</div>
+      </div>
+    </div>
+    <div style="margin-top:16px;padding:12px;background:rgba(239,68,68,.06);border-radius:6px;font-size:.76rem;color:var(--label)">
+      ⚠ Maior atraso: <strong style="color:var(--red)">1 dia 11h 7min</strong> acima do prazo contratual de 48h. 
+      Os 3 atrasos representam apenas <strong style="color:var(--red)">1,25%</strong> do total de atendimentos — desempenho muito acima da meta contratual.
+    </div>
+  </div>
+
+  <div class="sec">Atendimentos por Prazo · Separado por Origem</div>
+
+  <!-- RONDA PRÓPRIA -->
+  <div class="card" style="border-top:2px solid var(--teal);margin-bottom:14px;padding:20px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;color:var(--teal)">🚐 RONDA PRÓPRIA</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:2px">182 OS · Detecção proativa pela equipe em campo</div>
+      </div>
+      <div style="display:flex;gap:12px">
+        <div style="text-align:center;background:rgba(26,138,62,.08);border:1px solid rgba(26,138,62,.25);border-radius:8px;padding:10px 18px">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:900;color:var(--green)">179</div>
+          <div style="font-size:.65rem;color:var(--muted)">No Prazo · 98,35%</div>
+        </div>
+        <div style="text-align:center;background:rgba(212,43,43,.08);border:1px solid rgba(212,43,43,.25);border-radius:8px;padding:10px 18px">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:900;color:var(--red)">3</div>
+          <div style="font-size:.65rem;color:var(--muted)">Fora · 1,65%</div>
+        </div>
+        <div style="text-align:center;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:10px 18px">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:900;color:var(--amber)">182</div>
+          <div style="font-size:.65rem;color:var(--muted)">Total</div>
+        </div>
+      </div>
+    </div>
+    <div class="timeline" style="height:28px">
+      <div class="tl-seg" style="flex:179;background:#16a34a;color:#fff;font-size:.72rem">179 · No Prazo (98,35%)</div>
+      <div class="tl-seg" style="flex:3;background:#dc2626;color:#fff;font-size:.72rem">3</div>
+    </div>
+    <div style="margin-top:12px;padding:10px 14px;background:rgba(239,68,68,.06);border-radius:6px;font-size:.74rem;color:var(--label)">
+      ⚠ Os <strong style="color:var(--red)">3 atrasos do mês são todos de Ronda própria</strong> — possível sobrecarga de rota ou demora entre detecção e despacho. Atrasos: +12h38min, +35h7min, +13h8min.
+    </div>
+  </div>
+
+  <!-- DEMAIS ORIGENS -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px">
+
+    <div class="card" style="border-top:2px solid var(--blue);padding:16px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:800;color:var(--blue);margin-bottom:10px">📞 CALL CENTER</div>
+      <div style="display:flex;justify-content:space-around;margin-bottom:10px">
+        <div style="text-align:center"><div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:900;color:var(--green)">41</div><div style="font-size:.63rem;color:var(--muted)">No Prazo</div></div>
+        <div style="text-align:center"><div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:900;color:var(--muted)">0</div><div style="font-size:.63rem;color:var(--muted)">Fora</div></div>
+      </div>
+      <div class="timeline" style="height:20px"><div class="tl-seg" style="flex:1;background:#1d4ed8;color:#fff;font-size:.65rem">100% no prazo</div></div>
+      <div style="font-size:.68rem;color:var(--green);margin-top:8px;font-weight:700;text-align:center">✅ 100% — 41/41</div>
+    </div>
+
+    <div class="card" style="border-top:2px solid var(--purple);padding:16px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:800;color:var(--purple);margin-bottom:10px">🤖 CHATBOT</div>
+      <div style="display:flex;justify-content:space-around;margin-bottom:10px">
+        <div style="text-align:center"><div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:900;color:var(--green)">9</div><div style="font-size:.63rem;color:var(--muted)">No Prazo</div></div>
+        <div style="text-align:center"><div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:900;color:var(--muted)">0</div><div style="font-size:.63rem;color:var(--muted)">Fora</div></div>
+      </div>
+      <div class="timeline" style="height:20px"><div class="tl-seg" style="flex:1;background:#581c87;color:#fff;font-size:.65rem">100% no prazo</div></div>
+      <div style="font-size:.68rem;color:var(--green);margin-top:8px;font-weight:700;text-align:center">✅ 100% — 9/9</div>
+    </div>
+
+    <div class="card" style="border-top:2px solid var(--amber);padding:16px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:800;color:var(--amber);margin-bottom:10px">📱 APP</div>
+      <div style="display:flex;justify-content:space-around;margin-bottom:10px">
+        <div style="text-align:center"><div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:900;color:var(--green)">8</div><div style="font-size:.63rem;color:var(--muted)">No Prazo</div></div>
+        <div style="text-align:center"><div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:900;color:var(--muted)">0</div><div style="font-size:.63rem;color:var(--muted)">Fora</div></div>
+      </div>
+      <div class="timeline" style="height:20px"><div class="tl-seg" style="flex:1;background:#92400e;color:#fff;font-size:.65rem">100% no prazo</div></div>
+      <div style="font-size:.68rem;color:var(--green);margin-top:8px;font-weight:700;text-align:center">✅ 100% — 8/8</div>
+    </div>
+
+  </div>
+
+  <!-- TELE GESTÃO -->
+  <div class="card" style="border-top:2px solid var(--cyan);padding:18px">
+    <div style="display:flex;align-items:center;gap:16px">
+      <div style="font-size:2rem">📡</div>
+      <div style="flex:1">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:800;color:var(--cyan)">TELE GESTÃO</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:2px">Ocorrências geradas pelo sistema de telegerenciamento remoto</div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <div style="text-align:center;background:rgba(0,119,160,.08);border:1px solid rgba(0,119,160,.25);border-radius:8px;padding:10px 16px">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:900;color:var(--cyan)" id="tg-np">0</div>
+          <div style="font-size:.63rem;color:var(--muted)">No Prazo</div>
+        </div>
+        <div style="text-align:center;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:10px 16px">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:900;color:var(--red)" id="tg-fp">0</div>
+          <div style="font-size:.63rem;color:var(--muted)">Fora</div>
+        </div>
+        <div style="text-align:center;background:rgba(60,80,100,.08);border:1px solid rgba(60,80,100,.25);border-radius:8px;padding:10px 16px">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:900;color:var(--muted)" id="tg-tot">0</div>
+          <div style="font-size:.63rem;color:var(--muted)">Total</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.72rem;color:var(--muted);padding:10px;background:rgba(0,119,160,.06);border-radius:6px">
+      📌 Dados de Tele Gestão serão preenchidos automaticamente quando a exportação do sistema incluir esta origem.
+    </div>
+  </div>
+
+  <div class="sec" style="margin-top:18px">Comparativo Geral de Prazo por Origem</div>
+  <div class="card ca" style="padding:20px">
+    <canvas id="c-prazos" style="max-height:180px"></canvas>
+  </div>
+
+</div>
+
+<!-- ══ TAB 6: COMPARATIVO ══ -->
+<div class="content" id="tab-comparativo">
+
+  <div class="sec">Comparativo de Manutenções</div>
+  <div class="g4">
+    <div class="card cg">
+      <div class="clabel">Troca de Componentes</div>
+      <div class="cval" style="color:var(--green)">175</div>
+      <div class="csub">Substituição de peças defeituosas</div>
+      <div class="stat-bar" style="margin-top:8px"><div class="stat-fill" style="width:100%;background:var(--green)"></div></div>
+    </div>
+    <div class="card cb">
+      <div class="clabel">Manutenção Corretiva</div>
+      <div class="cval" style="color:var(--blue)">24</div>
+      <div class="csub">Reparo sem substituição</div>
+      <div class="stat-bar" style="margin-top:8px"><div class="stat-fill" style="width:13.7%;background:var(--blue)"></div></div>
+    </div>
+    <div class="card ct">
+      <div class="clabel">Modernização (LED)</div>
+      <div class="cval" style="color:var(--teal)">12</div>
+      <div class="csub">Upgrade tecnológico programado</div>
+      <div class="stat-bar" style="margin-top:8px"><div class="stat-fill" style="width:6.9%;background:var(--teal)"></div></div>
+    </div>
+    <div class="card cp">
+      <div class="clabel">Nova Instalação</div>
+      <div class="cval" style="color:var(--purple)">1</div>
+      <div class="csub">Ponto novo implantado</div>
+      <div class="stat-bar" style="margin-top:8px"><div class="stat-fill" style="width:.6%;background:var(--purple)"></div></div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card cg">
+      <div class="clabel">Causa × Solução (Comparativo)</div>
+      <canvas id="c-causas" style="max-height:240px;margin-top:12px"></canvas>
+    </div>
+    <div class="card ct">
+      <div class="clabel">Bairros × Volume de Ocorrências</div>
+      <canvas id="c-bairros" style="max-height:240px;margin-top:12px"></canvas>
+    </div>
+  </div>
+
+  <div class="sec">Resumo Executivo · Abril 2026</div>
+  <div class="g3">
+    <div style="background:rgba(26,138,62,.06);border:1px solid rgba(26,138,62,.2);border-radius:10px;padding:16px">
+      <div style="color:var(--green);font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">✅ Pontos Positivos</div>
+      <ul style="list-style:none;font-size:.78rem;color:var(--label);display:flex;flex-direction:column;gap:7px">
+        <li>• 98,75% dos atendimentos no prazo contratual</li>
+        <li>• 75,8% de detecção proativa pela ronda própria</li>
+        <li>• 240 OS processadas no mês — alta produtividade</li>
+        <li>• 0% de chamados emergenciais sem atendimento</li>
+        <li>• Modernização ativa: 146 relés SGIP instalados</li>
+      </ul>
+    </div>
+    <div style="background:rgba(201,122,0,.06);border:1px solid rgba(201,122,0,.2);border-radius:10px;padding:16px">
+      <div style="color:var(--amber);font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">⚠️ Pontos de Atenção</div>
+      <ul style="list-style:none;font-size:.78rem;color:var(--label);display:flex;flex-direction:column;gap:7px">
+        <li>• Tempo médio de 58,8h supera o prazo de 48h</li>
+        <li>• 3 ocorrências com atraso — acompanhar causas</li>
+        <li>• 4 OS repetidas — reincidência no mesmo ponto</li>
+        <li>• Equipe 02 com volume 2,7x menor que Eq. 01</li>
+        <li>• 8 OS fora do escopo do contrato identificadas</li>
+      </ul>
+    </div>
+    <div style="background:rgba(26,95,180,.06);border:1px solid rgba(26,95,180,.2);border-radius:10px;padding:16px">
+      <div style="color:var(--blue);font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">📌 Bairros Prioritários</div>
+      <ul style="list-style:none;font-size:.78rem;color:var(--label);display:flex;flex-direction:column;gap:7px">
+        <li>• Centro: 30 ocorrências — maior volume</li>
+        <li>• Vila São José: 27 ocorrências</li>
+        <li>• Presidente Vargas: 24 ocorrências</li>
+        <li>• Liri: 20 ocorrências</li>
+        <li>• Demboski: 19 ocorrências</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p>Fonte: Sistema de Atendimentos · Materiais Aplicados · Relatório de Prazos · Içara/SC</p>
+  <p>Período: 01/04/2026 a 30/04/2026 · 240 OS registradas</p>
+  <p>Dashboard Operacional · Iluminação Pública · 2026</p>
+</div>
+
+<script>
+// ══ TAB NAVIGATION ══
+function showTab(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  event.target.classList.add('active');
+  setTimeout(drawAll, 60);
+}
+
+// ══ CHART HELPERS ══
+function drawDonut(canvasId, data, colors){
+  const canvas=document.getElementById(canvasId);
+  if(!canvas)return;
+  const W=canvas.offsetWidth||300, H=Math.min(W,220);
+  canvas.width=W; canvas.height=H;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+  const total=data.reduce((a,d)=>a+d.v,0);
+  const cx=W*.35, cy=H/2, r=Math.min(cx,cy)*.85, ri=r*.55;
+  let angle=-Math.PI/2;
+  data.forEach((d,i)=>{
+    const sweep=(d.v/total)*Math.PI*2;
+    ctx.beginPath();ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,angle,angle+sweep);ctx.closePath();
+    ctx.fillStyle=colors[i];ctx.fill();
+    ctx.beginPath();ctx.arc(cx,cy,ri,0,Math.PI*2);
+    ctx.fillStyle='#ffffff';ctx.fill();
+    angle+=sweep;
+  });
+  // legend
+  const lx=W*.7, ly=H/2-(data.length*18)/2;
+  data.forEach((d,i)=>{
+    const y=ly+i*22;
+    ctx.fillStyle=colors[i];ctx.fillRect(lx,y-7,12,12);
+    ctx.fillStyle='#2a3d55';ctx.font='11px Barlow,sans-serif';
+    ctx.fillText(d.l+' ('+d.v+')',lx+16,y+3);
+  });
+}
+
+function drawBar(canvasId, labels, values, colors, title){
+  const canvas=document.getElementById(canvasId);
+  if(!canvas)return;
+  const W=canvas.offsetWidth||400, H=Math.min(W*.6,220);
+  canvas.width=W; canvas.height=H;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+  const PAD={t:30,r:20,b:50,l:14};
+  const cw=W-PAD.l-PAD.r, ch=H-PAD.t-PAD.b;
+  const max=Math.max(...values)*1.15||1;
+  const bw=Math.max(8, cw/values.length*.6);
+  const gap=cw/values.length;
+  if(title){ctx.fillStyle='#6b7d94';ctx.font='11px Barlow Condensed,sans-serif';ctx.textAlign='left';ctx.fillText(title,PAD.l,18);}
+  // gridlines
+  for(let i=0;i<=4;i++){
+    const y=PAD.t+ch-(ch/4*i);
+    ctx.strokeStyle='#c8d4e0';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(PAD.l,y);ctx.lineTo(PAD.l+cw,y);ctx.stroke();
+  }
+  values.forEach((v,i)=>{
+    const x=PAD.l+gap*i+gap/2;
+    const bh=(v/max)*ch;
+    const y=PAD.t+ch-bh;
+    // bar
+    const g=ctx.createLinearGradient(0,y,0,PAD.t+ch);
+    g.addColorStop(0,colors[i]); g.addColorStop(1,colors[i]+'22');
+    ctx.fillStyle=g;
+    ctx.beginPath();
+    ctx.roundRect(x-bw/2,y,bw,bh,4);
+    ctx.fill();
+    // value label
+    ctx.fillStyle='#1a2535';ctx.font='bold 11px Barlow Condensed,sans-serif';ctx.textAlign='center';
+    ctx.fillText(v,x,y-6);
+    // x label
+    ctx.fillStyle='#6b7d94';ctx.font='10px Barlow Condensed,sans-serif';
+    const lbl=labels[i].length>10?labels[i].substring(0,10)+'…':labels[i];
+    ctx.fillText(lbl,x,PAD.t+ch+18);
+  });
+}
+
+function drawHBar(canvasId, labels, values, colors){
+  const canvas=document.getElementById(canvasId);
+  if(!canvas)return;
+  const W=canvas.offsetWidth||400, H=Math.min(labels.length*36+20, 260);
+  canvas.width=W; canvas.height=H;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+  const PAD={t:10,r:60,b:10,l:130};
+  const max=Math.max(...values)*1.1||1;
+  const cw=W-PAD.l-PAD.r, bh=22, gap=36;
+  labels.forEach((lbl,i)=>{
+    const y=PAD.t+i*gap;
+    const bw=(values[i]/max)*cw;
+    // label
+    ctx.fillStyle='#2a3d55';ctx.font='11px Barlow,sans-serif';ctx.textAlign='right';
+    ctx.fillText(lbl.length>16?lbl.substring(0,16)+'…':lbl, PAD.l-8, y+bh/2+4);
+    // bar
+    const g=ctx.createLinearGradient(PAD.l,0,PAD.l+bw,0);
+    g.addColorStop(0,colors[i]);g.addColorStop(1,colors[i]+'55');
+    ctx.fillStyle=g;
+    ctx.beginPath();ctx.roundRect(PAD.l,y,bw,bh,4);ctx.fill();
+    // value
+    ctx.fillStyle='#1a2535';ctx.font='bold 12px Barlow Condensed,sans-serif';ctx.textAlign='left';
+    ctx.fillText(values[i],PAD.l+bw+6,y+bh/2+4);
+  });
+}
+
+function drawGauge(canvasId, val, max, color, label){
+  const canvas=document.getElementById(canvasId);
+  if(!canvas)return;
+  const W=canvas.offsetWidth||300, H=Math.min(W*.5,130);
+  canvas.width=W; canvas.height=H;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+  const cx=W/2, cy=H*.85, r=H*.75;
+  // bg arc
+  ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,0);
+  ctx.strokeStyle='#d0d8e4';ctx.lineWidth=14;ctx.stroke();
+  // fill arc
+  const pct=Math.min(val/max,1);
+  ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,Math.PI+pct*Math.PI);
+  ctx.strokeStyle=color;ctx.lineWidth=14;ctx.lineCap='round';ctx.stroke();
+  // text
+  ctx.fillStyle='#1a2535';ctx.font='bold 22px Barlow Condensed,sans-serif';ctx.textAlign='center';
+  ctx.fillText(val+'h',cx,cy-12);
+  ctx.fillStyle='#6b7d94';ctx.font='11px Barlow,sans-serif';
+  ctx.fillText(label,cx,cy+8);
+}
+
+// ══ DRAW ALL CHARTS ══
+function drawAll(){
+  // Origens donut
+  drawDonut('c-origens',
+    [{l:'Ronda',v:182},{l:'Call Center',v:41},{l:'Chatbot',v:9},{l:'App',v:8},{l:'Tele Gestão',v:0}],
+    ['#00d4c8','#3b82f6','#a855f7','#f59e0b','#06b6d4']);
+
+  // Equipes bar
+  drawBar('c-equipes',
+    ['Equipe 01','Equipe 02'],
+    [175,65],
+    ['#22c55e','#3b82f6'],
+    'OS por Equipe · Abril 2026');
+
+  // Motivos bar
+  drawBar('c-motivos',
+    ['Relé queimado','Lamp. queimada','Conexão','Lum. LED 30W','Prop. Partic.'],
+    [106,59,19,12,8],
+    ['#ef4444','#f59e0b','#3b82f6','#00d4c8','#a855f7'],
+    'Top Motivos de Atendimento');
+
+  // Soluções donut
+  drawDonut('c-solucoes',
+    [{l:'Troca itens',v:175},{l:'Manutenção',v:24},{l:'Sem ação',v:41}],
+    ['#22c55e','#3b82f6','#4e6278']);
+
+  // Materiais donut (luminárias)
+  drawDonut('c-materiais',
+    [{l:'LED 30W REEME',v:41},{l:'LED 40W REEME',v:5},{l:'LED 120W REEME',v:5},{l:'LED 70W REEME',v:4},{l:'ARGOS 30W',v:3}],
+    ['#00d4c8','#22c55e','#3b82f6','#a855f7','#f97316']);
+
+  // Prazos gauge
+  // Gráfico de prazo por origem (barras agrupadas)
+  drawBar('c-prazos',
+    ['Ronda própria','Call Center','Chatbot','App','Tele Gestão'],
+    [179,41,9,8,0],
+    ['#22c55e','#22c55e','#22c55e','#22c55e','#22c55e'],
+    'No Prazo por Origem · Abril 2026');
+
+  // Causas bar
+  drawBar('c-causas',
+    ['Relé','Lâmpada','Conexão','Lum.LED','Out.'],
+    [106,59,19,12,8],
+    ['#ef4444','#f59e0b','#3b82f6','#00d4c8','#a855f7'],
+    'Causas de Atendimento');
+
+  // Bairros horizontal bar
+  drawHBar('c-bairros',
+    ['Centro','Vila São José','Pres. Vargas','Liri','Demboski','Lombas','Esplanada','Barracão'],
+    [30,27,24,20,19,13,11,11],
+    ['#00d4c8','#3b82f6','#22c55e','#a855f7','#f59e0b','#f97316','#ec4899','#06b6d4']);
+}
+
+// ══ CARREGAMENTO DINÂMICO DO JSON ══
+// ══ ESTADO GLOBAL ══
+const ALL_MESES = ["jan/26","fev/26","mar/26","abr/26","mai/26","jun/26",
+                   "jul/26","ago/26","set/26","out/26","nov/26","dez/26"];
+let DB_OP = {};   // {mes: dadosObject}
+let CUR_MES = 'abr/26';
+const ALL_MONTHS = ["jan/26","fev/26","mar/26","abr/26","mai/26","jun/26",
+                    "jul/26","ago/26","set/26","out/26","nov/26","dez/26"];
+
+// ══ RENDERIZA BARRA DE MESES ══
+function renderMesesBar(){
+  const bar = document.getElementById('meses-bar');
+  if(!bar) return;
+  // força layout horizontal independente de CSS externo
+  bar.style.cssText='display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:center;gap:5px;padding:8px 28px;overflow-x:auto;background:var(--surface);border-bottom:1px solid var(--border)';
+  const label = '<span style="font-size:.68rem;color:#4e6278;font-family:\'Barlow Condensed\',sans-serif;letter-spacing:.1em;text-transform:uppercase;margin-right:4px;flex-shrink:0;white-space:nowrap">2026 ·</span>';
+  const tabs = ALL_MESES.map((m,i) => {
+    const has = !!DB_OP[m];
+    const act = m === CUR_MES;
+    const abrev = m.split('/')[0]; // "jan", "fev"...
+    const sep = i < ALL_MESES.length-1 ? '<div class="mes-sep"></div>' : '';
+    return `<button class="mes-tab${act?' mes-active':''}${has?'':' mes-empty'}${has&&!act?' mes-has':''}"
+      ${has ? `onclick="mudarMes('${m}')"` : 'disabled'}
+      title="${has ? m+' — clique para visualizar' : m+' — sem dados'}">${abrev}</button>${sep}`;
+  }).join('');
+  bar.innerHTML = label + tabs;
+}
+
+function mudarMes(mes){
+  if(!DB_OP[mes]) return;
+  CUR_MES = mes;
+  applyData(DB_OP[mes]);
+}
+
+function applyData(d){
+  CUR_MES = d.mes || CUR_MES;
+  DB_OP[CUR_MES] = d;  // garante que está salvo
+  renderMesesBar();
+  // Atualiza todos os valores numéricos no DOM dinamicamente
+  const set = (id, val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
+  const setC = (id, val) => { const el=document.getElementById(id); if(el) el.style.color=val; };
+
+  // Totais
+  set('dyn-total', d.total_os||240);
+  set('dyn-atendidas', d.atendidas||186);
+  set('dyn-outros', (d.total_os||240)-(d.atendidas||186));
+  set('dyn-noprazo', d.no_prazo||237);
+  set('dyn-foraprazo', d.fora_prazo||3);
+  set('dyn-tempomedio', (d.tempo_medio_h||58.8)+'h');
+  set('dyn-eq01', d.equipe01||175);
+  set('dyn-eq02', d.equipe02||65);
+  set('dyn-mes', (d.mes||'abr/26').toUpperCase());
+
+  // Monta tabs de meses disponíveis
+  if(window.DB_OP && Object.keys(window.DB_OP).length > 1){
+    // mostra seletor de meses
+  }
+  drawAll(d);
+}
+
+
+// ══ DADOS DE DEMONSTRAÇÃO ══
+const DEMO_DATA = {
+  mes:"abr/26",total_os:240,atendidas:186,modernizacao:12,encontrado_normal:10,
+  fora_escopo:8,projeto:8,outro_atendimento:7,impossibilidade:4,repetido:4,nova_instalacao:1,
+  no_prazo:237,fora_prazo:3,prazo_contratual_h:48,tempo_medio_h:58.8,
+  equipe01:175,equipe02:65,
+  origem_ronda:182,origem_callcenter:41,origem_chatbot:9,origem_app:8,origem_telegestao:0,
+  motivo_rele:106,motivo_lampada:59,motivo_conexao:19,motivo_luminaria:12,
+  motivo_particular:8,motivo_chuva:4,motivo_outros:3,
+  solucao_troca:175,solucao_manutencao:24,solucao_sem_acao:41,
+  tipo_avulso:155,tipo_lampada_apagada:67,tipo_outros:18,
+  bairro_1:"Centro",bairro_1_qtd:30,bairro_2:"Vila São José",bairro_2_qtd:27,
+  bairro_3:"Presidente Vargas",bairro_3_qtd:24,bairro_4:"Liri",bairro_4_qtd:20,
+  bairro_5:"Demboski",bairro_5_qtd:19,bairro_6:"Lombas",bairro_6_qtd:13,
+  bairro_7:"Esplanada",bairro_7_qtd:11,bairro_8:"Barracão",bairro_8_qtd:11,
+  bairro_9:"Jaqueline",bairro_9_qtd:8,bairro_10:"Tereza Cristina",bairro_10_qtd:8,
+  mat_rele_sgip:146,mat_led30w_reeme:41,mat_conector2:10,mat_led40w_reeme:5,
+  mat_led120w_reeme:5,mat_braco2m:5,mat_conector1:4,mat_led70w_reeme:4,mat_argos30w:3,mat_outros:4,
+  prazo_ronda_ok:179,prazo_ronda_fora:3,prazo_cc_ok:41,prazo_cc_fora:0,
+  prazo_chatbot_ok:9,prazo_chatbot_fora:0,prazo_app_ok:8,prazo_app_fora:0,
+  prazo_telegestao_ok:0,prazo_telegestao_fora:0
+};
+
+// ══ ESTADO DOS UPLOADS ══
+const FILES = {oc:null, mat:null, pr:null};
+
+function setStatus(id, msg, ok){
+  const el=document.getElementById('status-'+id);
+  if(el){el.textContent=msg;el.className='slot-status '+(ok?'ok':'err');}
+  const slot=document.getElementById('slot-'+id);
+  if(slot) slot.classList.toggle('done', ok===true);
+  checkReady();
+}
+function checkReady(){
+  const ok = FILES.oc !== null;
+  const btn = document.getElementById('btn-go');
+  if(btn) btn.classList.toggle('ready', ok);
+}
+function showErr(msg){const el=document.getElementById('up-err');if(el){el.textContent='⚠ '+msg;el.style.display='block';}}
+function hideErr(){const el=document.getElementById('up-err');if(el)el.style.display='none';}
+function showLoading(msg){
+  document.getElementById('loading-op').style.display='flex';
+  document.getElementById('loading-msg-op').textContent=msg||'Processando…';
+}
+function hideLoading(){ document.getElementById('loading-op').style.display='none'; }
+
+// ══ PARSER: OCORRÊNCIAS ══
+function parseOcorrencias(ab){
+  const wb=XLSX.read(ab,{type:'arraybuffer'});
+  const ws=wb.Sheets[wb.SheetNames[0]];
+  const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:""});
+  // hrow: mapeamento de cabeçalhos em lowercase
+  const hrow=rows[0].map(v=>String(v||'').toLowerCase().trim());
+  const ci={};
+  hrow.forEach((h,i)=>{ci[h]=i});
+  const g=(row,field)=>{
+    const idx=Object.entries(ci).find(([k])=>k.includes(field))?.[1]??-1;
+    return idx>=0?String(row[idx]||'').trim():'';
+  };
+
+  const status_c={},origem_c={},equipe_c={},motivo_c={},solucao_c={},bairro_c={},tipo_c={};
+  const prazo_c={};
+  const tempos=[];
+  let mes_det='';
+
+  for(let i=1;i<rows.length;i++){
+    const row=rows[i];
+    if(!row.some(v=>v)) continue;
+    const inc=(obj,k)=>{if(k)obj[k]=(obj[k]||0)+1};
+    inc(status_c, g(row,'desc_status_atendimento_ps'));
+    inc(origem_c, g(row,'desc_tipo_origem_ocorrencia'));
+    inc(equipe_c, g(row,'desc_equipe'));
+    inc(motivo_c, g(row,'desc_motivo_atendimento_ps'));
+    inc(solucao_c,g(row,'desc_solucao_atendimento_ps'));
+    inc(bairro_c, g(row,'nome_bairro'));
+    inc(tipo_c,   g(row,'desc_tipo_ocorrencia'));
+    inc(prazo_c,  g(row,'desc_prazo'));
+    const pIdx=Object.entries(ci).find(([k])=>k==='prazo')?.[1]??-1;
+    if(pIdx>=0){const t=parseFloat(String(row[pIdx]||0).replace(',','.'));if(t>0&&t<500)tempos.push(t);}
+    // detecta mês
+    if(!mes_det){
+      for(let c=0;c<row.length;c++){
+        const m=String(row[c]||'').match(/(\d{4})-(\d{2})-\d{2}/);
+        if(m){
+          const mn=parseInt(m[2]);
+          const yr=String(m[1]).slice(2);
+          const meses=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+          mes_det=meses[mn-1]+'/'+yr;
+          break;
+        }
+      }
+    }
+  }
+  const top=(obj,n)=>Object.entries(obj).sort((a,b)=>b[1]-a[1]).slice(0,n);
+  const sum=(obj,...keys)=>keys.reduce((a,k)=>a+(obj[k]||0),0);
+  const no_p=sum(prazo_c,...Object.keys(prazo_c).filter(k=>k.toLowerCase().includes('no prazo')));
+  const fora=sum(prazo_c,...Object.keys(prazo_c).filter(k=>k.toLowerCase().includes('atraso')));
+  const total=Object.values(status_c).reduce((a,b)=>a+b,0);
+
+  const d={
+    mes: mes_det||'mês',
+    total_os: total,
+    atendidas: status_c['Atendido']||0,
+    modernizacao: status_c['Modernização']||0,
+    encontrado_normal: status_c['Encontrado normal']||0,
+    fora_escopo: status_c['Fora do escopo do contrato']||0,
+    projeto: status_c['Projeto']||0,
+    outro_atendimento: status_c['Outro Atendimento']||0,
+    impossibilidade: status_c['Impossibilidade']||0,
+    repetido: status_c['Repetido']||0,
+    nova_instalacao: status_c['Nova Instalação']||0,
+    no_prazo: no_p, fora_prazo: fora,
+    prazo_contratual_h: 48,
+    tempo_medio_h: tempos.length?+(tempos.reduce((a,b)=>a+b,0)/tempos.length).toFixed(1):0,
+    equipe01: equipe_c['Equipe 01']||0,
+    equipe02: equipe_c['Equipe 02']||0,
+    origem_ronda: origem_c['Ronda própria']||0,
+    origem_callcenter: origem_c['Call Center']||0,
+    origem_chatbot: origem_c['Chatbot']||0,
+    origem_app: origem_c['App']||0,
+    origem_telegestao: Object.entries(origem_c).filter(([k])=>k.toLowerCase().includes('tele')).reduce((a,[,v])=>a+v,0),
+    motivo_rele: motivo_c['Rele queimado']||0,
+    motivo_lampada: motivo_c['Lâmpada queimada']||0,
+    motivo_conexao: motivo_c['Conexão']||0,
+    motivo_luminaria: motivo_c['Luminária LED 30W']||0,
+    motivo_particular: motivo_c['Propriedade Particular']||0,
+    motivo_chuva: motivo_c['Chuva']||0,
+    motivo_outros: Object.entries(motivo_c).filter(([k])=>!['Rele queimado','Lâmpada queimada','Conexão','Luminária LED 30W','Propriedade Particular','Chuva',''].includes(k)).reduce((a,[,v])=>a+v,0),
+    solucao_troca: solucao_c['Troca itens']||0,
+    solucao_manutencao: solucao_c['Manutenção']||0,
+    solucao_sem_acao: solucao_c['']||0,
+    tipo_avulso: tipo_c['Atendimento Avulso']||0,
+    tipo_lampada_apagada: tipo_c['Lâmpada apagada']||0,
+    tipo_outros: Object.entries(tipo_c).filter(([k])=>!['Atendimento Avulso','Lâmpada apagada',''].includes(k)).reduce((a,[,v])=>a+v,0),
+  };
+  // top 10 bairros
+  top(bairro_c,10).forEach(([nome,qtd],i)=>{d['bairro_'+(i+1)]=nome;d['bairro_'+(i+1)+'_qtd']=qtd;});
+  return d;
+}
+
+// ══ PARSER: MATERIAIS ══
+function parseMateriais(ab, d){
+  const wb=XLSX.read(ab,{type:'arraybuffer'});
+  const ws=wb.Sheets[wb.SheetNames[0]];
+  const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:""});
+  const mats={};
+  for(let i=6;i<rows.length;i++){
+    const nome=String(rows[i][0]||'').trim();
+    const total=parseFloat(rows[i][rows[i].length-1])||0;
+    if(nome&&nome!=='Material'&&total>0) mats[nome]=total;
+  }
+  const mq=(...keys)=>Object.entries(mats).filter(([k])=>keys.some(kk=>k.toLowerCase().includes(kk.toLowerCase()))).reduce((a,[,v])=>a+v,0);
+  d.mat_rele_sgip=mq('SGIP','SMARTGREEN');
+  d.mat_led30w_reeme=mq('LED 30W','30W - REEME');
+  d.mat_conector2=mq('tipo II','cunha de BT, tipo II');
+  d.mat_led40w_reeme=mq('LED 40W','40W - REEME');
+  d.mat_led120w_reeme=mq('LED 120W','120W - REEME');
+  d.mat_braco2m=mq('Braço 2','braco 2');
+  d.mat_conector1=mq('tipo I (cinza)');
+  d.mat_led70w_reeme=mq('LED 70W','70W - REEME');
+  d.mat_argos30w=mq('ARGOS');
+  d.mat_outros=Object.entries(mats).filter(([k])=>!['SGIP','LED','ARGOS','BRAÇO','BRACO'].some(x=>k.toUpperCase().includes(x))).reduce((a,[,v])=>a+v,0);
+  return d;
+}
+
+// ══ PARSER: PRAZOS ══
+function parsePrazos(ab, d){
+  const wb=XLSX.read(ab,{type:'arraybuffer'});
+  const ws=wb.Sheets[wb.SheetNames[0]];
+  const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:""});
+  // header na linha 3 (index 2)
+  const hrow=rows[2]||[];
+  const statusCol=hrow.findIndex(h=>String(h).toLowerCase().includes('status'));
+  const origemCol=hrow.findIndex(h=>String(h).toLowerCase().includes('origem'));
+  const ok=(r)=>String(r[statusCol]||'').toLowerCase().includes('no prazo');
+  const ori=(r)=>String(r[origemCol]||'').trim();
+  d.prazo_ronda_ok=0;d.prazo_ronda_fora=0;
+  d.prazo_cc_ok=0;d.prazo_cc_fora=0;
+  d.prazo_chatbot_ok=0;d.prazo_chatbot_fora=0;
+  d.prazo_app_ok=0;d.prazo_app_fora=0;
+  d.prazo_telegestao_ok=0;d.prazo_telegestao_fora=0;
+  for(let i=4;i<rows.length;i++){
+    const row=rows[i];if(!row[0])continue;
+    const o=ori(row),np=ok(row);
+    if(o.includes('Ronda')){np?d.prazo_ronda_ok++:d.prazo_ronda_fora++;}
+    else if(o.includes('Call')){np?d.prazo_cc_ok++:d.prazo_cc_fora++;}
+    else if(o.includes('Chatbot')){np?d.prazo_chatbot_ok++:d.prazo_chatbot_fora++;}
+    else if(o.includes('App')){np?d.prazo_app_ok++:d.prazo_app_fora++;}
+    else if(o.toLowerCase().includes('tele')){np?d.prazo_telegestao_ok++:d.prazo_telegestao_fora++;}
+  }
+  return d;
+}
+
+// ══ PROCESSAR E MOSTRAR ══
+function processarTudo(){
+  if(!FILES.oc){showErr('Adicione o arquivo de Ocorrências.');return;}
+  hideErr();
+  showLoading('Processando ocorrências…');
+  setTimeout(()=>{
+    try{
+      let d=parseOcorrencias(FILES.oc);
+      if(FILES.mat){document.getElementById('loading-msg-op').textContent='Processando materiais…';d=parseMateriais(FILES.mat,d);}
+      if(FILES.pr){document.getElementById('loading-msg-op').textContent='Processando prazos…';d=parsePrazos(FILES.pr,d);}
+      hideLoading();
+      // Acumula no banco local (permite ter vários meses)
+      if(d.mes) DB_OP[d.mes] = d;
+      mostrarDash(d,'importação · '+d.mes);
+    }catch(ex){hideLoading();showErr('Erro ao processar: '+ex.message);}
+  },100);
+}
+
+function carregarDemo(){
+  hideErr();
+  mostrarDash(JSON.parse(JSON.stringify(DEMO_DATA)),'demonstração (abr/26)');
+}
+
+function mostrarDash(d, fonte){
+  // Salva o mês no banco local antes de exibir
+  if(d && d.mes) DB_OP[d.mes] = d;
+  document.getElementById('upload-screen').style.display='none';
+  document.getElementById('dash-wrapper').style.display='block';
+  const upd=document.getElementById('tb-upd');
+  if(upd) upd.textContent='✓ Fonte: '+fonte+' · '+(d.mes||'');
+  applyData(d);
+}
+
+// ══ HANDLERS DE ARQUIVO ══
+function handleFileSlot(slotId, fileInputId, key, parserName){
+  const fi=document.getElementById(fileInputId);
+  fi.addEventListener('change',function(e){
+    const f=e.target.files[0];if(!f)return;
+    const r=new FileReader();
+    r.onload=function(ev){
+      FILES[key]=ev.target.result;
+      setStatus(slotId,'✓ '+f.name, true);
+    };
+    r.readAsArrayBuffer(f);
+    this.value='';
+  });
+  // drag & drop no slot
+  const slot=document.getElementById('slot-'+slotId);
+  if(slot){
+    slot.addEventListener('dragover',e=>{e.preventDefault();slot.classList.add('drag');});
+    slot.addEventListener('dragleave',()=>slot.classList.remove('drag'));
+    slot.addEventListener('drop',e=>{
+      e.preventDefault();slot.classList.remove('drag');
+      const f=e.dataTransfer.files[0];
+      if(!f)return;
+      const r=new FileReader();
+      r.onload=function(ev){FILES[key]=ev.target.result;setStatus(slotId,'✓ '+f.name,true);};
+      r.readAsArrayBuffer(f);
+    });
+  }
+}
+
+// ══ CARREGAR JSON AUTOMATICAMENTE ══
+function loadJson(){
+  fetch('dados_operacional.json?v='+Date.now())
+    .then(r=>r.ok?r.json():Promise.reject())
+    .then(j=>{
+      const meses=j.meses||{};
+      const keys=Object.keys(meses);
+      if(!keys.length) throw new Error('sem dados');
+      // Carrega TODOS os meses no DB_OP
+      keys.forEach(m=>{ DB_OP[m]=meses[m]; });
+      // Exibe o mês mais recente
+      const lastMes = ALL_MESES.filter(m=>DB_OP[m]).pop() || keys[keys.length-1];
+      CUR_MES = lastMes;
+      document.getElementById('upload-screen').style.display='none';
+      document.getElementById('dash-wrapper').style.display='block';
+      const upd=document.getElementById('tb-upd');
+      if(upd) upd.textContent='✓ '+keys.length+' mês(es) · última atualização: '+j.ultima_atualizacao;
+      applyData(DB_OP[lastMes]);
+    })
+    .catch(()=>{
+      document.getElementById('upload-screen').style.display='flex';
+    });
+}
+
+// ══ BOTÃO "NOVA IMPORTAÇÃO" ══
+function novaImportacao(){
+  document.getElementById('dash-wrapper').style.display='none';
+  document.getElementById('upload-screen').style.display='flex';
+  FILES.oc=FILES.mat=FILES.pr=null;
+  ['oc','mat','pr'].forEach(k=>{
+    setStatus(k,'Aguardando arquivo…',null);
+    const slot=document.getElementById('slot-'+k);
+    if(slot)slot.classList.remove('done');
+  });
+  // Mantém DB_OP com meses já carregados
+  const qtd=Object.keys(DB_OP).length;
+  if(qtd>0){
+    const el=document.getElementById('up-err');
+    if(el){
+      el.textContent='ℹ '+qtd+' mês(es) já carregado(s): '+Object.keys(DB_OP).join(', ')+'. Importe mais meses ou volte ao dashboard.';
+      el.style.display='block';
+      el.style.background='rgba(0,153,168,.08)';
+      el.style.borderColor='rgba(0,153,168,.3)';
+      el.style.color='var(--teal)';
+    }
+  }
+}
+
+function voltarDash(){
+  if(!Object.keys(DB_OP).length) return;
+  document.getElementById('upload-screen').style.display='none';
+  document.getElementById('dash-wrapper').style.display='block';
+  applyData(DB_OP[CUR_MES] || DB_OP[Object.keys(DB_OP)[0]]);
+}
+
+// ══ INIT ══
+window.addEventListener('load',function(){
+  handleFileSlot('oc','fi-oc','oc','ocorrencias');
+  handleFileSlot('mat','fi-mat','mat','materiais');
+  handleFileSlot('pr','fi-pr','pr','prazos');
+  // Mostra botão voltar se já tem dados em memória
+  if(Object.keys(DB_OP).length > 0){
+    const btn=document.getElementById('btn-voltar');
+    if(btn) btn.style.display='';
+  }
+  loadJson();
+});
+window.addEventListener('resize', drawAll);
+</script>
+</div><!-- /dash-wrapper -->
+</body>
+</html>
