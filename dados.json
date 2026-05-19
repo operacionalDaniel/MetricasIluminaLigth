@@ -1,0 +1,25 @@
+{
+  "ultima_atualizacao": "abr/26",
+  "meses": {
+    "abr/26": {
+      "mes": "abr/26",
+      "CMM": 427136.76,
+      "FM": 0.5,
+      "Nf": 221,
+      "Ni": 0,
+      "Pt": 15879,
+      "NCEi": 2,
+      "NCEa": 2,
+      "NCNEi": 15,
+      "NCNEa": 15,
+      "Dm": 30,
+      "Ti": 0,
+      "pOtimo": 64.0,
+      "pBom": 36.0,
+      "pReg": 0.0,
+      "pRuim": 0.0,
+      "lig": 26,
+      "nOp": 2
+    }
+  }
+}
