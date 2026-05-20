@@ -3,83 +3,68 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Iluminação Pública · Içara/SC · Central de Dashboards</title>
+<title>IluminaBoard · Içara/SC</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Barlow',sans-serif;background:#090d18;color:#dde6f0;min-height:100vh;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;
-  background:radial-gradient(ellipse at 50% 0%,#0d1f3a 0%,#090d18 60%)}
-.logo{font-family:'Barlow Condensed',sans-serif;font-size:.85rem;font-weight:700;
-  letter-spacing:.35em;color:#4e6278;text-transform:uppercase;margin-bottom:32px}
-.logo span{color:#00d4c8}
-h1{font-family:'Barlow Condensed',sans-serif;font-size:2.8rem;font-weight:900;
-  color:#fff;text-align:center;line-height:1;margin-bottom:10px}
-h1 em{font-style:normal;color:#00d4c8}
-.sub{color:#4e6278;font-size:.88rem;text-align:center;margin-bottom:48px}
-.cards{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:780px;width:100%}
-@media(max-width:600px){.cards{grid-template-columns:1fr}}
-.dash-card{background:#141d2c;border:1px solid #1c2a40;border-radius:14px;
-  padding:28px;text-decoration:none;color:inherit;transition:all .3s;position:relative;overflow:hidden}
-.dash-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
-.dash-card.sla::before{background:linear-gradient(90deg,#00d4c8,#3b82f6)}
-.dash-card.op::before{background:linear-gradient(90deg,#f59e0b,#ef4444)}
-.dash-card:hover{transform:translateY(-4px);border-color:#243450;
-  box-shadow:0 12px 40px rgba(0,0,0,.4)}
-.dc-icon{font-size:2.2rem;margin-bottom:14px;display:block}
-.dc-title{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:800;
-  color:#fff;margin-bottom:6px;line-height:1}
-.dc-sub{font-size:.78rem;color:#7e99b4;margin-bottom:16px;line-height:1.5}
-.dc-tags{display:flex;gap:6px;flex-wrap:wrap}
-.tag{padding:3px 10px;border-radius:12px;font-size:.65rem;font-weight:700;letter-spacing:.06em}
-.tag-teal{background:rgba(0,212,200,.1);color:#00d4c8;border:1px solid rgba(0,212,200,.2)}
-.tag-amber{background:rgba(245,158,11,.1);color:#f59e0b;border:1px solid rgba(245,158,11,.2)}
-.tag-red{background:rgba(239,68,68,.1);color:#ef4444;border:1px solid rgba(239,68,68,.2)}
-.tag-blue{background:rgba(59,130,246,.1);color:#3b82f6;border:1px solid rgba(59,130,246,.2)}
-.tag-green{background:rgba(34,197,94,.1);color:#22c55e;border:1px solid rgba(34,197,94,.2)}
-.dc-arrow{position:absolute;right:20px;top:50%;transform:translateY(-50%);
-  font-size:1.4rem;color:#1c2a40;transition:color .3s}
-.dash-card:hover .dc-arrow{color:#00d4c8}
-.footer{margin-top:40px;font-size:.68rem;color:#4e6278;text-align:center}
+body{font-family:'Barlow',sans-serif;background:#f0f4f8;color:#1a2535;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px}
+.logo{font-family:'Barlow Condensed',sans-serif;font-size:.85rem;font-weight:700;letter-spacing:.35em;color:#5a6e82;text-transform:uppercase;margin-bottom:28px;text-align:center}
+.logo span{color:#008fa8}
+h1{font-family:'Barlow Condensed',sans-serif;font-size:3rem;font-weight:900;color:#1a2535;text-align:center;line-height:1;margin-bottom:10px}
+h1 em{font-style:normal;color:#008fa8}
+.sub{color:#5a6e82;font-size:.9rem;text-align:center;margin-bottom:52px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:860px;width:100%}
+@media(max-width:640px){.cards{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid #d1dae6;border-radius:16px;padding:32px;text-decoration:none;color:inherit;transition:all .3s;position:relative;overflow:hidden;display:block;box-shadow:0 2px 12px rgba(0,0,0,.07)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
+.card.sla::before{background:linear-gradient(90deg,#008fa8,#1a52b0)}
+.card.op::before{background:linear-gradient(90deg,#c47900,#d42b2b)}
+.card:hover{transform:translateY(-5px);box-shadow:0 12px 32px rgba(0,0,0,.13)}
+.icon{font-size:2.4rem;margin-bottom:16px;display:block}
+.title{font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:800;color:#1a2535;margin-bottom:8px}
+.desc{font-size:.82rem;color:#5a6e82;line-height:1.6;margin-bottom:20px}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{padding:3px 10px;border-radius:12px;font-size:.65rem;font-weight:700}
+.t1{background:rgba(0,143,168,.1);color:#006d82;border:1px solid rgba(0,143,168,.2)}
+.t2{background:rgba(26,82,176,.1);color:#1a52b0;border:1px solid rgba(26,82,176,.2)}
+.t3{background:rgba(26,138,60,.1);color:#1a8a3c;border:1px solid rgba(26,138,60,.2)}
+.t4{background:rgba(196,121,0,.1);color:#c47900;border:1px solid rgba(196,121,0,.2)}
+.t5{background:rgba(212,43,43,.1);color:#d42b2b;border:1px solid rgba(212,43,43,.2)}
+.arrow{position:absolute;right:24px;bottom:24px;font-family:'Barlow Condensed',sans-serif;font-size:.85rem;font-weight:700;color:#d1dae6;transition:color .25s}
+.card:hover .arrow{color:#008fa8}
+.footer{margin-top:48px;font-size:.68rem;color:#5a6e82;text-align:center}
 </style>
 </head>
 <body>
-<div class="logo">Município de <span>Içara/SC</span> · Sistema de Gestão de Iluminação Pública</div>
-<h1>DASHBOARDS<br><em>ILUMINAÇÃO PÚBLICA</em></h1>
+<div class="logo">Município de <span>Içara · SC</span> · Gestão de Iluminação Pública</div>
+<h1>ILUMINA<em>BOARD</em></h1>
 <p class="sub">Selecione o painel de controle desejado</p>
-
 <div class="cards">
-  <a href="dashboard_sla.html" class="dash-card sla">
-    <span class="dc-icon">📋</span>
-    <div class="dc-title">SLAs Contratuais</div>
-    <div class="dc-sub">Contraprestação Mensal, Índice de Eficiência e os 5 indicadores de qualidade contratuais com evolução anual.</div>
-    <div class="dc-tags">
-      <span class="tag tag-teal">CME / CMM</span>
-      <span class="tag tag-blue">IE / FE</span>
-      <span class="tag tag-green">5 SLAs</span>
-      <span class="tag tag-amber">Evolução 2026</span>
+  <a href="dashboard_sla.html" class="card sla">
+    <span class="icon">📋</span>
+    <div class="title">SLAs Contratuais</div>
+    <div class="desc">Contraprestação Mensal Efetiva, Índice de Eficiência e os 5 indicadores de qualidade contratuais. Regra 91%. Evolução Jan→Dez 2026.</div>
+    <div class="tags">
+      <span class="tag t1">CME / CMM</span>
+      <span class="tag t2">IE / FE</span>
+      <span class="tag t3">5 SLAs</span>
+      <span class="tag t4">Regra 91%</span>
     </div>
-    <div class="dc-arrow">→</div>
+    <div class="arrow">Acessar →</div>
   </a>
-
-  <a href="dashboard_operacional.html" class="dash-card op">
-    <span class="dc-icon">⚙️</span>
-    <div class="dc-title">Operacional</div>
-    <div class="dc-sub">Ordens de serviço, origens das ocorrências, materiais aplicados, prazos de atendimento e comparativo de manutenções.</div>
-    <div class="dc-tags">
-      <span class="tag tag-amber">240 OS</span>
-      <span class="tag tag-red">Manutenções</span>
-      <span class="tag tag-blue">Prazos</span>
-      <span class="tag tag-teal">Materiais</span>
-      <span class="tag tag-green">Bairros</span>
+  <a href="dashboard_operacional.html" class="card op">
+    <span class="icon">⚙️</span>
+    <div class="title">Métricas Operacionais</div>
+    <div class="desc">Ordens de serviço, origens, materiais aplicados, prazos por origem, equipes, manutenções e comparativo mensal Jan→Dez 2026.</div>
+    <div class="tags">
+      <span class="tag t4">OS Mensais</span>
+      <span class="tag t5">Manutenções</span>
+      <span class="tag t2">Prazos</span>
+      <span class="tag t1">Materiais</span>
     </div>
-    <div class="dc-arrow">→</div>
+    <div class="arrow">Acessar →</div>
   </a>
 </div>
-
-<div class="footer">
-  Dashboard Gerencial · Iluminação Pública · Içara/SC · 2026<br>
-  Dados: Sistema de Atendimentos · Exati · Abril 2026
-</div>
+<div class="footer">IluminaBoard · Iluminação Pública · Içara/SC · 2026</div>
 </body>
 </html>
