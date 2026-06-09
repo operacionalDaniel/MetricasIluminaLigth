@@ -287,7 +287,9 @@ canvas{display:block;width:100%;max-height:220px}
 <div class="tabs">
   <div class="tab active" onclick="showTab('visao')">📊 Visão Geral</div>
   <div class="tab" onclick="showTab('trabalho')">⚙️ Índices de Trabalho</div>
-  <div class="tab" onclick="showTab('origens')">🔍 Origens & Manutenções</div>
+  <div class="tab" onclick="showTab('ronda')">🚐 Ronda Própria</div>
+  <div class="tab" onclick="showTab('telegestao')">📡 Tele Gestão</div>
+  <div class="tab" onclick="showTab('origens')">🔍 Outras Origens</div>
   <div class="tab" onclick="showTab('materiais')">🔧 Materiais</div>
   <div class="tab" onclick="showTab('prazos')">⏱ Prazos</div>
   <div class="tab" onclick="showTab('comparativo')">📈 Comparativo</div>
@@ -391,8 +393,8 @@ canvas{display:block;width:100%;max-height:220px}
       <canvas id="c-origens" style="margin-top:12px;max-height:180px"></canvas>
       <div style="margin-top:14px">
         <div class="stat-row">
-          <div class="stat-label">🚐 Ronda própria</div>
-          <div class="stat-bar"><div class="stat-fill" style="width:75.8%;background:var(--teal)"></div></div>
+          <div class="stat-label" style="cursor:pointer" onclick="showTab('ronda')">🚐 Ronda própria <span style="font-size:.6rem;color:#008fa8;font-weight:700">↗ aba</span></div>
+          <div class="stat-bar"><div class="stat-fill" style="width:75.8%;background:#008fa8"></div></div>
           <div class="stat-val" style="color:#008fa8">182</div>
           <div class="stat-pct">75,8%</div>
         </div>
@@ -415,7 +417,7 @@ canvas{display:block;width:100%;max-height:220px}
           <div class="stat-pct">3,33%</div>
         </div>
         <div class="stat-row">
-          <div class="stat-label">📡 Tele Gestão</div>
+          <div class="stat-label" style="cursor:pointer" onclick="showTab('telegestao')">📡 Tele Gestão <span style="font-size:.6rem;color:#0077a0;font-weight:700">↗ aba</span></div>
           <div class="stat-bar"><div class="stat-fill" style="width:0%;background:var(--cyan)"></div></div>
           <div class="stat-val" style="color:#5a6e82" id="tg-visao">0</div>
           <div class="stat-pct" id="tg-visao-pct">0%</div>
@@ -569,11 +571,177 @@ canvas{display:block;width:100%;max-height:220px}
 
 </div>
 
-<!-- ══ TAB 3: ORIGENS & MANUTENÇÕES ══ -->
+<!-- ══ TAB RONDA PRÓPRIA ══ -->
+<div class="content" id="tab-ronda">
+
+  <div class="sec">Ronda Própria — Detecção Proativa em Campo</div>
+  <div class="g4">
+    <div class="card ct" style="text-align:center">
+      <div style="font-size:2rem;margin-bottom:6px">🚐</div>
+      <div class="clabel">Total OS por Ronda</div>
+      <div class="cval" style="color:#008fa8">182</div>
+      <div class="csub">75,8% de todas as ocorrências do mês</div>
+      <div class="stat-bar" style="margin-top:10px"><div class="stat-fill" style="width:75.8%;background:#008fa8"></div></div>
+    </div>
+    <div class="card cg" style="text-align:center">
+      <div style="font-size:2rem;margin-bottom:6px">✅</div>
+      <div class="clabel">Atendidas no Prazo</div>
+      <div class="cval" style="color:#1a8a3c">179</div>
+      <div class="csub">98,35% das OS de ronda</div>
+      <div class="stat-bar" style="margin-top:10px"><div class="stat-fill" style="width:98.35%;background:#1a8a3c"></div></div>
+    </div>
+    <div class="card cr" style="text-align:center">
+      <div style="font-size:2rem;margin-bottom:6px">⚠️</div>
+      <div class="clabel">Fora do Prazo</div>
+      <div class="cval" style="color:#d42b2b">3</div>
+      <div class="csub">1,65% — todos os atrasos do mês</div>
+      <div class="stat-bar" style="margin-top:10px"><div class="stat-fill" style="width:1.65%;background:#d42b2b"></div></div>
+    </div>
+    <div class="card ca" style="text-align:center">
+      <div style="font-size:2rem;margin-bottom:6px">⏱</div>
+      <div class="clabel">Tempo Médio</div>
+      <div class="cval" style="color:#c47900">58,8h</div>
+      <div class="csub">Prazo contratual: 48h</div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card cg">
+      <div class="clabel">Motivos Detectados pela Ronda</div>
+      <div style="margin-top:10px">
+        <div class="stat-row"><div class="stat-label">⚡ Relé queimado</div><div class="stat-bar"><div class="stat-fill" style="width:100%;background:#d42b2b"></div></div><div class="stat-val" style="color:#d42b2b">106</div><div class="stat-pct">58,2%</div></div>
+        <div class="stat-row"><div class="stat-label">💡 Lâmpada queimada</div><div class="stat-bar"><div class="stat-fill" style="width:55.7%;background:#c47900"></div></div><div class="stat-val" style="color:#c47900">59</div><div class="stat-pct">32,4%</div></div>
+        <div class="stat-row"><div class="stat-label">🔌 Conexão</div><div class="stat-bar"><div class="stat-fill" style="width:17.9%;background:#1a52b0"></div></div><div class="stat-val" style="color:#1a52b0">19</div><div class="stat-pct">10,4%</div></div>
+      </div>
+      <div style="margin-top:12px;padding:10px;background:#f0f9fb;border-radius:6px;font-size:.74rem;color:#3d5166">
+        💡 A ronda proativa detectou <strong>82,6%</strong> das falhas antes de qualquer reclamação externa, demonstrando alta eficiência operacional das equipes em campo.
+      </div>
+    </div>
+    <div class="card cb">
+      <div class="clabel">Prazos da Ronda — Detalhe dos Atrasos</div>
+      <div style="margin-top:12px">
+        <div style="display:flex;height:28px;border-radius:6px;overflow:hidden;margin-bottom:12px">
+          <div style="flex:179;background:#15803d;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;color:#fff">179 no prazo (98,35%)</div>
+          <div style="flex:3;background:#991b1b;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;color:#fff">3</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px">
+          <div style="text-align:center;background:rgba(212,43,43,.06);border:1px solid rgba(212,43,43,.2);border-radius:8px;padding:10px">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.3rem;font-weight:800;color:#d42b2b">+12h38</div>
+            <div style="font-size:.63rem;color:#5a6e82">Atraso 1</div>
+          </div>
+          <div style="text-align:center;background:rgba(212,43,43,.06);border:1px solid rgba(212,43,43,.2);border-radius:8px;padding:10px">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.3rem;font-weight:800;color:#d42b2b">+35h07</div>
+            <div style="font-size:.63rem;color:#5a6e82">Atraso 2</div>
+          </div>
+          <div style="text-align:center;background:rgba(212,43,43,.06);border:1px solid rgba(212,43,43,.2);border-radius:8px;padding:10px">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.3rem;font-weight:800;color:#d42b2b">+13h08</div>
+            <div style="font-size:.63rem;color:#5a6e82">Atraso 3</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;font-size:.72rem;color:#5a6e82;padding:9px;background:rgba(212,43,43,.04);border-radius:6px">
+          ⚠ Os <strong style="color:#d42b2b">3 únicos atrasos do mês</strong> são todos de Ronda Própria. Possível causa: sobrecarga de rota ou demora entre detecção e despacho. Investigar OS #1, #2, #3.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">Bairros com Mais Ocorrências Detectadas por Ronda</div>
+  <div class="card ct" style="padding:18px">
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px">
+      <div style="text-align:center;padding:10px;background:#f0f9fb;border-radius:8px;border:1px solid #d1dae6">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:800;color:#008fa8">30</div>
+        <div style="font-size:.68rem;color:#5a6e82;margin-top:3px">Centro</div>
+      </div>
+      <div style="text-align:center;padding:10px;background:#f0f9fb;border-radius:8px;border:1px solid #d1dae6">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:800;color:#1a52b0">27</div>
+        <div style="font-size:.68rem;color:#5a6e82;margin-top:3px">Vila São José</div>
+      </div>
+      <div style="text-align:center;padding:10px;background:#f0f9fb;border-radius:8px;border:1px solid #d1dae6">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:800;color:#1a8a3c">24</div>
+        <div style="font-size:.68rem;color:#5a6e82;margin-top:3px">Pres. Vargas</div>
+      </div>
+      <div style="text-align:center;padding:10px;background:#f0f9fb;border-radius:8px;border:1px solid #d1dae6">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:800;color:#7b35b8">20</div>
+        <div style="font-size:.68rem;color:#5a6e82;margin-top:3px">Liri</div>
+      </div>
+      <div style="text-align:center;padding:10px;background:#f0f9fb;border-radius:8px;border:1px solid #d1dae6">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:800;color:#c47900">19</div>
+        <div style="font-size:.68rem;color:#5a6e82;margin-top:3px">Demboski</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ TAB TELE GESTÃO ══ -->
+<div class="content" id="tab-telegestao">
+
+  <div class="sec">Tele Gestão — Detecção Remota por Telegerenciamento</div>
+  <div class="g3">
+    <div class="card" style="border-top:3px solid #0077a0;text-align:center;padding:24px">
+      <div style="font-size:2.5rem;margin-bottom:10px">📡</div>
+      <div class="clabel">OS via Tele Gestão</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:3rem;font-weight:900;color:#0077a0" id="tg-tab-total">0</div>
+      <div style="font-size:.76rem;color:#5a6e82;margin-top:6px">Ocorrências detectadas pelo sistema Smartgreen/SGIP</div>
+    </div>
+    <div class="card" style="border-top:3px solid #1a8a3c;text-align:center;padding:24px">
+      <div style="font-size:2.5rem;margin-bottom:10px">✅</div>
+      <div class="clabel">Atendidas no Prazo</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:3rem;font-weight:900;color:#1a8a3c" id="tg-tab-ok">0</div>
+      <div style="font-size:.76rem;color:#5a6e82;margin-top:6px">100% esperado para alertas automáticos</div>
+    </div>
+    <div class="card" style="border-top:3px solid #c47900;text-align:center;padding:24px">
+      <div style="font-size:2.5rem;margin-bottom:10px">⏱</div>
+      <div class="clabel">Tempo Médio Resposta</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:3rem;font-weight:900;color:#c47900" id="tg-tab-tempo">—</div>
+      <div style="font-size:.76rem;color:#5a6e82;margin-top:6px">Prazo contratual: 48h</div>
+    </div>
+  </div>
+
+  <div class="card" style="border-top:3px solid #0077a0;padding:24px;margin-bottom:14px">
+    <div class="clabel" style="margin-bottom:14px">Sobre este Canal</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div>
+        <div style="font-size:.82rem;color:#3d5166;line-height:1.7;margin-bottom:12px">
+          O canal <strong style="color:#0077a0">Tele Gestão</strong> utiliza o sistema Smartgreen/SGIP para detectar automaticamente falhas na rede de iluminação pública via telegerenciamento remoto.<br><br>
+          Quando o sistema identifica uma luminária apagada ou com anomalia, gera automaticamente uma OS sem necessidade de reclamação humana.
+        </div>
+        <div style="background:#f0f9fb;border:1px solid rgba(0,119,160,.2);border-radius:8px;padding:14px">
+          <div style="font-size:.72rem;font-weight:700;color:#0077a0;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">Vantagens da Tele Gestão</div>
+          <ul style="list-style:none;font-size:.76rem;color:#3d5166;display:flex;flex-direction:column;gap:6px">
+            <li>• Detecção imediata — 0 min após a falha</li>
+            <li>• Sem dependência de reclamação cidadã</li>
+            <li>• Localização exata via GPS do nó</li>
+            <li>• Histórico automático de ocorrências</li>
+            <li>• Integração com dimerização SGIP</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div style="background:#fdf8f0;border:1px solid rgba(196,121,0,.25);border-radius:8px;padding:14px;margin-bottom:10px">
+          <div style="font-size:.72rem;font-weight:700;color:#c47900;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">📌 Status Abr/26</div>
+          <div style="font-size:.76rem;color:#3d5166">Nenhuma OS registrada com origem Tele Gestão neste período. Os dados serão preenchidos automaticamente quando o sistema exportar ocorrências com esta origem.</div>
+        </div>
+        <div style="background:#f0f4fd;border:1px solid rgba(26,82,176,.2);border-radius:8px;padding:14px">
+          <div style="font-size:.72rem;font-weight:700;color:#1a52b0;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">📋 Como Ativar</div>
+          <div style="font-size:.76rem;color:#3d5166">Exporte a planilha de ocorrências com a coluna <strong>desc_tipo_origem_ocorrencia</strong> contendo o valor <strong>"Tele Gestão"</strong> ou <strong>"Telegerenciamento"</strong>. O dashboard detecta automaticamente.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="content" id="tab-origens">
 <div class="content" id="tab-origens">
 
-  <div class="sec">Origem das Ocorrências</div>
-  <div class="g4">
+  <div class="sec">Outras Origens — Solicitações Externas</div>
+  <div style="background:#f0f9fb;border:1px solid rgba(0,143,168,.2);border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:.76rem;color:#3d5166">
+    📌 <strong style="color:#008fa8">Ronda Própria (182 OS)</strong> e <strong style="color:#0077a0">Tele Gestão</strong> têm abas dedicadas. Aqui são exibidos apenas os atendimentos originados por solicitação externa: 
+    <strong>Call Center (41)</strong>, <strong>Chatbot (9)</strong> e <strong>App (8)</strong> — total de <strong>58 OS</strong> externas.
+  </div>
+  <div class="g3">
     <div class="card ct" style="text-align:center">
       <div style="font-size:2rem;margin-bottom:6px">🚐</div>
       <div class="clabel">Ronda Própria</div>
