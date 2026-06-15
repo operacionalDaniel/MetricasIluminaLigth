@@ -1,5 +1,5 @@
 {
-  "ultima_atualizacao": "30/04/2026 23:59",
+  "ultima_atualizacao": "15/06/2026 18:01",
   "meses": {
     "abr/26": {
       "mes": "abr/26",
@@ -67,6 +67,378 @@
       "prazo_app_fora": 0,
       "prazo_telegestao_ok": 0,
       "prazo_telegestao_fora": 0
+    },
+    "mai/26": {
+      "mes": "mai/26",
+      "total_os": 291,
+      "atendidas": 192,
+      "modernizacao": 2,
+      "encontrado_normal": 56,
+      "fora_escopo": 6,
+      "projeto": 7,
+      "outro_atendimento": 10,
+      "impossibilidade": 10,
+      "repetido": 8,
+      "nova_instalacao": 0,
+      "no_prazo": 281,
+      "fora_prazo": 10,
+      "prazo_contratual_h": 48,
+      "tempo_medio_h": 53.3,
+      "equipe01": 165,
+      "equipe02": 126,
+      "statusC": {
+        "Encontrado normal": 56,
+        "Outro Atendimento": 10,
+        "Atendido": 192,
+        "Repetido": 8,
+        "Fora do escopo do contrato": 6,
+        "Projeto": 7,
+        "Impossibilidade": 10,
+        "Modernização": 2
+      },
+      "tipoC": {
+        "Nova Instalação de Luminária": 7,
+        "Lâmpada apagada": 76,
+        "Atendimento Avulso": 77,
+        "Problema não especificado": 116,
+        "Lâmpada oscilando": 7,
+        "Troca de Potência (LED)": 2,
+        "Lâmpada acesa durante dia": 6
+      },
+      "solucaoC": {
+        "Troca itens": 181,
+        "Manutenção": 13
+      },
+      "bairroC": {
+        "Sanga Funda": 4,
+        "Esplanada": 12,
+        "Cristo Rei": 6,
+        "Aurora": 8,
+        "Presidente Vargas": 29,
+        "Demboski": 22,
+        "Zona Rural": 9,
+        "Nossa Senhora De Fátima": 5,
+        "Boa Vista": 22,
+        "Lombas": 10,
+        "Liri": 16,
+        "Campo Mãe Luzia": 2,
+        "Jardim Elizabeth": 12,
+        "Primeiro de Maio": 13,
+        "Centro": 13,
+        "Jaqueline": 8,
+        "Vila São José": 6,
+        "Jardim América": 7,
+        "Poço 3": 1,
+        "Raichaski": 2,
+        "Jardim Silvana": 17,
+        "Barracão": 4,
+        "São Rafael": 8,
+        "Morro Bonito": 1,
+        "João Dagostin": 1,
+        "Jardim Elizabete": 1,
+        "Poço 8": 16,
+        "Vila São Pedro": 2,
+        "Içara": 1,
+        "Vila Nova": 6,
+        "Ponta do Mato": 1,
+        "Esperança": 1,
+        "Linha Anta": 8,
+        "Urussanga Velha": 2,
+        "Ronco DÁgua": 2,
+        "Tereza Cristina": 4
+      },
+      "motivoC": {
+        "Rele queimado": 94,
+        "Lâmpada queimada": 65,
+        "Conexão": 32,
+        "Luminária com defeito": 1,
+        "Propriedade Particular": 6,
+        "Sem acesso ao ponto de serviço": 1,
+        "Luminária LED 30W": 2,
+        "Chuva": 9
+      },
+      "cats": {
+        "ronda": {
+          "n": 126,
+          "ok": 120,
+          "nok": 6,
+          "bairros": {
+            "Esplanada": 5,
+            "Cristo Rei": 5,
+            "Aurora": 3,
+            "Presidente Vargas": 6,
+            "Sanga Funda": 1,
+            "Demboski": 7,
+            "Zona Rural": 5,
+            "Nossa Senhora De Fátima": 2,
+            "Boa Vista": 14,
+            "Lombas": 4,
+            "Liri": 7,
+            "Campo Mãe Luzia": 1,
+            "Jardim Elizabeth": 7,
+            "Primeiro de Maio": 9,
+            "Centro": 4,
+            "Jaqueline": 5,
+            "Vila São José": 4,
+            "Jardim América": 4,
+            "Poço 3": 1,
+            "Raichaski": 2,
+            "Jardim Silvana": 11,
+            "São Rafael": 4,
+            "João Dagostin": 1,
+            "Poço 8": 2,
+            "Vila Nova": 2,
+            "Esperança": 1,
+            "Linha Anta": 5,
+            "Barracão": 1
+          },
+          "motivos": {
+            "Rele queimado": 57,
+            "Lâmpada queimada": 37,
+            "Conexão": 13,
+            "Luminária com defeito": 1,
+            "Luminária LED 30W": 1,
+            "Chuva": 7
+          },
+          "atrasos": [
+            {
+              "label": "+12h17",
+              "h": 12.28
+            },
+            {
+              "label": "+12h19",
+              "h": 12.32
+            },
+            {
+              "label": "3d +20h36",
+              "h": 92.6
+            },
+            {
+              "label": "+3h50",
+              "h": 3.83
+            },
+            {
+              "label": "+17h23",
+              "h": 17.38
+            },
+            {
+              "label": "+17h24",
+              "h": 17.4
+            }
+          ]
+        },
+        "tele": {
+          "n": 112,
+          "ok": 108,
+          "nok": 4,
+          "bairros": {
+            "Nossa Senhora De Fátima": 3,
+            "Liri": 6,
+            "Centro": 7,
+            "Cristo Rei": 1,
+            "Esplanada": 5,
+            "Lombas": 6,
+            "Boa Vista": 6,
+            "Poço 8": 14,
+            "São Rafael": 3,
+            "Presidente Vargas": 19,
+            "Vila Nova": 2,
+            "Primeiro de Maio": 3,
+            "Aurora": 2,
+            "Demboski": 11,
+            "Jardim Elizabeth": 4,
+            "Sanga Funda": 1,
+            "Jardim Silvana": 4,
+            "Linha Anta": 3,
+            "Ronco DÁgua": 2,
+            "Vila São José": 1,
+            "Jardim América": 1,
+            "Zona Rural": 2,
+            "Tereza Cristina": 4
+          },
+          "motivos": {
+            "Rele queimado": 32,
+            "Conexão": 19,
+            "Lâmpada queimada": 15
+          },
+          "atrasos": [
+            {
+              "label": "3d +20h37",
+              "h": 92.62
+            },
+            {
+              "label": "+2h22",
+              "h": 2.37
+            },
+            {
+              "label": "+2h25",
+              "h": 2.42
+            },
+            {
+              "label": "+2h37",
+              "h": 2.62
+            }
+          ]
+        },
+        "callcenter": {
+          "n": 37,
+          "ok": 37,
+          "nok": 0,
+          "bairros": {
+            "Demboski": 2,
+            "Boa Vista": 1,
+            "Liri": 3,
+            "Barracão": 3,
+            "Morro Bonito": 1,
+            "Jaqueline": 3,
+            "Jardim Elizabete": 1,
+            "São Rafael": 1,
+            "Campo Mãe Luzia": 1,
+            "Vila São Pedro": 1,
+            "Içara": 1,
+            "Primeiro de Maio": 1,
+            "Presidente Vargas": 3,
+            "Vila Nova": 2,
+            "Vila São José": 1,
+            "Esplanada": 2,
+            "Sanga Funda": 1,
+            "Jardim Silvana": 1,
+            "Jardim América": 2,
+            "Urussanga Velha": 2,
+            "Zona Rural": 2,
+            "Jardim Elizabeth": 1
+          },
+          "motivos": {
+            "Propriedade Particular": 4,
+            "Lâmpada queimada": 8,
+            "Rele queimado": 4,
+            "Sem acesso ao ponto de serviço": 1,
+            "Luminária LED 30W": 1,
+            "Chuva": 2
+          },
+          "atrasos": []
+        },
+        "chatbot": {
+          "n": 11,
+          "ok": 11,
+          "nok": 0,
+          "bairros": {
+            "Aurora": 2,
+            "Demboski": 2,
+            "Ponta do Mato": 1,
+            "Centro": 1,
+            "Boa Vista": 1,
+            "Jardim Silvana": 1
+          },
+          "motivos": {
+            "Lâmpada queimada": 4,
+            "Propriedade Particular": 2
+          },
+          "atrasos": []
+        },
+        "app": {
+          "n": 4,
+          "ok": 4,
+          "nok": 0,
+          "bairros": {
+            "Sanga Funda": 1,
+            "Aurora": 1,
+            "Centro": 1,
+            "Presidente Vargas": 1
+          },
+          "motivos": {
+            "Lâmpada queimada": 1,
+            "Rele queimado": 1
+          },
+          "atrasos": []
+        },
+        "internet": {
+          "n": 1,
+          "ok": 1,
+          "nok": 0,
+          "bairros": {
+            "Vila São Pedro": 1
+          },
+          "motivos": {},
+          "atrasos": []
+        },
+        "outros": {
+          "n": 0,
+          "ok": 0,
+          "nok": 0,
+          "bairros": {},
+          "motivos": {},
+          "atrasos": []
+        }
+      },
+      "origem_ronda": 126,
+      "origem_telegestao": 112,
+      "origem_callcenter": 37,
+      "origem_chatbot": 11,
+      "origem_app": 4,
+      "mat_rele_sgip": 119,
+      "mat_rele_nf": 0,
+      "mat_led30w": 37,
+      "mat_led40w": 6,
+      "mat_led70w": 13,
+      "mat_led120w": 3,
+      "mat_argos": 3,
+      "mat_conector2": 36,
+      "mat_conector1": 11,
+      "mat_braco": 2,
+      "mat_bocal": 1,
+      "materiais_top": [
+        {
+          "nome": "RELE SGIP FOTOELETRICO SMARTGREEN",
+          "qty": 119
+        },
+        {
+          "nome": "Luminária LED 30W - REEME",
+          "qty": 37
+        },
+        {
+          "nome": "Conector cunha de BT, tipo II (verde)",
+          "qty": 33
+        },
+        {
+          "nome": "Conector de derivação perfurante até 35x70mm²",
+          "qty": 17
+        },
+        {
+          "nome": "Luminária LED 70W - REEME",
+          "qty": 13
+        },
+        {
+          "nome": "Conector cunha de BT, tipo I (cinza)",
+          "qty": 11
+        },
+        {
+          "nome": "Lâmpada vapor de sódio 70W base E27",
+          "qty": 10
+        },
+        {
+          "nome": "Tipo de Rele: NA",
+          "qty": 8
+        },
+        {
+          "nome": "Luminária LED 40W - REEME",
+          "qty": 6
+        },
+        {
+          "nome": "Conector cunha de BT, tipo III (vermelho)",
+          "qty": 3
+        },
+        {
+          "nome": "Luminária LED 120W - REEME",
+          "qty": 3
+        },
+        {
+          "nome": "Reator externo de vapor de sódio, 70W",
+          "qty": 2
+        }
+      ],
+      "materiais_total": 269,
+      "materiais_tipos": 17
     }
   }
 }
