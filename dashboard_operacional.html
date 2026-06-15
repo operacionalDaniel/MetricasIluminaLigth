@@ -2,6 +2,10 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
+<!-- v2.1.0 -->
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Operacional · Iluminação Pública 2026</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -303,7 +307,7 @@ canvas{display:block;width:100%;max-height:220px}
 const ALL_MESES = ['jan/26','fev/26','mar/26','abr/26','mai/26','jun/26',
                    'jul/26','ago/26','set/26','out/26','nov/26','dez/26'];
 let DB_OP = {};
-let CUR_MES = 'abr/26';
+let CUR_MES = null;
 let CUR_DATA = null;
 const FILES = {oc:null, mat:null, pr:null};
 
@@ -1326,13 +1330,21 @@ function renderMesesBar(){
 
 function mudarMes(mes){
   if(!DB_OP[mes]) return;
+  // Guarda a aba atual antes de trocar o mês
+  const abaAtual = document.querySelector('.content.active')?.id?.replace('tab-','');
   CUR_MES=mes;
   applyData(DB_OP[mes]);
-  // Reativa aba visão geral
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
-  document.getElementById('tab-visao').classList.add('active');
-  document.querySelector('.tab').classList.add('active');
+  // Mantém a aba que o usuário estava visualizando
+  if(abaAtual){
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
+    const ids=['visao','trabalho','ronda','telegestao','origens','materiais','prazos','comparativo'];
+    const idx=ids.indexOf(abaAtual);
+    if(idx>=0){
+      document.getElementById('tab-'+abaAtual).classList.add('active');
+      document.querySelectorAll('.tab')[idx]?.classList.add('active');
+    }
+  }
 }
 
 function showTab(id,el){
@@ -1461,6 +1473,8 @@ function loadJson(){
       const bv=document.getElementById('btn-voltar');
       if(bv) bv.style.display='inline-block';
       applyData(DB_OP[lastMes]);
+      // Garante que a barra de meses está atualizada com o mês ativo correto
+      renderMesesBar();
     })
     .catch(()=>{
       document.getElementById('loading-op').style.display='none';
