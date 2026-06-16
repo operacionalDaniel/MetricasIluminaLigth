@@ -1283,115 +1283,93 @@ function renderComparativo(d){
 //  CONTRAPRESTAÇÃO — CME/CMM, FM, FE, SLA 1-5, IE
 // ══════════════════════════════════════════════
 function renderContraprestacao(d){
-  const cp = d.contraprestacao || null;
-  const brl = (v) => v != null ? 'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—';
-  const pct2 = (v) => v != null ? (v*100).toFixed(2)+'%' : '—';
-  const ind  = (v) => v != null ? v.toFixed(4) : '—';
-
-  // Evolução mensal de CME (todos meses com cp)
-  const evol = Object.entries(DB_OP)
-    .filter(([,md]) => md.contraprestacao)
-    .sort(([a],[b]) => {
-      const ord=['jan/26','fev/26','mar/26','abr/26','mai/26','jun/26','jul/26','ago/26','set/26','out/26','nov/26','dez/26'];
-      return ord.indexOf(a)-ord.indexOf(b);
-    });
+  var cp = d.contraprestacao || null;
+  function brl(v){ return v!=null?'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):'—'; }
+  function pct2(v){ return v!=null?(v*100).toFixed(2)+'%':'—'; }
+  function ind2(v){ return v!=null?Number(v).toFixed(4):'—'; }
+  function slaColor(v){ return v==null?'#5a6e82':v>=1?'#1a8a3c':v>=0.9?'#c47900':'#d42b2b'; }
+  function slaLabel(v){ return v==null?'—':v>=1?'Ótimo':v>=0.9?'Bom':v>=0.8?'Regular':'Ruim'; }
 
   if(!cp){
-    return \`<div class="info-box info-amber" style="margin:20px 0">
-      📌 Sem dados de Contraprestação para <strong>\${d.mes||'este mês'}</strong>.
-      Faça upload do ANEXO_1 correspondente ao importar o mês.
-    </div>\`;
+    return '<div class="info-box info-amber" style="margin:20px 0">'+
+      '📌 Sem dados de Contraprestação para <strong>'+(d.mes||'este mês')+'</strong>. '+
+      'Faça upload do ANEXO_1 correspondente ao importar o mês.'+
+    '</div>';
   }
 
-  const pctPago = cp.cmm ? Math.round(cp.cme/cp.cmm*100) : 0;
-  const slaColor = (v) => v==null?'#5a6e82':v>=1?'#1a8a3c':v>=0.9?'#c47900':'#d42b2b';
-  const slaLabel = (v) => v==null?'—':v>=1?'Ótimo':v>=0.9?'Bom':v>=0.8?'Regular':'Ruim';
+  var pctPago = cp.cmm ? Math.round(cp.cme/cp.cmm*100) : 0;
 
-  const slaCard = (num, nome, pct, ind2, formula, desc) => {
-    const cor = slaColor(ind2);
-    const lbl = slaLabel(ind2);
-    return \`<div class="card" style="border-top:3px solid \${cor}">
-      <div class="clabel">SLA \${num} — \${nome}</div>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:2.2rem;font-weight:900;color:\${cor}">\${pct!=null?pct2(pct):'—'}</div>
-      <div style="margin-top:6px;display:flex;justify-content:space-between;align-items:center">
-        <span style="font-size:.72rem;color:#5a6e82">\${formula}</span>
-        <span style="font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:10px;background:\${cor}22;color:\${cor}">\${lbl}</span>
-      </div>
-      <div style="font-size:.68rem;color:#5a6e82;margin-top:6px">\${desc}</div>
-      <div style="margin-top:8px;background:var(--border);border-radius:3px;height:5px">
-        <div style="width:\${pct!=null?Math.min(pct*100,100):0}%;background:\${cor};height:5px;border-radius:3px"></div>
-      </div>
-    </div>\`;
-  };
+  function slaCard(num, nome, pctVal, indVal, formula, desc){
+    var cor=slaColor(indVal), lbl=slaLabel(indVal);
+    var barW = pctVal!=null?Math.min(pctVal*100,100):0;
+    return '<div class="card" style="border-top:3px solid '+cor+'">'+
+      '<div class="clabel">SLA '+num+' — '+nome+'</div>'+
+      '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:2.2rem;font-weight:900;color:'+cor+'">'+(pctVal!=null?pct2(pctVal):'—')+'</div>'+
+      '<div style="margin-top:6px;display:flex;justify-content:space-between;align-items:center">'+
+        '<span style="font-size:.72rem;color:#5a6e82">'+formula+'</span>'+
+        '<span style="font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:10px;background:'+cor+'22;color:'+cor+'">'+lbl+'</span>'+
+      '</div>'+
+      '<div style="font-size:.68rem;color:#5a6e82;margin-top:6px">'+desc+'</div>'+
+      '<div style="margin-top:8px;background:var(--border);border-radius:3px;height:5px">'+
+        '<div style="width:'+barW+'%;background:'+cor+';height:5px;border-radius:3px"></div>'+
+      '</div>'+
+    '</div>';
+  }
 
-  const evolRows = evol.map(([m,md])=>{
-    const c=md.contraprestacao;
-    const pp=c.cmm?Math.round(c.cme/c.cmm*100):0;
-    return \`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;width:54px;color:#008fa8">\${m.toUpperCase()}</div>
-      <div style="flex:1">
-        <div style="display:flex;align-items:center;gap:8px">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;color:#1a8a3c">\${brl(c.cme)}</div>
-          <div style="font-size:.65rem;color:#5a6e82">de \${brl(c.cmm)}</div>
-        </div>
-        <div style="background:var(--border);border-radius:2px;height:4px;margin-top:4px">
-          <div style="width:\${pp}%;background:linear-gradient(90deg,#22c55e,#00d4c8);height:4px;border-radius:2px"></div>
-        </div>
-      </div>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;color:#1a52b0;width:42px;text-align:right">\${pp}%</div>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:.8rem;color:\${slaColor(c.ie)};width:54px;text-align:right">IE \${c.ie!=null?c.ie.toFixed(3):'—'}</div>
-    </div>\`;
-  }).join('');
+  // Evolução mensal
+  var ord=['jan/26','fev/26','mar/26','abr/26','mai/26','jun/26','jul/26','ago/26','set/26','out/26','nov/26','dez/26'];
+  var evol=Object.entries(DB_OP).filter(function(e){return e[1].contraprestacao;})
+    .sort(function(a,b){return ord.indexOf(a[0])-ord.indexOf(b[0]);});
 
-  return \`
-  <div class="sec">Contraprestação Mensal — \${d.mes||'—'}</div>
-  <div class="g4">
-    <div class="card ct" style="text-align:center">
-      <div class="clabel">CMM — Máxima Contratual</div>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.6rem;font-weight:900;color:#008fa8;margin:10px 0">\${brl(cp.cmm)}</div>
-      <div class="csub">Contraprestação Mensal Máxima</div>
-    </div>
-    <div class="card cg" style="text-align:center">
-      <div class="clabel">CME — Efetiva a Pagar</div>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.6rem;font-weight:900;color:#1a8a3c;margin:10px 0">\${brl(cp.cme)}</div>
-      <div class="csub">\${pctPago}% da CMM · CMM × FM × FE</div>
-    </div>
-    <div class="card ca" style="text-align:center">
-      <div class="clabel">FM — Fator Modernização</div>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:3rem;font-weight:900;color:#c47900;margin:6px 0">\${cp.fm!=null?(cp.fm*100).toFixed(0)+'%':'—'}</div>
-      <div class="csub">Pontos modernizados / total</div>
-    </div>
-    <div class="card" style="border-top:3px solid \${slaColor(cp.ie)};text-align:center">
-      <div class="clabel">IE — Índice de Eficiência (FE)</div>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:3rem;font-weight:900;color:\${slaColor(cp.ie)};margin:6px 0">\${ind(cp.ie)}</div>
-      <div class="csub">IE = SLA1×0,4 + SLA2×0,2 + SLA3×0,2 + SLA4×0,1 + SLA5×0,1</div>
-    </div>
-  </div>
+  var evolRows='';
+  evol.forEach(function(e){
+    var m=e[0], c=e[1].contraprestacao;
+    var pp=c.cmm?Math.round(c.cme/c.cmm*100):0;
+    evolRows+='<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">'+
+      '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:800;width:54px;color:#008fa8">'+m.toUpperCase()+'</div>'+
+      '<div style="flex:1">'+
+        '<div style="display:flex;align-items:center;gap:8px">'+
+          '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:1.1rem;font-weight:700;color:#1a8a3c">'+brl(c.cme)+'</div>'+
+          '<div style="font-size:.65rem;color:#5a6e82">de '+brl(c.cmm)+'</div>'+
+        '</div>'+
+        '<div style="background:var(--border);border-radius:2px;height:4px;margin-top:4px">'+
+          '<div style="width:'+pp+'%;background:linear-gradient(90deg,#22c55e,#00d4c8);height:4px;border-radius:2px"></div>'+
+        '</div>'+
+      '</div>'+
+      '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:800;color:#1a52b0;width:42px;text-align:right">'+pp+'%</div>'+
+      '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:.8rem;color:'+slaColor(c.ie)+';width:54px;text-align:right">IE '+(c.ie!=null?Number(c.ie).toFixed(3):'—')+'</div>'+
+    '</div>';
+  });
 
-  <div class="info-box info-teal" style="margin-bottom:18px">
-    💡 <strong>Fórmula:</strong> CME = CMM × FM × FE &nbsp;|&nbsp;
-    <strong>CMM:</strong> \${brl(cp.cmm)} &nbsp;×&nbsp;
-    <strong>FM:</strong> \${cp.fm} &nbsp;×&nbsp;
-    <strong>FE (IE):</strong> \${ind(cp.ie)} &nbsp;=&nbsp;
-    <strong style="color:#1a8a3c">\${brl(cp.cme)}</strong>
-  </div>
+  var out = '';
+  out += '<div class="sec">Contraprestação Mensal — '+(d.mes||'—')+'</div>';
+  out += '<div class="g4">';
+  out += '<div class="card ct" style="text-align:center"><div class="clabel">CMM — Máxima Contratual</div><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:1.6rem;font-weight:900;color:#008fa8;margin:10px 0">'+brl(cp.cmm)+'</div><div class="csub">Contraprestação Mensal Máxima</div></div>';
+  out += '<div class="card cg" style="text-align:center"><div class="clabel">CME — Efetiva a Pagar</div><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:1.6rem;font-weight:900;color:#1a8a3c;margin:10px 0">'+brl(cp.cme)+'</div><div class="csub">'+pctPago+'% da CMM &nbsp;·&nbsp; CMM × FM × FE</div></div>';
+  out += '<div class="card ca" style="text-align:center"><div class="clabel">FM — Fator Modernização</div><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:3rem;font-weight:900;color:#c47900;margin:6px 0">'+(cp.fm!=null?(cp.fm*100).toFixed(0)+'%':'—')+'</div><div class="csub">Pontos modernizados / total</div></div>';
+  out += '<div class="card" style="border-top:3px solid '+slaColor(cp.ie)+';text-align:center"><div class="clabel">IE — Índice de Eficiência (FE)</div><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:3rem;font-weight:900;color:'+slaColor(cp.ie)+';margin:6px 0">'+ind2(cp.ie)+'</div><div class="csub">IE = SLA1×0,4 + SLA2×0,2 + SLA3×0,2 + SLA4×0,1 + SLA5×0,1</div></div>';
+  out += '</div>';
 
-  <div class="sec">Indicadores de SLA Contratual — \${d.mes||'—'}</div>
-  <div class="g3">
-    \${slaCard(1,'PPA — Pontos Acesos',cp.sla1_pct,cp.sla1_ind,'PPA = 1 − (Nf − Ni) / Pt','Percentual de pontos de IP acesos durante o período requerido (Tele Gestão)')}
-    \${slaCard(2,'PCE — Chamados Emergência',cp.sla2_pct,cp.sla2_ind,'PCE = NCEa / NCEi','Chamados de emergência identificados e atendidos no mês')}
-    \${slaCard(3,'PCNE — Chamados Não Emergência',cp.sla3_pct,cp.sla3_ind,\`PCNE = \${cp.ncne_a||0}/\${cp.ncne_i||0}\`,'Chamados não emergenciais atendidos — NCNEa/NCNEi')}
-  </div>
-  <div class="g2">
-    \${slaCard(4,'TOS — Operação do Sistema',cp.sla4_pct,cp.sla4_ind,'TOS = (1440×Dm − Ti) / (1440×Dm)','Tempo de operação do sistema de gerenciamento remoto (SGIP/Smartgreen)')}
-    \${slaCard(5,'Pesquisa de Satisfação',cp.sla5_val,cp.sla5_ind,'Pesquisa via Call Center','Classificação: Ruim / Regular / Bom / Ótimo')}
-  </div>
+  out += '<div class="info-box info-teal" style="margin-bottom:18px">';
+  out += '💡 <strong>Fórmula:</strong> CME = CMM × FM × FE &nbsp;|&nbsp; <strong>CMM:</strong> '+brl(cp.cmm)+' &nbsp;×&nbsp; <strong>FM:</strong> '+cp.fm+' &nbsp;×&nbsp; <strong>IE:</strong> '+ind2(cp.ie)+' &nbsp;=&nbsp; <strong style="color:#1a8a3c">'+brl(cp.cme)+'</strong>';
+  out += '</div>';
 
-  \${evol.length>1?\`
-  <div class="sec">Evolução Mensal da Contraprestação</div>
-  <div class="card ct" style="padding:20px">\${evolRows}</div>
-  \`:''}
-  \`;
+  out += '<div class="sec">Indicadores de SLA Contratual — '+(d.mes||'—')+'</div>';
+  out += '<div class="g3">';
+  out += slaCard(1,'PPA — Pontos Acesos (Tele G.)',cp.sla1_pct,cp.sla1_ind,'PPA = 1 − (Nf − Ni) / Pt','Percentual de pontos de IP acesos no período requerido');
+  out += slaCard(2,'PCE — Chamados Emergência',cp.sla2_pct,cp.sla2_ind,'PCE = NCEa / NCEi','Chamados de emergência identificados e atendidos no mês');
+  out += slaCard(3,'PCNE — Não Emergência',cp.sla3_pct,cp.sla3_ind,'PCNE = '+(cp.ncne_a||0)+'/'+(cp.ncne_i||0),'Chamados não emergenciais atendidos');
+  out += '</div>';
+  out += '<div class="g2">';
+  out += slaCard(4,'TOS — Operação do Sistema',cp.sla4_pct,cp.sla4_ind,'TOS = (1440×Dm − Ti) / (1440×Dm)','Tempo de operação do sistema SGIP/Smartgreen');
+  out += slaCard(5,'Pesquisa de Satisfação',cp.sla5_val,cp.sla5_ind,'Pesquisa via Call Center','Classificação: Ruim / Regular / Bom / Ótimo');
+  out += '</div>';
+
+  if(evol.length>1){
+    out += '<div class="sec">Evolução Mensal da Contraprestação</div>';
+    out += '<div class="card ct" style="padding:20px">'+evolRows+'</div>';
+  }
+  return out;
 }
 
 // ══════════════════════════════════════════════
