@@ -1,5 +1,5 @@
 {
-  "ultima_atualizacao": "16/06/2026 10:56",
+  "ultima_atualizacao": "16/06/2026 11:02",
   "meses": {
     "jan/26": {
       "mes": "jan/26",
@@ -614,7 +614,7 @@
       "materiais_total": 274,
       "materiais_tipos": 13,
       "mat_rele_sgip": 64,
-      "mat_rele_nf": 13.0,
+      "mat_rele_nf": 13,
       "mat_led30w": 30,
       "mat_led40w": 2,
       "mat_led70w": 10,
@@ -626,7 +626,7 @@
       "mat_bocal": 0
     },
     "fev/26": {
-      "mes": "jan/26",
+      "mes": "fev/26",
       "total_os": 212,
       "atendidas": 94,
       "modernizacao": 6,
@@ -1032,7 +1032,7 @@
       "materiais_total": 140,
       "materiais_tipos": 14,
       "mat_rele_sgip": 55,
-      "mat_rele_nf": 2.0,
+      "mat_rele_nf": 2,
       "mat_led30w": 27,
       "mat_led40w": 6,
       "mat_led70w": 6,
@@ -1358,7 +1358,7 @@
       "materiais_total": 175,
       "materiais_tipos": 15,
       "mat_rele_sgip": 76,
-      "mat_rele_nf": 2.0,
+      "mat_rele_nf": 2,
       "mat_led30w": 17,
       "mat_led40w": 1,
       "mat_led70w": 7,
@@ -1667,7 +1667,7 @@
       "materiais_total": 227,
       "materiais_tipos": 13,
       "mat_rele_sgip": 146,
-      "mat_rele_nf": 1.0,
+      "mat_rele_nf": 1,
       "mat_led30w": 41,
       "mat_led40w": 5,
       "mat_led70w": 4,
