@@ -1,5 +1,5 @@
 {
-  "ultima_atualizacao": "16/06/2026 11:02",
+  "ultima_atualizacao": "16/06/2026 13:38",
   "meses": {
     "jan/26": {
       "mes": "jan/26",
@@ -623,7 +623,26 @@
       "mat_conector2": 47,
       "mat_conector1": 27,
       "mat_braco": 0,
-      "mat_bocal": 0
+      "mat_bocal": 0,
+      "contraprestacao": {
+        "cmm": 409644.81,
+        "cme": 204822.405,
+        "fm": 0.5,
+        "fe": 0.5,
+        "ie": 1.0,
+        "sla1_pct": null,
+        "sla1_ind": 1.0,
+        "sla2_pct": null,
+        "sla2_ind": 1.0,
+        "sla3_pct": 1.0,
+        "sla3_ind": 1.0,
+        "ncne_i": 29.0,
+        "ncne_a": 29.0,
+        "sla4_pct": null,
+        "sla4_ind": 1.0,
+        "sla5_val": 1.0,
+        "sla5_ind": 1.0
+      }
     },
     "fev/26": {
       "mes": "fev/26",
@@ -1041,7 +1060,26 @@
       "mat_conector2": 20,
       "mat_conector1": 9,
       "mat_braco": 2,
-      "mat_bocal": 0
+      "mat_bocal": 0,
+      "contraprestacao": {
+        "cmm": 409644.81,
+        "cme": 204822.405,
+        "fm": 0.5,
+        "fe": 0.5,
+        "ie": 0.9999,
+        "sla1_pct": null,
+        "sla1_ind": 1.0,
+        "sla2_pct": null,
+        "sla2_ind": 1.0,
+        "sla3_pct": 1.0,
+        "sla3_ind": 1.0,
+        "ncne_i": 18.0,
+        "ncne_a": 18.0,
+        "sla4_pct": null,
+        "sla4_ind": 1.0,
+        "sla5_val": 1.0,
+        "sla5_ind": 0.999
+      }
     },
     "mar/26": {
       "mes": "mar/26",
@@ -1367,7 +1405,26 @@
       "mat_conector2": 33,
       "mat_conector1": 10,
       "mat_braco": 8,
-      "mat_bocal": 0
+      "mat_bocal": 0,
+      "contraprestacao": {
+        "cmm": 409644.81,
+        "cme": 204822.405,
+        "fm": 0.5,
+        "fe": 0.5,
+        "ie": 1.0001,
+        "sla1_pct": 1.0,
+        "sla1_ind": 1.0,
+        "sla2_pct": null,
+        "sla2_ind": 1.0,
+        "sla3_pct": 1.0,
+        "sla3_ind": 1.0,
+        "ncne_i": 17.0,
+        "ncne_a": 17.0,
+        "sla4_pct": 1.0,
+        "sla4_ind": 1.0,
+        "sla5_val": 1.0,
+        "sla5_ind": 1.001
+      }
     },
     "abr/26": {
       "mes": "abr/26",
@@ -1676,7 +1733,26 @@
       "mat_conector2": 11,
       "mat_conector1": 4,
       "mat_braco": 5,
-      "mat_bocal": 0
+      "mat_bocal": 0,
+      "contraprestacao": {
+        "cmm": 427136.76,
+        "cme": 213568.38,
+        "fm": 0.5,
+        "fe": 0.5,
+        "ie": 1.0,
+        "sla1_pct": 0.9860822469928837,
+        "sla1_ind": 1.0,
+        "sla2_pct": 1.0,
+        "sla2_ind": 1.0,
+        "sla3_pct": 1.0,
+        "sla3_ind": 1.0,
+        "ncne_i": 15.0,
+        "ncne_a": 15.0,
+        "sla4_pct": 1.0,
+        "sla4_ind": 1.0,
+        "sla5_val": 1.0,
+        "sla5_ind": 1.0
+      }
     },
     "mai/26": {
       "mes": "mai/26",
