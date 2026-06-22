@@ -180,32 +180,43 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
 
   <!-- ═══════════════ SLA 3 ═══════════════ -->
   <div class="sec">SLA 3 — Chamados Não Emergenciais (PCNE)</div>
-  <div class="card" style="border-top:3px solid var(--red)">
+  <div class="card" style="border-top:3px solid var(--green)">
     <div class="sla-head">
       <div class="sla-title">SLA 3 — PCNE</div>
       <div style="display:flex;gap:8px;align-items:center">
         <span class="sla-peso">Peso 20%</span>
-        <span class="status-pill status-blocked">⛔ Bloqueado</span>
+        <span class="status-pill status-ok">✓ Resolvido</span>
       </div>
     </div>
-    <div class="formula-box">9 subcategorias ponderadas — prazos de 24h a 120h úteis, cada uma</div>
-    <div style="font-size:.78rem;color:var(--muted);margin-bottom:10px;line-height:1.8">
-      <strong>3a</strong> Lâmpada/reator (até 10m, com veículo) 13,33% · 48h &nbsp;|&nbsp;
-      <strong>3a</strong> Lâmpada/reator (+10m, com veículo) 13,33% · 24h úteis &nbsp;|&nbsp;
-      <strong>3a</strong> Lâmpada/reator (sem veículo) 13,33% · 36h úteis<br>
-      <strong>3b</strong> Rede aérea 10% · 36h úteis &nbsp;|&nbsp;
-      <strong>3b</strong> Rede subterrânea 10% · 60h úteis &nbsp;|&nbsp;
-      <strong>3b</strong> Transformador 10% · 36h úteis &nbsp;|&nbsp;
-      <strong>3b</strong> Braço/luminária 10% · 36h úteis<br>
-      <strong>3c</strong> Instalação de ponto 10% · 120h úteis &nbsp;|&nbsp;
-      <strong>3c</strong> Remoção de ponto 10% · 120h úteis
+    <div class="formula-box">PCNE (%) = NCNEa / NCNEi &nbsp;&nbsp;|&nbsp;&nbsp; prazo: <strong>48 horas úteis</strong></div>
+    <div style="font-size:.76rem;color:var(--muted);margin-bottom:12px;line-height:1.6">
+      📐 O contrato (ANEXO VIII) define 9 subcategorias com prazos de 24h a 120h úteis. Como o sistema Exati
+      não classifica as ocorrências nessas 9 categorias, foi definida uma <strong>regra simplificada e prática</strong>:
     </div>
-    <div class="warn-box">
-      <strong>⚠ Mesma limitação do sistema Exati.</strong> Diferente do SLA 2 (onde a ausência de chamados
-      de emergência resolve o indicador em 100%), aqui o desafio é outro: <strong>há atendimentos reais todo mês</strong>
-      (substituição de lâmpada, rede, transformador, etc.), mas o sistema não classifica em nenhuma dessas 9
-      categorias — todas usam o mesmo prazo genérico de 48h. Sem essa classificação na origem, não há como
-      calcular os 9 sub-indicadores e ponderá-los.
+    <div class="source-grid">
+      <div class="source-item">
+        <div class="source-label">NCNEi — Chamados não emergenciais identificados</div>
+        <div class="source-val" style="color:var(--teal)">53</div>
+        <div class="source-origin">Todas as OS de origem <strong>diferente</strong> de Ronda Própria e Tele Gestão (Call Center + Chatbot + App + Internet)</div>
+      </div>
+      <div class="source-item">
+        <div class="source-label">NCNEa — Atendidos dentro do prazo (ajustado)</div>
+        <div class="source-val" style="color:var(--green)">53</div>
+        <div class="source-origin">Atendidos em até 48h úteis, com exceção de força maior (ver regra abaixo)</div>
+      </div>
+    </div>
+    <div class="info-box">
+      💡 <strong>Regra acertada com você:</strong> ocorrências que ultrapassam o prazo de 48h são contadas como
+      atraso normalmente — <strong>exceto</strong> quando status = <code>Impossibilidade</code> e motivo = <code>Chuva</code>
+      (força maior climática). Nesses casos o prazo é recalculado e <strong>não onera o indicador</strong>
+      (conta como atendido dentro do prazo).<br><br>
+      📊 <strong>Validação histórica (jan–mai/26):</strong> encontrei essa combinação exata em <strong>fevereiro/26</strong> —
+      3 ocorrências que estavam atrasadas (4h15, 4h14 e 1h50 de atraso) foram reclassificadas como dentro do prazo
+      por causa da chuva, levando o PCNE de fevereiro de 95,8% para <strong>100%</strong>.
+    </div>
+    <div class="result-row">
+      <div class="result-label">Maio/26: 53/53 dentro do prazo (nenhum atraso no mês) → PCNE = 100,00%</div>
+      <div class="result-val" style="color:var(--green)">100%</div>
     </div>
   </div>
 
@@ -262,12 +273,12 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
     <div style="font-size:.74rem;color:#a0b4c8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">
       IE = (SLA1×0,4) + (SLA2×0,2) + (SLA3×0,2) + (SLA4×0,1) + (SLA5×0,1)
     </div>
-    <div class="num">0,70<span style="font-size:1.3rem;color:#a0b4c8"> / 1,00</span></div>
-    <div style="font-size:.78rem;color:#fbbf24;margin-top:6px;font-weight:700">⚠ Incompleto — faltam SLA 3 e SLA 5</div>
+    <div class="num">0,90<span style="font-size:1.3rem;color:#a0b4c8"> / 1,00</span></div>
+    <div style="font-size:.78rem;color:#fbbf24;margin-top:6px;font-weight:700">⚠ Falta só o SLA 5 (pesquisa de satisfação)</div>
     <div class="ie-breakdown">
       <div class="ie-piece"><div class="val" style="color:#4ade80">1,00 × 0,4</div><div class="lbl">SLA 1 ✓</div></div>
       <div class="ie-piece"><div class="val" style="color:#4ade80">1,00 × 0,2</div><div class="lbl">SLA 2 ✓</div></div>
-      <div class="ie-piece pending"><div class="val">? × 0,2</div><div class="lbl">SLA 3 ⛔</div></div>
+      <div class="ie-piece"><div class="val" style="color:#4ade80">1,00 × 0,2</div><div class="lbl">SLA 3 ✓</div></div>
       <div class="ie-piece"><div class="val" style="color:#4ade80">1,00 × 0,1</div><div class="lbl">SLA 4 🟡</div></div>
       <div class="ie-piece pending"><div class="val">? × 0,1</div><div class="lbl">SLA 5 📥</div></div>
     </div>
@@ -278,9 +289,8 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
   <div class="card" style="border-left:4px solid var(--purple)">
     <ul class="questions-list">
       <li><span class="q-num">1</span> <div><strong>Pt atual</strong> — quantos dispositivos estão telegerenciados hoje? (era 15.879 em abril)</div></li>
-      <li><span class="q-num">2</span> <div><strong>Subcategorias (SLA 3)</strong> — o sistema tem como classificar o tipo de serviço (lâmpada, rede aérea, transformador, etc.) em algum outro campo ou relatório?</div></li>
-      <li><span class="q-num">3</span> <div><strong>Ti mensal (SLA 4)</strong> — você consegue me passar o tempo de inoperabilidade do Smartgreen/SGIP todo mês (em minutos)?</div></li>
-      <li><span class="q-num">4</span> <div><strong>Planilha da pesquisa (SLA 5)</strong> — me manda um exemplo quando puder, pra eu montar o parser.</div></li>
+      <li><span class="q-num">2</span> <div><strong>Ti mensal (SLA 4)</strong> — você consegue me passar o tempo de inoperabilidade do Smartgreen/SGIP todo mês (em minutos)?</div></li>
+      <li><span class="q-num">3</span> <div><strong>Planilha da pesquisa (SLA 5)</strong> — me manda um exemplo quando puder, pra eu montar o parser.</div></li>
     </ul>
   </div>
 
