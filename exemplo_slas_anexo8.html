@@ -222,12 +222,12 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
 
   <!-- ═══════════════ SLA 4 ═══════════════ -->
   <div class="sec">SLA 4 — Tempo de Operação do Sistema (TOS)</div>
-  <div class="card" style="border-top:3px solid var(--amber)">
+  <div class="card" style="border-top:3px solid var(--green)">
     <div class="sla-head">
       <div class="sla-title">SLA 4 — TOS</div>
       <div style="display:flex;gap:8px;align-items:center">
         <span class="sla-peso">Peso 10%</span>
-        <span class="status-pill status-partial">🟡 Parcial</span>
+        <span class="status-pill status-ok">✓ Resolvido</span>
       </div>
     </div>
     <div class="formula-box">TOS (%) = (1440 × Dm − Ti) / (1440 × Dm)</div>
@@ -235,13 +235,17 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
       <div class="source-item">
         <div class="source-label">Dm — Dias no mês</div>
         <div class="source-val" style="color:var(--teal)">31</div>
-        <div class="source-origin">✓ Calculado automaticamente (maio tem 31 dias)</div>
+        <div class="source-origin">Calculado automaticamente (maio tem 31 dias)</div>
       </div>
       <div class="source-item">
         <div class="source-label">Ti — Inoperabilidade do sistema (min)</div>
-        <div class="source-val" style="color:var(--amber)">0*</div>
-        <div class="source-origin">⚠ Assumido 0 neste exemplo — <strong>preciso que você me informe esse valor todo mês</strong> (log do Smartgreen/SGIP)</div>
+        <div class="source-val" style="color:var(--green)">0</div>
+        <div class="source-origin">Confirmado pelo <strong>"Indicador de Disponibilidade do Sistema"</strong> da própria plataforma Smartgreen/SGIP: 100% em maio/26</div>
       </div>
+    </div>
+    <div class="info-box">
+      💡 <strong>Fonte oficial:</strong> a plataforma Smartgreen/SGIP já calcula esse percentual de disponibilidade
+      diretamente. Como o indicador da plataforma mostrou 100%, Ti = 0 minutos — não é mais uma suposição.
     </div>
     <div class="result-row">
       <div class="result-label">TOS = (1440×31 − 0) / (1440×31) = 100,00% → faixa ≥99,01%</div>
@@ -309,18 +313,17 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
       <div class="ie-piece"><div class="val" style="color:#4ade80">1,00 × 0,4</div><div class="lbl">SLA 1 ✓</div></div>
       <div class="ie-piece"><div class="val" style="color:#4ade80">1,00 × 0,2</div><div class="lbl">SLA 2 ✓</div></div>
       <div class="ie-piece"><div class="val" style="color:#4ade80">1,00 × 0,2</div><div class="lbl">SLA 3 ✓</div></div>
-      <div class="ie-piece"><div class="val" style="color:#4ade80">1,00 × 0,1</div><div class="lbl">SLA 4 🟡</div></div>
+      <div class="ie-piece"><div class="val" style="color:#4ade80">1,00 × 0,1</div><div class="lbl">SLA 4 ✓</div></div>
       <div class="ie-piece"><div class="val" style="color:#4ade80">1,00 × 0,1</div><div class="lbl">SLA 5 ✓</div></div>
     </div>
-    <div style="font-size:.7rem;color:#a0b4c8;margin-top:14px">🟡 SLA 4 ainda assume Ti=0 (preciso confirmar o valor real de inoperabilidade do sistema)</div>
+    <div style="font-size:.72rem;color:#4ade80;margin-top:14px">✓ Todos os 5 SLAs confirmados com dados oficiais — nenhuma suposição restante</div>
   </div>
 
   <!-- ═══════════════ PERGUNTAS ═══════════════ -->
   <div class="sec">Para Avançar, Preciso que Você Confirme</div>
   <div class="card" style="border-left:4px solid var(--purple)">
     <ul class="questions-list">
-      <li><span class="q-num">1</span> <div><strong>Ti mensal (SLA 4)</strong> — único item pendente. Você consegue me passar o tempo de inoperabilidade do Smartgreen/SGIP todo mês (em minutos)? Mesmo que seja 0 na maioria dos meses, preciso confirmar isso oficialmente em vez de assumir.</div></li>
-      <li><span class="q-num">2</span> <div><strong>Regra do SLA 5</strong> — confirma que devo trocar a escala graduada do <code>dashboard_sla.html</code> pela regra binária do contrato (atendido se ≥70%, não atendido se &lt;70%)?</div></li>
+      <li><span class="q-num">1</span> <div><strong>Regra do SLA 5</strong> — único item pendente. Confirma que devo trocar a escala graduada do <code>dashboard_sla.html</code> pela regra binária do contrato (atendido se ≥70%, não atendido se &lt;70%)?</div></li>
     </ul>
   </div>
 
