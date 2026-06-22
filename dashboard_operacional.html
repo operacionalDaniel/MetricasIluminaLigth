@@ -9,6 +9,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Operacional · Iluminação Pública 2026</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root{
@@ -288,6 +290,7 @@ canvas{display:block;width:100%;max-height:220px}
   <div class="tab" onclick="showTab('materiais',this)">🔧 Materiais</div>
   <div class="tab" onclick="showTab('prazos',this)">⏱ Prazos</div>
   <div class="tab" onclick="showTab('comparativo',this)">📈 Comparativo</div>
+  <div class="tab" onclick="showTab('mapa',this)">🗺️ Mapa</div>
   <div class="tab" onclick="showTab('contraprestacao',this)">💰 Contraprestação</div>
 </div>
 
@@ -299,6 +302,7 @@ canvas{display:block;width:100%;max-height:220px}
 <div class="content" id="tab-materiais"></div>
 <div class="content" id="tab-prazos"></div>
 <div class="content" id="tab-comparativo"></div>
+<div class="content" id="tab-mapa"></div>
 <div class="content" id="tab-contraprestacao"></div>
 <div class="content" id="tab-panorama"></div>
 
@@ -393,6 +397,7 @@ function migrateData(d){
     const semAcao=(d.total_os||0)-(d.solucao_troca||0)-(d.solucao_manutencao||0);
     if(semAcao>0) d.solucaoC['Sem ação']=semAcao;
   }
+  if(!d.pontos) d.pontos=[];
   if(!d.materiais_top){
     const mtp=[
       {nome:'Relé SGIP Fotoelétrico Smartgreen',qty:d.mat_rele_sgip||0},
@@ -426,6 +431,7 @@ function parseOcorrencias(ab){
   const cats={ronda:mkCat(),tele:mkCat(),callcenter:mkCat(),chatbot:mkCat(),app:mkCat(),internet:mkCat(),outros:mkCat()};
   let mesDet='';
   const tempos=[];
+  const pontos=[];
 
   rows.forEach(row=>{
     // Lê campos-chave
@@ -440,6 +446,12 @@ function parseOcorrencias(ab){
     // ORIGEM: campo que contém 'TELE GESTÃO', 'Ronda própria', etc.
     const origRaw = String(row['desc_tipo_origem_ocorrencia']||'').trim();
     const catKey  = normOrig(origRaw);
+    const endereco = String(row['endereco']||'').trim();
+    const latNum = parseFloat(String(row['latitude']||'').replace(',','.'));
+    const lonNum = parseFloat(String(row['longitude']||'').replace(',','.'));
+    if(!isNaN(latNum)&&!isNaN(lonNum)&&latNum!==0&&lonNum!==0){
+      pontos.push({lat:+latNum.toFixed(6),lon:+lonNum.toFixed(6),endereco,bairro,motivo,status,origem:catKey});
+    }
 
     inc(statusC,status); inc(tipoC,tipo);
     if(solucao) inc(solucaoC,solucao);
@@ -501,7 +513,8 @@ function parseOcorrencias(ab){
     statusC, tipoC, solucaoC, bairroC, motivoC, cats,
     origem_ronda:cats.ronda.n, origem_telegestao:cats.tele.n,
     origem_callcenter:cats.callcenter.n, origem_chatbot:cats.chatbot.n,
-    origem_app:cats.app.n, origem_internet:cats.internet.n
+    origem_app:cats.app.n, origem_internet:cats.internet.n,
+    pontos
   };
 }
 
@@ -1639,6 +1652,111 @@ function renderPanoramaAnual(){
   return out;
 }
 
+
+// ══════════════════════════════════════════════
+//  MAPA DE ATENDIMENTOS — Leaflet + coordenadas
+// ══════════════════════════════════════════════
+let MAP_INSTANCE = null;
+
+function renderMapa(d){
+  var pontos = d.pontos || [];
+  if(!pontos.length){
+    return '<div class="info-box info-amber" style="margin:20px 0">📌 Nenhuma coordenada de latitude/longitude encontrada na planilha de '+(d.mes||'este mês')+'. Verifique se as colunas <strong>latitude</strong> e <strong>longitude</strong> estão presentes no arquivo de ocorrências importado.</div>';
+  }
+
+  var origCounts = {};
+  pontos.forEach(function(p){ origCounts[p.origem] = (origCounts[p.origem]||0)+1; });
+
+  var legendItems = [
+    {key:'ronda', label:'Ronda Própria', color:'#008fa8'},
+    {key:'tele', label:'Tele Gestão', color:'#0077a0'},
+    {key:'callcenter', label:'Call Center', color:'#1a52b0'},
+    {key:'chatbot', label:'Chatbot', color:'#7b35b8'},
+    {key:'app', label:'App', color:'#c47900'},
+    {key:'internet', label:'Internet', color:'#06b6d4'},
+    {key:'outros', label:'Outros', color:'#5a6e82'}
+  ];
+
+  var bairrosUnicos = {};
+  pontos.forEach(function(p){ if(p.bairro) bairrosUnicos[p.bairro]=1; });
+
+  var origTop = Object.entries(origCounts).sort(function(a,b){return b[1]-a[1];})[0];
+  var origTopLabel = origTop ? (legendItems.find(function(it){return it.key===origTop[0];})||{label:origTop[0]}).label : '—';
+
+  var out = '';
+  out += '<div class="g4">';
+  out += '<div class="card ct" style="text-align:center"><div class="clabel">Pontos no Mapa</div><div class="cval" style="color:#008fa8">'+fmt(pontos.length)+'</div><div class="csub">de '+fmt(d.total_os||0)+' OS no mês</div></div>';
+  out += '<div class="card cg" style="text-align:center"><div class="clabel">Bairros Atendidos</div><div class="cval" style="color:#1a8a3c">'+Object.keys(bairrosUnicos).length+'</div><div class="csub">com pelo menos 1 atendimento</div></div>';
+  out += '<div class="card cb" style="text-align:center"><div class="clabel">Cobertura GPS</div><div class="cval" style="color:#1a52b0">'+pct(pontos.length, d.total_os||1)+'%</div><div class="csub">OS com coordenadas válidas</div></div>';
+  out += '<div class="card ca" style="text-align:center"><div class="clabel">Origem Predominante</div><div class="cval" style="color:#c47900;font-size:1.3rem">'+origTopLabel+'</div><div class="csub">'+(origTop?origTop[1]:0)+' atendimento(s)</div></div>';
+  out += '</div>';
+
+  out += '<div class="sec">Mapa de Atendimentos — '+(d.mes||'—')+'</div>';
+  out += '<div class="card ct" style="padding:0;overflow:hidden">';
+  out += '<div id="leaflet-map" style="height:540px;width:100%;background:#e8edf3"></div>';
+  out += '</div>';
+
+  out += '<div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;padding:12px 16px;background:#fff;border:1px solid var(--border);border-radius:8px">';
+  legendItems.forEach(function(it){
+    if(origCounts[it.key]){
+      out += '<div style="display:flex;align-items:center;gap:6px;font-size:.74rem;color:#3d5166"><span style="width:10px;height:10px;border-radius:50%;background:'+it.color+';display:inline-block"></span>'+it.label+' ('+origCounts[it.key]+')</div>';
+    }
+  });
+  out += '</div>';
+
+  out += '<div class="info-box info-teal" style="margin-top:12px">💡 Clique em qualquer ponto do mapa para ver endereço, bairro, motivo e status do atendimento. Use a roda do mouse para zoom.</div>';
+
+  return out;
+}
+
+function drawMapa(d){
+  var cont = document.getElementById('leaflet-map');
+  if(!cont) return;
+  if(typeof L === 'undefined') return;
+
+  if(MAP_INSTANCE){
+    try{ MAP_INSTANCE.remove(); }catch(e){}
+    MAP_INSTANCE = null;
+  }
+
+  var pontos = (d && d.pontos) || [];
+  if(!pontos.length) return;
+
+  var avgLat = pontos.reduce(function(a,p){return a+p.lat;},0)/pontos.length;
+  var avgLon = pontos.reduce(function(a,p){return a+p.lon;},0)/pontos.length;
+
+  MAP_INSTANCE = L.map('leaflet-map',{scrollWheelZoom:true}).setView([avgLat,avgLon], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'&copy; OpenStreetMap contributors',
+    maxZoom:19
+  }).addTo(MAP_INSTANCE);
+
+  var cores = {ronda:'#008fa8',tele:'#0077a0',callcenter:'#1a52b0',chatbot:'#7b35b8',app:'#c47900',internet:'#06b6d4',outros:'#5a6e82'};
+  var markers = [];
+  pontos.forEach(function(p){
+    var cor = cores[p.origem]||'#5a6e82';
+    var mk = L.circleMarker([p.lat,p.lon],{radius:6,color:'#fff',weight:1.5,fillColor:cor,fillOpacity:.85}).addTo(MAP_INSTANCE);
+    var popupHtml = '<div style="font-family:Barlow,sans-serif;font-size:.8rem;line-height:1.6;min-width:180px">'+
+      '<strong>'+(p.endereco||'Endereço não informado')+'</strong><br>'+
+      '📍 '+(p.bairro||'—')+'<br>'+
+      (p.motivo?'🔧 '+p.motivo+'<br>':'')+
+      '📌 '+(p.status||'—')+'<br>'+
+      '<span style="color:'+cor+';font-weight:700">'+(p.origem||'').toUpperCase()+'</span>'+
+    '</div>';
+    mk.bindPopup(popupHtml);
+    markers.push(mk);
+  });
+
+  if(markers.length>1){
+    try{
+      var group = L.featureGroup(markers);
+      MAP_INSTANCE.fitBounds(group.getBounds(), {padding:[24,24]});
+    }catch(e){}
+  }
+
+  setTimeout(function(){ if(MAP_INSTANCE) MAP_INSTANCE.invalidateSize(); }, 150);
+}
+
 // ══════════════════════════════════════════════
 //  APPLY DATA — renderiza tudo com os dados d
 // ══════════════════════════════════════════════
@@ -1663,6 +1781,7 @@ function applyData(d){
   document.getElementById('tab-materiais').innerHTML   = renderMateriais(d);
   document.getElementById('tab-prazos').innerHTML      = renderPrazos(d);
   document.getElementById('tab-comparativo').innerHTML = renderComparativo(d);
+  document.getElementById('tab-mapa').innerHTML = renderMapa(d);
   document.getElementById('tab-contraprestacao').innerHTML = renderContraprestacao(d);
   document.getElementById('tab-panorama').innerHTML = renderPanoramaAnual();
 
@@ -1718,12 +1837,13 @@ function mudarMes(mes){
   if(abaAtual){
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
     document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
-    const ids=['visao','trabalho','ronda','telegestao','origens','materiais','prazos','comparativo','contraprestacao'];
+    const ids=['visao','trabalho','ronda','telegestao','origens','materiais','prazos','comparativo','mapa','contraprestacao'];
     const idx=ids.indexOf(abaAtual);
     if(idx>=0){
       document.getElementById('tab-'+abaAtual).classList.add('active');
       document.querySelectorAll('.tab')[idx]?.classList.add('active');
     }
+    if(abaAtual==='mapa') setTimeout(()=>drawMapa(DB_OP[mes]),90);
   }
 }
 
@@ -1735,6 +1855,7 @@ function showTab(id,el){
   if(el) el.classList.add('active');
   renderMesesBar();
   if(CUR_DATA) setTimeout(()=>drawAll(CUR_DATA),60);
+  if(id==='mapa' && CUR_DATA) setTimeout(()=>drawMapa(CUR_DATA),90);
 }
 
 function abrirPanorama(el){
@@ -1749,7 +1870,7 @@ function abrirPanorama(el){
 
 function showTabById(id){
   const tabs=document.querySelectorAll('.tab');
-  const ids=['visao','trabalho','ronda','telegestao','origens','materiais','prazos','comparativo','contraprestacao'];
+  const ids=['visao','trabalho','ronda','telegestao','origens','materiais','prazos','comparativo','mapa','contraprestacao'];
   const idx=ids.indexOf(id);
   if(idx>=0&&tabs[idx]) showTab(id,tabs[idx]);
 }
@@ -1914,7 +2035,17 @@ const DEMO_DATA={
   materiais_total:232,materiais_tipos:13,
   mat_rele_sgip:146,mat_rele_nf:1,
   mat_led30w:41,mat_led40w:5,mat_led70w:4,mat_led120w:5,mat_argos:3,
-  mat_conector2:10,mat_conector1:4,mat_braco:5
+  mat_conector2:10,mat_conector1:4,mat_braco:5,
+  pontos:[
+    {lat:-28.683859,lon:-49.304999,endereco:'Rua Victoria Machieski',bairro:'Demboski',motivo:'Rele queimado',status:'Atendido',origem:'ronda'},
+    {lat:-28.694507,lon:-49.306622,endereco:'Rua Cassemiro Klima',bairro:'Nossa Senhora De Fátima',motivo:'Lâmpada queimada',status:'Atendido',origem:'ronda'},
+    {lat:-28.847958,lon:-49.324276,endereco:'Rodovia Juvenal José Silvano',bairro:'Boa Vista',motivo:'Conexão',status:'Atendido',origem:'callcenter'},
+    {lat:-28.687335,lon:-49.327256,endereco:'Rodovia Paulino Búrigo',bairro:'Presidente Vargas',motivo:'Rele queimado',status:'Atendido',origem:'ronda'},
+    {lat:-28.713474,lon:-49.308318,endereco:'Rua André Valvassori',bairro:'Cristo Rei',motivo:'Lâmpada queimada',status:'Atendido',origem:'chatbot'},
+    {lat:-28.779307,lon:-49.276783,endereco:'Rodovia Alcides Serafim',bairro:'Sanga Funda',motivo:'Rele queimado',status:'Encontrado normal',origem:'ronda'},
+    {lat:-28.700407,lon:-49.320742,endereco:'Rua Olímpico',bairro:'Liri',motivo:'Conexão',status:'Atendido',origem:'app'},
+    {lat:-28.768721,lon:-49.234008,endereco:'Estrada sem nome',bairro:'Zona Rural',motivo:'Lâmpada queimada',status:'Atendido',origem:'ronda'}
+  ]
 };
 
 // ══════════════════════════════════════════════
