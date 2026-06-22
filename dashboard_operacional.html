@@ -281,7 +281,7 @@ canvas{display:block;width:100%;max-height:220px}
 
 <div class="meses-bar" id="meses-bar"></div>
 
-<div class="tabs">
+<div class="tabs" id="main-tabs">
   <div class="tab active" onclick="showTab('visao',this)">📊 Visão Geral</div>
   <div class="tab" onclick="showTab('trabalho',this)">⚙️ Índices de Trabalho</div>
   <div class="tab" onclick="showTab('ronda',this)">🚐 Ronda Própria</div>
@@ -1870,6 +1870,7 @@ function showTab(id,el){
   if(el) el.classList.add('active');
   renderMesesBar();
   updateFooterPeriodo();
+  const mt=document.getElementById('main-tabs'); if(mt) mt.style.display='flex';
   if(CUR_DATA) setTimeout(()=>drawAll(CUR_DATA),60);
   if(id==='mapa' && CUR_DATA) setTimeout(()=>drawMapa(CUR_DATA),90);
 }
@@ -1882,6 +1883,7 @@ function abrirPanorama(el){
   document.getElementById('tab-panorama').innerHTML = renderPanoramaAnual();
   renderMesesBar();
   updateFooterPeriodo();
+  const mt=document.getElementById('main-tabs'); if(mt) mt.style.display='none';
   setTimeout(()=>drawPanoramaCharts(),60);
 }
 
