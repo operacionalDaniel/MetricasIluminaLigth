@@ -1786,7 +1786,7 @@ function applyData(d){
   document.getElementById('tab-panorama').innerHTML = renderPanoramaAnual();
 
   // Footer
-  set('footer-periodo',`Período: ${d.mes||'—'} · ${fmt(d.total_os||0)} OS registradas`);
+  updateFooterPeriodo();
 
   // Desenha gráficos após renderização
   setTimeout(()=>drawAll(d), 80);
@@ -1817,6 +1817,21 @@ function renderMesesBar(){
   panBtn.title='Ver consolidado de todos os meses carregados';
   panBtn.onclick=()=>abrirPanorama(panBtn);
   bar.appendChild(panBtn);
+}
+
+function updateFooterPeriodo(){
+  const el=document.getElementById('footer-periodo');
+  if(!el) return;
+  if(PANORAMA_ACTIVE){
+    const ord=['jan/26','fev/26','mar/26','abr/26','mai/26','jun/26','jul/26','ago/26','set/26','out/26','nov/26','dez/26'];
+    const meses=ord.filter(m=>DB_OP[m]);
+    el.textContent = meses.length
+      ? 'Panorama Anual · '+meses.length+' mês(es) com dados: '+meses.map(m=>m.toUpperCase()).join(', ')
+      : 'Panorama Anual · nenhum mês carregado ainda';
+  } else {
+    const d=CUR_DATA;
+    el.textContent = 'Período: '+(d&&d.mes||'—')+' · '+fmt(d&&d.total_os||0)+' OS registradas';
+  }
 }
 
 function mudarMes(mes){
@@ -1854,6 +1869,7 @@ function showTab(id,el){
   document.getElementById('tab-'+id).classList.add('active');
   if(el) el.classList.add('active');
   renderMesesBar();
+  updateFooterPeriodo();
   if(CUR_DATA) setTimeout(()=>drawAll(CUR_DATA),60);
   if(id==='mapa' && CUR_DATA) setTimeout(()=>drawMapa(CUR_DATA),90);
 }
@@ -1865,6 +1881,7 @@ function abrirPanorama(el){
   document.getElementById('tab-panorama').classList.add('active');
   document.getElementById('tab-panorama').innerHTML = renderPanoramaAnual();
   renderMesesBar();
+  updateFooterPeriodo();
   setTimeout(()=>drawPanoramaCharts(),60);
 }
 
