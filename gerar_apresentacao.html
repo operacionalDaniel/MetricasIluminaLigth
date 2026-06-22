@@ -256,13 +256,7 @@ async function carregarMesesDisponiveis(){
   ALL_MESES.forEach(m=>{
     const ab = m.split('/')[0];
     if(DADOS_DISPONIVEIS[m]){
-      const el = document.getElementById('mchip-'+ab);
-      el.classList.add('checked');
-      el.onclick = function(e){
-        if(e.target.tagName==='INPUT') return;
-        const inp = el.querySelector('input'); inp.checked = !inp.checked;
-        toggleMonthChip(ab);
-      };
+      document.getElementById('mchip-'+ab).classList.add('checked');
     }
   });
   document.getElementById('meses-loading').style.display='none';
