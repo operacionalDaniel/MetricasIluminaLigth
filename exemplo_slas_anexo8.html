@@ -146,24 +146,35 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
 
   <!-- ═══════════════ SLA 2 ═══════════════ -->
   <div class="sec">SLA 2 — Chamados de Emergência (PCE)</div>
-  <div class="card" style="border-top:3px solid var(--red)">
+  <div class="card" style="border-top:3px solid var(--green)">
     <div class="sla-head">
       <div class="sla-title">SLA 2 — PCE</div>
       <div style="display:flex;gap:8px;align-items:center">
         <span class="sla-peso">Peso 20%</span>
-        <span class="status-pill status-blocked">⛔ Bloqueado</span>
+        <span class="status-pill status-ok">✓ Resolvido</span>
       </div>
     </div>
     <div class="formula-box">PCE (%) = NCEa / NCEi &nbsp;&nbsp;|&nbsp;&nbsp; prazo contratual: <strong>4 horas</strong></div>
-    <div class="warn-box">
-      <strong>⚠ Não consigo calcular isto ainda.</strong> Verifiquei o campo de prioridade na planilha de ocorrências
-      (<code>sigla_prioridade_ponto_ocorr</code>) e <strong>todas as 291 OS de maio/26 vieram marcadas com a mesma
-      prioridade ("48h Corridas")</strong> — não há nenhuma distinção entre chamado de emergência (risco à vida/segurança,
-      prazo 4h) e os demais chamados no sistema Exati.
+    <div class="source-grid">
+      <div class="source-item">
+        <div class="source-label">NCEi — Chamados de emergência identificados</div>
+        <div class="source-val" style="color:var(--teal)">0</div>
+        <div class="source-origin">O sistema Exati não classifica nenhuma OS como emergência (risco à vida/segurança)</div>
+      </div>
+      <div class="source-item">
+        <div class="source-label">NCEa — Chamados de emergência atendidos</div>
+        <div class="source-val" style="color:var(--green)">0</div>
+        <div class="source-origin">Mesma base — não há chamado de emergência no período</div>
+      </div>
     </div>
-    <div class="manual-box">
-      📌 <strong>Preciso de você:</strong> existe algum outro relatório do Exati que separe chamados de emergência?
-      Ou isso é algo que vocês classificam manualmente caso a caso?
+    <div class="info-box">
+      💡 <strong>Regra acertada com você:</strong> quando NCEi = 0 (nenhum chamado de emergência identificado no mês),
+      não há o que descumprir — o indicador é considerado <strong>100% por definição</strong>. Essa é a mesma lógica
+      já usada no <code>dashboard_sla.html</code> (<code>PCE = NCEi&gt;0 ? NCEa/NCEi : 1</code>).
+    </div>
+    <div class="result-row">
+      <div class="result-label">NCEi = 0 → sem chamados de emergência no mês → 100% por definição</div>
+      <div class="result-val" style="color:var(--green)">100%</div>
     </div>
   </div>
 
@@ -190,7 +201,9 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
       <strong>3c</strong> Remoção de ponto 10% · 120h úteis
     </div>
     <div class="warn-box">
-      <strong>⚠ Mesmo problema do SLA 2.</strong> O sistema não classifica as ocorrências em nenhuma dessas 9
+      <strong>⚠ Mesma limitação do sistema Exati.</strong> Diferente do SLA 2 (onde a ausência de chamados
+      de emergência resolve o indicador em 100%), aqui o desafio é outro: <strong>há atendimentos reais todo mês</strong>
+      (substituição de lâmpada, rede, transformador, etc.), mas o sistema não classifica em nenhuma dessas 9
       categorias — todas usam o mesmo prazo genérico de 48h. Sem essa classificação na origem, não há como
       calcular os 9 sub-indicadores e ponderá-los.
     </div>
@@ -249,11 +262,11 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
     <div style="font-size:.74rem;color:#a0b4c8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">
       IE = (SLA1×0,4) + (SLA2×0,2) + (SLA3×0,2) + (SLA4×0,1) + (SLA5×0,1)
     </div>
-    <div class="num">0,50<span style="font-size:1.3rem;color:#a0b4c8"> / 1,00</span></div>
-    <div style="font-size:.78rem;color:#fbbf24;margin-top:6px;font-weight:700">⚠ Incompleto — faltam SLA 2, SLA 3 e SLA 5</div>
+    <div class="num">0,70<span style="font-size:1.3rem;color:#a0b4c8"> / 1,00</span></div>
+    <div style="font-size:.78rem;color:#fbbf24;margin-top:6px;font-weight:700">⚠ Incompleto — faltam SLA 3 e SLA 5</div>
     <div class="ie-breakdown">
       <div class="ie-piece"><div class="val" style="color:#4ade80">1,00 × 0,4</div><div class="lbl">SLA 1 ✓</div></div>
-      <div class="ie-piece pending"><div class="val">? × 0,2</div><div class="lbl">SLA 2 ⛔</div></div>
+      <div class="ie-piece"><div class="val" style="color:#4ade80">1,00 × 0,2</div><div class="lbl">SLA 2 ✓</div></div>
       <div class="ie-piece pending"><div class="val">? × 0,2</div><div class="lbl">SLA 3 ⛔</div></div>
       <div class="ie-piece"><div class="val" style="color:#4ade80">1,00 × 0,1</div><div class="lbl">SLA 4 🟡</div></div>
       <div class="ie-piece pending"><div class="val">? × 0,1</div><div class="lbl">SLA 5 📥</div></div>
@@ -265,10 +278,9 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
   <div class="card" style="border-left:4px solid var(--purple)">
     <ul class="questions-list">
       <li><span class="q-num">1</span> <div><strong>Pt atual</strong> — quantos dispositivos estão telegerenciados hoje? (era 15.879 em abril)</div></li>
-      <li><span class="q-num">2</span> <div><strong>Emergência (SLA 2)</strong> — existe outro relatório do Exati que separa chamados de risco à vida/segurança? Ou isso não é rastreado hoje?</div></li>
-      <li><span class="q-num">3</span> <div><strong>Subcategorias (SLA 3)</strong> — o sistema tem como classificar o tipo de serviço (lâmpada, rede aérea, transformador, etc.) em algum outro campo ou relatório?</div></li>
-      <li><span class="q-num">4</span> <div><strong>Ti mensal (SLA 4)</strong> — você consegue me passar o tempo de inoperabilidade do Smartgreen/SGIP todo mês (em minutos)?</div></li>
-      <li><span class="q-num">5</span> <div><strong>Planilha da pesquisa (SLA 5)</strong> — me manda um exemplo quando puder, pra eu montar o parser.</div></li>
+      <li><span class="q-num">2</span> <div><strong>Subcategorias (SLA 3)</strong> — o sistema tem como classificar o tipo de serviço (lâmpada, rede aérea, transformador, etc.) em algum outro campo ou relatório?</div></li>
+      <li><span class="q-num">3</span> <div><strong>Ti mensal (SLA 4)</strong> — você consegue me passar o tempo de inoperabilidade do Smartgreen/SGIP todo mês (em minutos)?</div></li>
+      <li><span class="q-num">4</span> <div><strong>Planilha da pesquisa (SLA 5)</strong> — me manda um exemplo quando puder, pra eu montar o parser.</div></li>
     </ul>
   </div>
 
