@@ -451,7 +451,7 @@ function parseOcorrencias(ab){
       const ma=prazoDesc.match(/(\d+)d e (\d+)h e (\d+)m/i);
       if(ma){
         const dd=+ma[1],hh=+ma[2],mm2=+ma[3];
-        o.atrasos.push({label:(dd>0?dd+'d ':'')+'+'+hh+'h'+(mm2>0?mm2.toString().padStart(2,'0'):''),h:dd*24+hh+mm2/60});
+        o.atrasos.push({label:(dd>0?dd+'d ':'')+'+'+hh+'h'+(mm2>0?mm2.toString().padStart(2,'0'):''),h:dd*24+hh+mm2/60,status:status,bairro:bairro,motivo:motivo});
       }
     }
     if(bairro) inc(o.bairros,bairro);
@@ -1132,100 +1132,137 @@ function renderMateriais(d){
 }
 
 function renderPrazos(d){
-  const t=d.total_os||0, np=d.no_prazo||0, fp=d.fora_prazo||0;
-  const sla=pct(np,t), slaCor=sla>=98?'var(--green)':sla>=95?'var(--amber)':'var(--red)';
-  const cats=d.cats||{};
-  const r=cats.ronda||mkCat(), tl=cats.tele||mkCat();
-  const cc=cats.callcenter||mkCat(), cb=cats.chatbot||mkCat(), ap=cats.app||mkCat();
+  var t=d.total_os||0, np=d.no_prazo||0, fp=d.fora_prazo||0;
+  var sla=pct(np,t), slaCor=sla>=98?'var(--green)':sla>=95?'var(--amber)':'var(--red)';
+  var cats=d.cats||{};
+  var r=cats.ronda||mkCat(), tl=cats.tele||mkCat();
+  var cc=cats.callcenter||mkCat(), cb=cats.chatbot||mkCat(), ap=cats.app||mkCat(), it=cats.internet||mkCat(), ot=cats.outros||mkCat();
 
-  const allAtrasos=[...r.atrasos,...tl.atrasos,...cc.atrasos,...cb.atrasos,...ap.atrasos];
-  const origemBloco=(icon,label,cat,cor)=> cat.n===0?'':`
-  <div class="card" style="border-top:2px solid ${cor};padding:18px;margin-bottom:12px">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
-      <div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:800;color:${cor}">${icon} ${label.toUpperCase()}</div>
-        <div style="font-size:.72rem;color:#5a6e82;margin-top:2px">${fmt(cat.n)} OS</div>
-      </div>
-      <div style="display:flex;gap:10px">
-        <div style="text-align:center;background:rgba(26,138,62,.08);border:1px solid rgba(26,138,62,.2);border-radius:8px;padding:8px 16px">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:900;color:#1a8a3c">${fmt(cat.ok)}</div>
-          <div style="font-size:.63rem;color:#5a6e82">No Prazo · ${pct(cat.ok,cat.n)}%</div>
-        </div>
-        <div style="text-align:center;background:rgba(212,43,43,.06);border:1px solid rgba(212,43,43,.2);border-radius:8px;padding:8px 16px">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:900;color:${cat.nok>0?'#d42b2b':'#1a8a3c'}">${fmt(cat.nok)}</div>
-          <div style="font-size:.63rem;color:#5a6e82">Fora · ${pct(cat.nok,cat.n)}%</div>
-        </div>
-        <div style="text-align:center;background:rgba(60,80,100,.06);border:1px solid rgba(60,80,100,.15);border-radius:8px;padding:8px 16px">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:900;color:#5a6e82">${fmt(cat.n)}</div>
-          <div style="font-size:.63rem;color:#5a6e82">Total</div>
-        </div>
-      </div>
-    </div>
-    <div class="timeline" style="height:24px">
-      <div class="tl-seg" style="flex:${cat.ok||1};background:#16a34a;color:#fff;font-size:.65rem">${cat.ok} · ${pct(cat.ok,cat.n)}%</div>
-      ${cat.nok>0?`<div class="tl-seg" style="flex:${cat.nok};background:#dc2626;color:#fff;font-size:.65rem">${cat.nok}</div>`:''}
-    </div>
-    ${cat.atrasos.length>0?`<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
-      ${cat.atrasos.slice(0,6).map(a=>`<div style="background:#fff5f5;border:1px solid rgba(212,43,43,.2);border-radius:6px;padding:6px 12px;font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;color:#d42b2b">${a.label}</div>`).join('')}
-    </div>`:''}
-  </div>`;
+  // Atrasos das DEMAIS origens (tudo exceto Ronda Própria)
+  var demaisAtrasos = [].concat(tl.atrasos||[], cc.atrasos||[], cb.atrasos||[], ap.atrasos||[], it.atrasos||[], ot.atrasos||[]);
+  var demaisN = tl.n+cc.n+cb.n+ap.n+it.n+ot.n;
+  var demaisNok = tl.nok+cc.nok+cb.nok+ap.nok+it.nok+ot.nok;
+  var demaisOk  = tl.ok+cc.ok+cb.ok+ap.ok+it.ok+ot.ok;
 
-  return `
-  <div class="g4">
-    <div class="card cg" style="text-align:center">
-      <div class="prazo-gauge"><div class="prazo-big" style="color:${slaCor}">${sla}%</div><div class="prazo-label">Atendimentos no Prazo</div></div>
-      <div style="margin-top:10px;background:var(--surface);border-radius:8px;padding:10px">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:${slaCor}">${fmt(np)}</div>
-        <div style="font-size:.7rem;color:#5a6e82">de ${fmt(t)} atendimentos</div>
-      </div>
-    </div>
-    <div class="card cr" style="text-align:center">
-      <div class="prazo-gauge"><div class="prazo-big" style="color:#d42b2b">${pct(fp,t)}%</div><div class="prazo-label">Fora do Prazo</div></div>
-      <div style="margin-top:10px;background:var(--surface);border-radius:8px;padding:10px">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:#d42b2b">${fmt(fp)}</div>
-        <div style="font-size:.7rem;color:#5a6e82">ocorrências com atraso</div>
-      </div>
-    </div>
-    <div class="card ca" style="text-align:center">
-      <div class="prazo-gauge"><div class="prazo-big" style="color:#c47900">48h</div><div class="prazo-label">Prazo Contratual</div></div>
-      <div style="margin-top:10px;background:var(--surface);border-radius:8px;padding:10px">
-        <div style="font-size:.72rem;color:#5a6e82">48 Horas Corridas para todos os chamados</div>
-      </div>
-    </div>
-    <div class="card co" style="text-align:center">
-      <div class="prazo-gauge"><div class="prazo-big" style="color:#e06500">${d.tempo_medio_h||0}h</div><div class="prazo-label">Tempo Médio Real</div></div>
-      <div style="margin-top:10px;background:var(--surface);border-radius:8px;padding:10px">
-        <div style="font-size:.72rem;color:#5a6e82">Referência baseada na coluna <em>prazo</em></div>
-      </div>
-    </div>
-  </div>
+  function statusColor(s){
+    var u = norm(s);
+    if(u.includes('ATENDIDO')) return '#1a8a3c';
+    if(u.includes('IMPOSSIBIL')) return '#d42b2b';
+    if(u.includes('REPETIDO')) return '#c2185b';
+    if(u.includes('MODERNIZ')) return '#0077a0';
+    if(u.includes('PROJETO')) return '#7b35b8';
+    if(u.includes('ENCONTRADO')) return '#1a52b0';
+    if(u.includes('ESCOPO')) return '#92400e';
+    return '#5a6e82';
+  }
 
-  ${allAtrasos.length>0?`
-  <div class="sec">Atrasos Detalhados</div>
-  <div class="card cr" style="padding:20px">
-    <div class="clabel" style="margin-bottom:12px">Ocorrências Fora do Prazo · ${fmt(fp)} no total</div>
-    <div style="display:grid;grid-template-columns:repeat(${Math.min(allAtrasos.length,4)},1fr);gap:10px">
-      ${allAtrasos.slice(0,8).map((a,i)=>`
-      <div style="background:#fff5f5;border:1px solid rgba(212,43,43,.25);border-radius:8px;padding:12px;text-align:center">
-        <div style="font-size:.65rem;color:#5a6e82;margin-bottom:5px">ATRASO ${i+1}</div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.3rem;font-weight:800;color:#d42b2b">${a.label}</div>
-      </div>`).join('')}
-    </div>
-    <div class="info-box info-red" style="margin-top:14px;font-size:.76rem">
-      ⚠ ${fp} atraso(s) representam ${pct(fp,t)}% do total de atendimentos.
-    </div>
-  </div>`:''}
+  function atrasoChip(a){
+    return '<div style="background:#fff5f5;border:1px solid rgba(212,43,43,.2);border-radius:6px;padding:6px 12px;font-family:\'Barlow Condensed\',sans-serif;font-size:1rem;font-weight:700;color:#d42b2b" title="'+(a.bairro||'')+(a.motivo?' · '+a.motivo:'')+'">'+a.label+'</div>';
+  }
 
-  <div class="sec">Atendimentos por Prazo · Separado por Origem</div>
-  ${origemBloco('🚐','Ronda Própria',r,'var(--teal)')}
-  ${origemBloco('📡','Tele Gestão',tl,'var(--cyan)')}
-  ${origemBloco('📞','Call Center',cc,'var(--blue)')}
-  ${origemBloco('🤖','Chatbot',cb,'var(--purple)')}
-  ${origemBloco('📱','App',ap,'var(--amber)')}
+  function origemBloco(icon,label,cat,cor){
+    if(cat.n===0) return '';
+    var html = '<div class="card" style="border-top:2px solid '+cor+';padding:18px;margin-bottom:12px">';
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">';
+    html += '<div><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:.9rem;font-weight:800;color:'+cor+'">'+icon+' '+label.toUpperCase()+'</div>';
+    html += '<div style="font-size:.72rem;color:#5a6e82;margin-top:2px">'+fmt(cat.n)+' OS</div></div>';
+    html += '<div style="display:flex;gap:10px">';
+    html += '<div style="text-align:center;background:rgba(26,138,62,.08);border:1px solid rgba(26,138,62,.2);border-radius:8px;padding:8px 16px"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:1.8rem;font-weight:900;color:#1a8a3c">'+fmt(cat.ok)+'</div><div style="font-size:.63rem;color:#5a6e82">No Prazo · '+pct(cat.ok,cat.n)+'%</div></div>';
+    html += '<div style="text-align:center;background:rgba(212,43,43,.06);border:1px solid rgba(212,43,43,.2);border-radius:8px;padding:8px 16px"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:1.8rem;font-weight:900;color:'+(cat.nok>0?'#d42b2b':'#1a8a3c')+'">'+fmt(cat.nok)+'</div><div style="font-size:.63rem;color:#5a6e82">Fora · '+pct(cat.nok,cat.n)+'%</div></div>';
+    html += '<div style="text-align:center;background:rgba(60,80,100,.06);border:1px solid rgba(60,80,100,.15);border-radius:8px;padding:8px 16px"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:1.8rem;font-weight:900;color:#5a6e82">'+fmt(cat.n)+'</div><div style="font-size:.63rem;color:#5a6e82">Total</div></div>';
+    html += '</div></div>';
+    html += '<div class="timeline" style="height:24px"><div class="tl-seg" style="flex:'+(cat.ok||1)+';background:#16a34a;color:#fff;font-size:.65rem">'+cat.ok+' · '+pct(cat.ok,cat.n)+'%</div>';
+    if(cat.nok>0) html += '<div class="tl-seg" style="flex:'+cat.nok+';background:#dc2626;color:#fff;font-size:.65rem">'+cat.nok+'</div>';
+    html += '</div>';
+    if(cat.atrasos && cat.atrasos.length>0){
+      html += '<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">';
+      cat.atrasos.slice(0,6).forEach(function(a){ html += atrasoChip(a); });
+      html += '</div>';
+    }
+    html += '</div>';
+    return html;
+  }
 
-  <div class="sec" style="margin-top:18px">Comparativo Geral de Prazo por Origem</div>
-  <div class="card ca" style="padding:20px"><canvas id="c-prazos" style="max-height:180px"></canvas></div>`;
+  var out = '';
+  out += '<div class="g4">';
+  out += '<div class="card cg" style="text-align:center"><div class="prazo-gauge"><div class="prazo-big" style="color:'+slaCor+'">'+sla+'%</div><div class="prazo-label">Atendimentos no Prazo</div></div><div style="margin-top:10px;background:var(--surface);border-radius:8px;padding:10px"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:1.8rem;font-weight:800;color:'+slaCor+'">'+fmt(np)+'</div><div style="font-size:.7rem;color:#5a6e82">de '+fmt(t)+' atendimentos</div></div></div>';
+  out += '<div class="card cr" style="text-align:center"><div class="prazo-gauge"><div class="prazo-big" style="color:#d42b2b">'+pct(fp,t)+'%</div><div class="prazo-label">Fora do Prazo</div></div><div style="margin-top:10px;background:var(--surface);border-radius:8px;padding:10px"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:1.8rem;font-weight:800;color:#d42b2b">'+fmt(fp)+'</div><div style="font-size:.7rem;color:#5a6e82">ocorrências com atraso</div></div></div>';
+  out += '<div class="card ca" style="text-align:center"><div class="prazo-gauge"><div class="prazo-big" style="color:#c47900">48h</div><div class="prazo-label">Prazo Contratual</div></div><div style="margin-top:10px;background:var(--surface);border-radius:8px;padding:10px"><div style="font-size:.72rem;color:#5a6e82">48 Horas Corridas para todos os chamados</div></div></div>';
+  out += '<div class="card co" style="text-align:center"><div class="prazo-gauge"><div class="prazo-big" style="color:#e06500">'+(d.tempo_medio_h||0)+'h</div><div class="prazo-label">Tempo Médio Real</div></div><div style="margin-top:10px;background:var(--surface);border-radius:8px;padding:10px"><div style="font-size:.72rem;color:#5a6e82">Referência baseada na coluna <em>prazo</em></div></div></div>';
+  out += '</div>';
+
+  // ── Atrasos separados: Ronda Própria × Demais Origens ──
+  out += '<div class="sec">Atrasos por Prazo — Ronda Própria × Demais Origens</div>';
+  out += '<div class="g2">';
+
+  out += '<div class="card" style="border-top:3px solid var(--teal);padding:18px">';
+  out += '<div class="clabel" style="margin-bottom:10px">🚐 Ronda Própria · '+fmt(r.nok)+' atraso(s) de '+fmt(r.n)+' OS ('+pct(r.nok,r.n)+'%)</div>';
+  if(r.atrasos && r.atrasos.length>0){
+    out += '<div style="display:flex;flex-wrap:wrap;gap:8px">';
+    r.atrasos.forEach(function(a){ out += atrasoChip(a); });
+    out += '</div>';
+    out += '<div class="info-box info-red" style="margin-top:12px;font-size:.74rem">⚠ '+r.nok+' atraso(s) na ronda própria — passe o mouse sobre cada chip para ver bairro/motivo.</div>';
+  } else {
+    out += '<div style="font-size:.78rem;color:#1a8a3c;text-align:center;padding:16px">✅ Nenhum atraso registrado na Ronda Própria.</div>';
+  }
+  out += '</div>';
+
+  out += '<div class="card" style="border-top:3px solid var(--blue);padding:18px">';
+  out += '<div class="clabel" style="margin-bottom:10px">🔍 Demais Origens (Tele Gestão + Call Center + Chatbot + App) · '+fmt(demaisNok)+' atraso(s) de '+fmt(demaisN)+' OS ('+pct(demaisNok,demaisN)+'%)</div>';
+  if(demaisAtrasos.length>0){
+    out += '<div style="display:flex;flex-wrap:wrap;gap:8px">';
+    demaisAtrasos.forEach(function(a){ out += atrasoChip(a); });
+    out += '</div>';
+    out += '<div class="info-box info-red" style="margin-top:12px;font-size:.74rem">⚠ '+demaisNok+' atraso(s) fora da ronda própria — passe o mouse sobre cada chip para ver bairro/motivo.</div>';
+  } else {
+    out += '<div style="font-size:.78rem;color:#1a8a3c;text-align:center;padding:16px">✅ Nenhum atraso registrado nas demais origens.</div>';
+  }
+  out += '</div>';
+
+  out += '</div>'; // /g2
+
+  // ── Card dedicado: Tele Gestão — apenas atrasados + status de fechamento ──
+  out += '<div class="sec">📡 Tele Gestão — Atendimentos Atrasados e Status de Fechamento</div>';
+  out += '<div class="card" style="border-top:3px solid var(--cyan);padding:18px">';
+  if(tl.n===0){
+    out += '<div class="info-box info-amber">Nenhuma OS de Tele Gestão neste mês.</div>';
+  } else if(tl.nok===0){
+    out += '<div style="text-align:center;padding:18px">';
+    out += '<div style="font-size:2rem;margin-bottom:8px">✅</div>';
+    out += '<div style="font-size:.84rem;color:#1a8a3c;font-weight:700">Todos os '+fmt(tl.n)+' atendimentos de Tele Gestão foram concluídos dentro do prazo de 48h.</div>';
+    out += '</div>';
+  } else {
+    out += '<div style="font-size:.74rem;color:#5a6e82;margin-bottom:12px">'+fmt(tl.nok)+' de '+fmt(tl.n)+' OS ('+pct(tl.nok,tl.n)+'%) ultrapassaram o prazo contratual. Status de fechamento de cada uma:</div>';
+    out += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px">';
+    tl.atrasos.forEach(function(a){
+      var sc = statusColor(a.status);
+      out += '<div style="border:1px solid '+sc+'33;border-radius:8px;padding:12px;background:'+sc+'0d">';
+      out += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';
+      out += '<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:1.3rem;font-weight:800;color:#d42b2b">'+a.label+'</span>';
+      out += '<span style="font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:10px;background:'+sc+';color:#fff">'+(a.status||'—')+'</span>';
+      out += '</div>';
+      if(a.bairro) out += '<div style="font-size:.72rem;color:#3d5166">📍 '+a.bairro+'</div>';
+      if(a.motivo) out += '<div style="font-size:.72rem;color:#5a6e82">🔧 '+a.motivo+'</div>';
+      out += '</div>';
+    });
+    out += '</div>';
+  }
+  out += '</div>';
+
+  // ── Breakdown por origem (já existia) ──
+  out += '<div class="sec" style="margin-top:18px">Atendimentos por Prazo · Separado por Origem</div>';
+  out += origemBloco('🚐','Ronda Própria',r,'var(--teal)');
+  out += origemBloco('📡','Tele Gestão',tl,'var(--cyan)');
+  out += origemBloco('📞','Call Center',cc,'var(--blue)');
+  out += origemBloco('🤖','Chatbot',cb,'var(--purple)');
+  out += origemBloco('📱','App',ap,'var(--amber)');
+
+  out += '<div class="sec" style="margin-top:18px">Comparativo Geral de Prazo por Origem</div>';
+  out += '<div class="card ca" style="padding:20px"><canvas id="c-prazos" style="max-height:180px"></canvas></div>';
+
+  return out;
 }
+
 
 function renderComparativo(d){
   const t=d.total_os||0, np=d.no_prazo||0, fp=d.fora_prazo||0;
