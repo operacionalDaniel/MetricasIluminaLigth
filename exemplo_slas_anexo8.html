@@ -119,27 +119,27 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
     <div class="source-grid">
       <div class="source-item">
         <div class="source-label">Nf — Falhas geradas no mês</div>
-        <div class="source-val" style="color:var(--teal)">112</div>
-        <div class="source-origin">= Total de OS com origem <strong>Tele Gestão</strong> em maio/26</div>
+        <div class="source-val" style="color:var(--teal)">240</div>
+        <div class="source-origin">Confirmado por você (relatório SGR de maio/26)</div>
       </div>
       <div class="source-item">
         <div class="source-label">Ni — Intervenções com sucesso</div>
-        <div class="source-val" style="color:var(--green)">66</div>
-        <div class="source-origin">= Dessas, quantas têm status <strong>"Atendido"</strong></div>
+        <div class="source-val" style="color:var(--green)">112</div>
+        <div class="source-origin">Confirmado por você</div>
       </div>
       <div class="source-item">
         <div class="source-label">Pt — Dispositivos telegerenciados</div>
-        <div class="source-val" style="color:var(--blue)">15.879*</div>
-        <div class="source-origin">⚠ Valor de abril/26 — <strong>preciso que você confirme o número atual</strong></div>
+        <div class="source-val" style="color:var(--blue)">15.945</div>
+        <div class="source-origin">Confirmado por você, posição em 31/05/2026</div>
       </div>
       <div class="source-item">
         <div class="source-label">PPA calculado</div>
-        <div class="source-val" style="color:var(--green)">99,71%</div>
-        <div class="source-origin">1 − (112−66)/15.879</div>
+        <div class="source-val" style="color:var(--green)">99,20%</div>
+        <div class="source-origin">1 − (240−112)/15.945</div>
       </div>
     </div>
     <div class="result-row">
-      <div class="result-label">Faixa: 99,71% ≥ 99,01% → <strong>Indicador máximo da tabela</strong></div>
+      <div class="result-label">Faixa: 99,20% ≥ 99,01% → <strong>Indicador máximo da tabela</strong></div>
       <div class="result-val" style="color:var(--green)">100%</div>
     </div>
   </div>
@@ -251,19 +251,49 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
 
   <!-- ═══════════════ SLA 5 ═══════════════ -->
   <div class="sec">SLA 5 — Satisfação dos Usuários</div>
-  <div class="card" style="border-top:3px solid var(--blue)">
+  <div class="card" style="border-top:3px solid var(--green)">
     <div class="sla-head">
       <div class="sla-title">SLA 5 — Pesquisa</div>
       <div style="display:flex;gap:8px;align-items:center">
         <span class="sla-peso">Peso 10%</span>
-        <span class="status-pill status-manual">📥 Upload manual</span>
+        <span class="status-pill status-ok">✓ Resolvido</span>
       </div>
     </div>
-    <div class="formula-box">Atendido = 1,0 se avaliação ≥ "Bom" (≥70%) &nbsp;|&nbsp; Não atendido = 0</div>
-    <div class="manual-box">
-      📌 Você confirmou que vai enviar a planilha da pesquisa separadamente todo mês.
-      Quando me mandar um exemplo, monto o parser certo pra extrair Ótimo/Bom/Regular/Ruim
-      e o total de ligações automaticamente.
+    <div class="formula-box">SLA5 (%) = pBom + pÓtimo &nbsp;&nbsp;|&nbsp;&nbsp; Atendido (1,0) se classificação ≥ "Bom" (≥70%)</div>
+    <div style="font-size:.76rem;color:var(--muted);margin-bottom:12px">
+      📥 Extraído da planilha <code>Sub_relatório_pesquisa_de_satisfação_Içara-Maio_2026.xlsx</code>,
+      coluna <strong>"Avaliaçao Serviço de Iluminação Pública"</strong>
+    </div>
+    <div class="source-grid">
+      <div class="source-item">
+        <div class="source-label">Total de Ligações</div>
+        <div class="source-val" style="color:var(--teal)">33</div>
+        <div class="source-origin">Todas as respostas da pesquisa em maio/26</div>
+      </div>
+      <div class="source-item">
+        <div class="source-label">Não Opinou</div>
+        <div class="source-val" style="color:var(--gray)">10</div>
+        <div class="source-origin">Excluído da base de cálculo (%) — restam 23 respostas válidas</div>
+      </div>
+      <div class="source-item">
+        <div class="source-label">Ótimo / Bom</div>
+        <div class="source-val" style="color:var(--green)">13 / 8</div>
+        <div class="source-origin">56,52% Ótimo + 34,78% Bom = <strong>91,30%</strong> avaliação positiva</div>
+      </div>
+      <div class="source-item">
+        <div class="source-label">Regular / Ruim</div>
+        <div class="source-val" style="color:var(--amber)">2 / 0</div>
+        <div class="source-origin">8,70% Regular + 0% Ruim</div>
+      </div>
+    </div>
+    <div class="result-row">
+      <div class="result-label">91,30% ≥ 90% → classificação <strong>"Ótimo"</strong> → atendido (Bom ou Ótimo)</div>
+      <div class="result-val" style="color:var(--green)">100%</div>
+    </div>
+    <div class="info-box">
+      ⚠ <strong>Atenção — discrepância encontrada:</strong> o <code>dashboard_sla.html</code> atual usa uma escala
+      graduada (100%/90%/0%) para este SLA, mas o contrato define regra <strong>binária</strong>: atendido (1,0) se
+      a avaliação classificar como Bom ou Ótimo (≥70%), não atendido (0) caso contrário. Vou ajustar isso também.
     </div>
   </div>
 
@@ -273,24 +303,24 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
     <div style="font-size:.74rem;color:#a0b4c8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">
       IE = (SLA1×0,4) + (SLA2×0,2) + (SLA3×0,2) + (SLA4×0,1) + (SLA5×0,1)
     </div>
-    <div class="num">0,90<span style="font-size:1.3rem;color:#a0b4c8"> / 1,00</span></div>
-    <div style="font-size:.78rem;color:#fbbf24;margin-top:6px;font-weight:700">⚠ Falta só o SLA 5 (pesquisa de satisfação)</div>
+    <div class="num">1,00<span style="font-size:1.3rem;color:#a0b4c8"> / 1,00</span></div>
+    <div style="font-size:.78rem;color:#4ade80;margin-top:6px;font-weight:700">✓ Completo — todos os 5 SLAs calculados · Maio/26 foi perfeito</div>
     <div class="ie-breakdown">
       <div class="ie-piece"><div class="val" style="color:#4ade80">1,00 × 0,4</div><div class="lbl">SLA 1 ✓</div></div>
       <div class="ie-piece"><div class="val" style="color:#4ade80">1,00 × 0,2</div><div class="lbl">SLA 2 ✓</div></div>
       <div class="ie-piece"><div class="val" style="color:#4ade80">1,00 × 0,2</div><div class="lbl">SLA 3 ✓</div></div>
       <div class="ie-piece"><div class="val" style="color:#4ade80">1,00 × 0,1</div><div class="lbl">SLA 4 🟡</div></div>
-      <div class="ie-piece pending"><div class="val">? × 0,1</div><div class="lbl">SLA 5 📥</div></div>
+      <div class="ie-piece"><div class="val" style="color:#4ade80">1,00 × 0,1</div><div class="lbl">SLA 5 ✓</div></div>
     </div>
+    <div style="font-size:.7rem;color:#a0b4c8;margin-top:14px">🟡 SLA 4 ainda assume Ti=0 (preciso confirmar o valor real de inoperabilidade do sistema)</div>
   </div>
 
   <!-- ═══════════════ PERGUNTAS ═══════════════ -->
   <div class="sec">Para Avançar, Preciso que Você Confirme</div>
   <div class="card" style="border-left:4px solid var(--purple)">
     <ul class="questions-list">
-      <li><span class="q-num">1</span> <div><strong>Pt atual</strong> — quantos dispositivos estão telegerenciados hoje? (era 15.879 em abril)</div></li>
-      <li><span class="q-num">2</span> <div><strong>Ti mensal (SLA 4)</strong> — você consegue me passar o tempo de inoperabilidade do Smartgreen/SGIP todo mês (em minutos)?</div></li>
-      <li><span class="q-num">3</span> <div><strong>Planilha da pesquisa (SLA 5)</strong> — me manda um exemplo quando puder, pra eu montar o parser.</div></li>
+      <li><span class="q-num">1</span> <div><strong>Ti mensal (SLA 4)</strong> — único item pendente. Você consegue me passar o tempo de inoperabilidade do Smartgreen/SGIP todo mês (em minutos)? Mesmo que seja 0 na maioria dos meses, preciso confirmar isso oficialmente em vez de assumir.</div></li>
+      <li><span class="q-num">2</span> <div><strong>Regra do SLA 5</strong> — confirma que devo trocar a escala graduada do <code>dashboard_sla.html</code> pela regra binária do contrato (atendido se ≥70%, não atendido se &lt;70%)?</div></li>
     </ul>
   </div>
 
