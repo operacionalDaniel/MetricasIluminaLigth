@@ -283,6 +283,7 @@ canvas{display:block;width:100%;max-height:220px}
   <div class="tab" onclick="showTab('prazos',this)">⏱ Prazos</div>
   <div class="tab" onclick="showTab('comparativo',this)">📈 Comparativo</div>
   <div class="tab" onclick="showTab('contraprestacao',this)">💰 Contraprestação</div>
+  <div class="tab" onclick="showTab('panorama',this)">📅 Panorama Anual</div>
 </div>
 
 <div class="content active" id="tab-visao"></div>
@@ -294,6 +295,7 @@ canvas{display:block;width:100%;max-height:220px}
 <div class="content" id="tab-prazos"></div>
 <div class="content" id="tab-comparativo"></div>
 <div class="content" id="tab-contraprestacao"></div>
+<div class="content" id="tab-panorama"></div>
 
 <div class="footer">
   <p>Fonte: Sistema de Atendimentos · Materiais Aplicados · Içara/SC</p>
@@ -714,6 +716,64 @@ function drawAll(d){
     if(tBTop.length) drawHBar('c-tele-bairros',tBTop.map(([l])=>l),tBTop.map(([,v])=>v),
       ['#0077a0','#3b82f6','#22c55e','#a855f7','#f59e0b']);
   }
+
+  // ── Panorama Anual — agregados de TODOS os meses carregados (DB_OP) ──
+  drawPanoramaCharts();
+}
+
+function drawPanoramaCharts(){
+  const ord=['jan/26','fev/26','mar/26','abr/26','mai/26','jun/26','jul/26','ago/26','set/26','out/26','nov/26','dez/26'];
+  const meses=ord.filter(m=>DB_OP[m]);
+  if(!meses.length) return;
+
+  let totRonda=0,totTele=0,totCC=0,totChatbot=0,totApp=0,totInternet=0;
+  const bairroAno={},motivoAno={},materiaisAno={};
+  let eq01Ano=0,eq02Ano=0;
+
+  meses.forEach(m=>{
+    const d=DB_OP[m]; const c=d.cats||{};
+    totRonda+=(c.ronda||mkCat()).n; totTele+=(c.tele||mkCat()).n;
+    totCC+=(c.callcenter||mkCat()).n; totChatbot+=(c.chatbot||mkCat()).n;
+    totApp+=(c.app||mkCat()).n; totInternet+=(c.internet||mkCat()).n;
+    eq01Ano+=d.equipe01||0; eq02Ano+=d.equipe02||0;
+    Object.entries(d.bairroC||{}).forEach(([k,v])=>{bairroAno[k]=(bairroAno[k]||0)+v;});
+    Object.entries(d.motivoC||{}).forEach(([k,v])=>{motivoAno[k]=(motivoAno[k]||0)+v;});
+    (d.materiais_top||[]).forEach(mt=>{materiaisAno[mt.nome]=(materiaisAno[mt.nome]||0)+mt.qty;});
+  });
+
+  // Origens donut anual
+  drawDonut('c-pan-origens',
+    [{l:'Ronda própria',v:totRonda},{l:'Tele Gestão',v:totTele},{l:'Call Center',v:totCC},{l:'Chatbot',v:totChatbot},{l:'App',v:totApp}],
+    ['#00d4c8','#0077a0','#3b82f6','#a855f7','#f59e0b']);
+
+  // OS por mês (bar)
+  const osVals=meses.map(m=>DB_OP[m].total_os||0);
+  drawBar('c-pan-os',meses.map(m=>m.split('/')[0]),osVals,
+    ['#008fa8','#1a52b0','#1a8a3c','#c47900','#7b35b8','#e06500','#c2185b','#0077a0','#22c55e','#f59e0b','#a855f7','#ef4444'],'Total de OS por Mês');
+
+  // SLA% por mês (bar)
+  const slaVals=meses.map(m=>{const dd=DB_OP[m];return pct(dd.no_prazo,dd.total_os);});
+  drawBar('c-pan-sla',meses.map(m=>m.split('/')[0]),slaVals,
+    slaVals.map(v=>v>=98?'#1a8a3c':v>=95?'#c47900':'#d42b2b'),'SLA % por Mês');
+
+  // Equipes anual
+  drawBar('c-pan-equipes',['Equipe 01','Equipe 02'],[eq01Ano,eq02Ano],
+    ['#22c55e','#3b82f6'],'Total de OS por Equipe · Ano');
+
+  // Bairros anual (hbar)
+  const bTopAno=topN(bairroAno,8);
+  if(bTopAno.length) drawHBar('c-pan-bairros',bTopAno.map(([l])=>l),bTopAno.map(([,v])=>v),
+    ['#00d4c8','#3b82f6','#22c55e','#a855f7','#f59e0b','#f97316','#ec4899','#06b6d4']);
+
+  // Motivos anual (bar)
+  const mTopAno=topN(motivoAno,6);
+  if(mTopAno.length) drawBar('c-pan-motivos',mTopAno.map(([l])=>l),mTopAno.map(([,v])=>v),
+    ['#ef4444','#f59e0b','#3b82f6','#00d4c8','#a855f7','#22c55e'],'Top Motivos · Ano');
+
+  // Materiais anual (donut)
+  const matTopAno=Object.entries(materiaisAno).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  if(matTopAno.length) drawDonut('c-pan-materiais',matTopAno.map(([l,v])=>({l:l.split(' ').slice(0,3).join(' '),v})),
+    ['#00d4c8','#22c55e','#3b82f6','#a855f7','#f97316','#f59e0b']);
 }
 
 // ══════════════════════════════════════════════
@@ -1428,6 +1488,151 @@ function renderContraprestacao(d){
   return out;
 }
 
+
+// ══════════════════════════════════════════════
+//  PANORAMA ANUAL — agregado de todos os meses
+// ══════════════════════════════════════════════
+function renderPanoramaAnual(){
+  var ord=['jan/26','fev/26','mar/26','abr/26','mai/26','jun/26','jul/26','ago/26','set/26','out/26','nov/26','dez/26'];
+  var meses=ord.filter(function(m){return DB_OP[m];});
+
+  if(meses.length===0){
+    return '<div class="info-box info-amber" style="margin:20px 0">📌 Nenhum mês carregado ainda. Importe ao menos um mês para ver o panorama anual.</div>';
+  }
+
+  var totalOS=0, totalAtendidas=0, totalNoPrazo=0, totalForaPrazo=0;
+  var totalEq01=0, totalEq02=0, totalMateriais=0;
+  var totalRonda=0, totalTele=0, totalCC=0, totalChatbot=0, totalApp=0;
+  var cmeTotalAno=0, cmmTotalAno=0, mesesComCp=0;
+  var melhorMes=null, melhorSla=-1, piorMes=null, piorSla=101;
+  var evolRows='';
+
+  meses.forEach(function(m){
+    var d=DB_OP[m]; var c=d.cats||{};
+    var r=c.ronda||mkCat(), tl=c.tele||mkCat(), cc=c.callcenter||mkCat(), cb=c.chatbot||mkCat(), ap=c.app||mkCat();
+
+    totalOS += d.total_os||0;
+    totalAtendidas += d.atendidas||0;
+    totalNoPrazo += d.no_prazo||0;
+    totalForaPrazo += d.fora_prazo||0;
+    totalEq01 += d.equipe01||0;
+    totalEq02 += d.equipe02||0;
+    totalMateriais += d.materiais_total||0;
+    totalRonda+=r.n; totalTele+=tl.n; totalCC+=cc.n; totalChatbot+=cb.n; totalApp+=ap.n;
+
+    var slaM = pct(d.no_prazo, d.total_os);
+    if(slaM>melhorSla){ melhorSla=slaM; melhorMes=m; }
+    if(slaM<piorSla){ piorSla=slaM; piorMes=m; }
+
+    var cpStr = '—';
+    if(d.contraprestacao){
+      cmeTotalAno += d.contraprestacao.cme||0;
+      cmmTotalAno += d.contraprestacao.cmm||0;
+      mesesComCp++;
+      cpStr = 'R$ '+Number(d.contraprestacao.cme).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+    }
+
+    var slaCor = slaM>=98?'#1a8a3c':slaM>=95?'#c47900':'#d42b2b';
+    evolRows += '<div style="display:grid;grid-template-columns:60px 1fr 70px 70px 70px 110px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:.78rem">';
+    evolRows += '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:800;color:#008fa8">'+m.toUpperCase()+'</div>';
+    evolRows += '<div><div style="background:var(--border);border-radius:3px;height:6px;overflow:hidden"><div style="width:'+Math.min((d.total_os||0)/3,100)+'%;background:#008fa8;height:6px"></div></div></div>';
+    evolRows += '<div style="text-align:right;font-weight:700">'+fmt(d.total_os||0)+'</div>';
+    evolRows += '<div style="text-align:right;font-weight:700;color:'+slaCor+'">'+slaM+'%</div>';
+    evolRows += '<div style="text-align:right;color:#d42b2b">'+fmt(d.fora_prazo||0)+'</div>';
+    evolRows += '<div style="text-align:right;font-size:.72rem;color:#5a6e82">'+cpStr+'</div>';
+    evolRows += '</div>';
+  });
+
+  var slaAnual = pct(totalNoPrazo, totalOS);
+  var slaAnualCor = slaAnual>=98?'var(--green)':slaAnual>=95?'var(--amber)':'var(--red)';
+  var pctPagoAno = cmmTotalAno>0 ? Math.round(cmeTotalAno/cmmTotalAno*100) : 0;
+
+  var out = '';
+
+  out += '<div class="info-box info-teal" style="margin-bottom:16px">📅 Panorama consolidado de <strong>'+meses.length+' mês(es)</strong> carregado(s): '+meses.map(function(m){return m.toUpperCase();}).join(', ')+'</div>';
+
+  // ── KPIs principais do ano ──
+  out += '<div class="sec">Indicadores Gerais do Ano</div>';
+  out += '<div class="g6">';
+  out += '<div class="card ct" style="text-align:center"><div class="clabel">Total OS no Ano</div><div class="cval" style="color:#008fa8">'+fmt(totalOS)+'</div><div class="csub">'+meses.length+' mês(es) consolidados</div></div>';
+  out += '<div class="card cg" style="text-align:center"><div class="clabel">Total Atendidas</div><div class="cval" style="color:#1a8a3c">'+fmt(totalAtendidas)+'</div><div class="csub">'+pct(totalAtendidas,totalOS)+'% do total</div></div>';
+  out += '<div class="card" style="border-top:3px solid '+slaAnualCor+';text-align:center"><div class="clabel">SLA Anual Médio</div><div class="cval" style="color:'+slaAnualCor+'">'+slaAnual+'%</div><div class="csub">'+fmt(totalNoPrazo)+' no prazo de '+fmt(totalOS)+'</div></div>';
+  out += '<div class="card cr" style="text-align:center"><div class="clabel">Total de Atrasos</div><div class="cval" style="color:#d42b2b">'+fmt(totalForaPrazo)+'</div><div class="csub">'+pct(totalForaPrazo,totalOS)+'% do total anual</div></div>';
+  out += '<div class="card cb" style="text-align:center"><div class="clabel">Materiais Aplicados</div><div class="cval" style="color:#1a52b0">'+fmt(totalMateriais)+'</div><div class="csub">Itens no ano</div></div>';
+  out += '<div class="card cp" style="text-align:center"><div class="clabel">Equipes (Eq01+Eq02)</div><div class="cval" style="color:#7b35b8">'+fmt(totalEq01+totalEq02)+'</div><div class="csub">'+fmt(totalEq01)+' + '+fmt(totalEq02)+'</div></div>';
+  out += '</div>';
+
+  // ── Melhor / Pior mês ──
+  out += '<div class="g2">';
+  out += '<div class="card" style="border-top:3px solid #1a8a3c;text-align:center;padding:18px">';
+  out += '<div style="font-size:1.6rem;margin-bottom:6px">🏆</div>';
+  out += '<div class="clabel">Melhor Mês — SLA</div>';
+  out += '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:1.8rem;font-weight:900;color:#1a8a3c">'+(melhorMes?melhorMes.toUpperCase():'—')+'</div>';
+  out += '<div class="csub">SLA de '+(melhorSla>=0?melhorSla:0)+'%</div>';
+  out += '</div>';
+  out += '<div class="card" style="border-top:3px solid #d42b2b;text-align:center;padding:18px">';
+  out += '<div style="font-size:1.6rem;margin-bottom:6px">⚠️</div>';
+  out += '<div class="clabel">Mês de Atenção — SLA</div>';
+  out += '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:1.8rem;font-weight:900;color:#d42b2b">'+(piorMes?piorMes.toUpperCase():'—')+'</div>';
+  out += '<div class="csub">SLA de '+(piorSla<=100?piorSla:0)+'%</div>';
+  out += '</div>';
+  out += '</div>';
+
+  // ── Evolução mensal (tabela) ──
+  out += '<div class="sec">Evolução Mensal — OS, SLA, Atrasos e Contraprestação</div>';
+  out += '<div class="card ct" style="padding:18px 20px">';
+  out += '<div style="display:grid;grid-template-columns:60px 1fr 70px 70px 70px 110px;gap:10px;padding-bottom:8px;border-bottom:2px solid var(--border);font-size:.65rem;font-weight:700;color:#5a6e82;text-transform:uppercase;letter-spacing:.05em">';
+  out += '<div>Mês</div><div>Volume</div><div style="text-align:right">OS</div><div style="text-align:right">SLA</div><div style="text-align:right">Atrasos</div><div style="text-align:right">CME</div>';
+  out += '</div>';
+  out += evolRows;
+  out += '</div>';
+
+  // ── Gráficos: OS por mês e SLA por mês ──
+  out += '<div class="sec">Gráficos de Evolução</div>';
+  out += '<div class="g2">';
+  out += '<div class="card cb"><div class="clabel">Total de OS por Mês</div><canvas id="c-pan-os" style="max-height:220px;margin-top:10px"></canvas></div>';
+  out += '<div class="card ca"><div class="clabel">SLA % por Mês</div><canvas id="c-pan-sla" style="max-height:220px;margin-top:10px"></canvas></div>';
+  out += '</div>';
+
+  // ── Origens e Equipes do Ano ──
+  out += '<div class="sec">Origens e Equipes — Consolidado Anual</div>';
+  out += '<div class="g3">';
+  out += '<div class="card ct"><div class="clabel">Distribuição de Origens</div><canvas id="c-pan-origens" style="max-height:200px;margin-top:10px"></canvas></div>';
+  out += '<div class="card cg"><div class="clabel">OS por Equipe</div><canvas id="c-pan-equipes" style="max-height:200px;margin-top:10px"></canvas></div>';
+  out += '<div class="card cp" style="display:flex;flex-direction:column;justify-content:center">';
+  out += '<div class="clabel">Resumo de Origens</div>';
+  out += srow('🚐 Ronda própria',totalRonda,totalOS,'#008fa8');
+  out += srow('📡 Tele Gestão',totalTele,totalOS,'#0077a0');
+  out += srow('📞 Call Center',totalCC,totalOS,'var(--blue)');
+  out += srow('🤖 Chatbot',totalChatbot,totalOS,'var(--purple)');
+  out += srow('📱 App',totalApp,totalOS,'var(--amber)');
+  out += '</div>';
+  out += '</div>';
+
+  // ── Bairros e Motivos do Ano ──
+  out += '<div class="sec">Bairros e Motivos — Consolidado Anual</div>';
+  out += '<div class="g2">';
+  out += '<div class="card ct"><div class="clabel">Top Bairros do Ano</div><canvas id="c-pan-bairros" style="max-height:240px;margin-top:10px"></canvas></div>';
+  out += '<div class="card cg"><div class="clabel">Top Motivos do Ano</div><canvas id="c-pan-motivos" style="max-height:240px;margin-top:10px"></canvas></div>';
+  out += '</div>';
+
+  // ── Materiais do Ano ──
+  out += '<div class="sec">Materiais Mais Aplicados — Consolidado Anual</div>';
+  out += '<div class="card ca" style="padding:20px"><canvas id="c-pan-materiais" style="max-height:240px"></canvas></div>';
+
+  // ── Contraprestação do Ano (se houver dados) ──
+  if(mesesComCp>0){
+    out += '<div class="sec">Contraprestação — Total Acumulado do Ano</div>';
+    out += '<div class="g3">';
+    out += '<div class="card ct" style="text-align:center"><div class="clabel">CMM Total (máxima possível)</div><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:1.6rem;font-weight:900;color:#008fa8;margin:8px 0">R$ '+cmmTotalAno.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'</div><div class="csub">'+mesesComCp+' mês(es) com ANEXO_1</div></div>';
+    out += '<div class="card cg" style="text-align:center"><div class="clabel">CME Total Pago</div><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:1.6rem;font-weight:900;color:#1a8a3c;margin:8px 0">R$ '+cmeTotalAno.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'</div><div class="csub">'+pctPagoAno+'% da CMM total</div></div>';
+    out += '<div class="card ca" style="text-align:center"><div class="clabel">Diferença (Desconto Acumulado)</div><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:1.6rem;font-weight:900;color:'+(cmmTotalAno-cmeTotalAno>0?'#d42b2b':'#1a8a3c')+';margin:8px 0">R$ '+(cmmTotalAno-cmeTotalAno).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'</div><div class="csub">CMM − CME acumulado</div></div>';
+    out += '</div>';
+  }
+
+  return out;
+}
+
 // ══════════════════════════════════════════════
 //  APPLY DATA — renderiza tudo com os dados d
 // ══════════════════════════════════════════════
@@ -1453,6 +1658,7 @@ function applyData(d){
   document.getElementById('tab-prazos').innerHTML      = renderPrazos(d);
   document.getElementById('tab-comparativo').innerHTML = renderComparativo(d);
   document.getElementById('tab-contraprestacao').innerHTML = renderContraprestacao(d);
+  document.getElementById('tab-panorama').innerHTML = renderPanoramaAnual();
 
   // Footer
   set('footer-periodo',`Período: ${d.mes||'—'} · ${fmt(d.total_os||0)} OS registradas`);
@@ -1491,7 +1697,7 @@ function mudarMes(mes){
   if(abaAtual){
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
     document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
-    const ids=['visao','trabalho','ronda','telegestao','origens','materiais','prazos','comparativo','contraprestacao'];
+    const ids=['visao','trabalho','ronda','telegestao','origens','materiais','prazos','comparativo','contraprestacao','panorama'];
     const idx=ids.indexOf(abaAtual);
     if(idx>=0){
       document.getElementById('tab-'+abaAtual).classList.add('active');
@@ -1510,7 +1716,7 @@ function showTab(id,el){
 
 function showTabById(id){
   const tabs=document.querySelectorAll('.tab');
-  const ids=['visao','trabalho','ronda','telegestao','origens','materiais','prazos','comparativo','contraprestacao'];
+  const ids=['visao','trabalho','ronda','telegestao','origens','materiais','prazos','comparativo','contraprestacao','panorama'];
   const idx=ids.indexOf(id);
   if(idx>=0&&tabs[idx]) showTab(id,tabs[idx]);
 }
