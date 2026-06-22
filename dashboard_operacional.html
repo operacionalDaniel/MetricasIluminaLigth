@@ -1568,6 +1568,10 @@ function renderPanoramaAnual(){
 
   var out = '';
 
+  out += '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap">';
+  out += '<button onclick="fecharPanorama()" style="padding:8px 18px;border-radius:7px;border:1.5px solid #7b35b8;background:#fff;color:#7b35b8;font-family:\'Barlow Condensed\',sans-serif;font-weight:800;font-size:.8rem;cursor:pointer;letter-spacing:.04em">← Voltar aos Indicadores Mensais</button>';
+  out += '<div style="font-size:.7rem;color:#5a6e82">Selecionar um mês na barra acima também retorna à visão mensal</div>';
+  out += '</div>';
   out += '<div class="info-box info-teal" style="margin-bottom:16px">📅 Panorama consolidado de <strong>'+meses.length+' mês(es)</strong> carregado(s): '+meses.map(function(m){return m.toUpperCase();}).join(', ')+'</div>';
 
   // ── KPIs principais do ano ──
@@ -1838,16 +1842,23 @@ function mudarMes(mes){
   if(!DB_OP[mes]) return;
   // Guarda a aba atual antes de trocar o mês
   const abaAtual = document.querySelector('.content.active')?.id?.replace('tab-','');
+  const vinhaDoPanorama = PANORAMA_ACTIVE;
   CUR_MES=mes;
-  applyData(DB_OP[mes]);
-  // Se o usuário estava no Panorama Anual, mantém essa visualização (independe do mês)
-  if(abaAtual==='panorama'){
+
+  // Selecionar um mês sempre SAI do Panorama Anual e mostra a Visão Geral daquele mês
+  if(vinhaDoPanorama){
+    PANORAMA_ACTIVE=false;
+    applyData(DB_OP[mes]);
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
     document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
-    document.getElementById('tab-panorama').classList.add('active');
-    setTimeout(()=>drawPanoramaCharts(),60);
+    document.getElementById('tab-visao').classList.add('active');
+    const tabs=document.querySelectorAll('.tab'); if(tabs[0]) tabs[0].classList.add('active');
+    const mt=document.getElementById('main-tabs'); if(mt) mt.style.display='flex';
+    setTimeout(()=>drawAll(DB_OP[mes]),80);
     return;
   }
+
+  applyData(DB_OP[mes]);
   // Mantém a aba que o usuário estava visualizando
   if(abaAtual){
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
@@ -1876,6 +1887,10 @@ function showTab(id,el){
 }
 
 function abrirPanorama(el){
+  if(PANORAMA_ACTIVE){
+    fecharPanorama();
+    return;
+  }
   PANORAMA_ACTIVE=true;
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
@@ -1885,6 +1900,18 @@ function abrirPanorama(el){
   updateFooterPeriodo();
   const mt=document.getElementById('main-tabs'); if(mt) mt.style.display='none';
   setTimeout(()=>drawPanoramaCharts(),60);
+}
+
+function fecharPanorama(){
+  PANORAMA_ACTIVE=false;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-visao').classList.add('active');
+  const tabs=document.querySelectorAll('.tab'); if(tabs[0]) tabs[0].classList.add('active');
+  renderMesesBar();
+  updateFooterPeriodo();
+  const mt=document.getElementById('main-tabs'); if(mt) mt.style.display='flex';
+  if(CUR_DATA) setTimeout(()=>drawAll(CUR_DATA),60);
 }
 
 function showTabById(id){
