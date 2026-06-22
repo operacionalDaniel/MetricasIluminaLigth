@@ -1,5 +1,5 @@
 {
-  "ultima_atualizacao": "22/06/2026 11:21",
+  "ultima_atualizacao": "22/06/2026 11:27",
   "meses": {
     "jan/26": {
       "mes": "jan/26",
@@ -564,7 +564,9 @@
               "bairro": "Demboski",
               "motivo": "Lâmpada queimada"
             }
-          ]
+          ],
+          "tempoSoma": 6242.7,
+          "tempoN": 144
         },
         "tele": {
           "n": 18,
@@ -655,7 +657,9 @@
               "bairro": "Presidente Vargas",
               "motivo": "Conexão"
             }
-          ]
+          ],
+          "tempoSoma": 114.9,
+          "tempoN": 8
         },
         "callcenter": {
           "n": 68,
@@ -704,7 +708,9 @@
               "bairro": "Ronco DÁgua",
               "motivo": "Lâmpada queimada"
             }
-          ]
+          ],
+          "tempoSoma": 3058.2,
+          "tempoN": 67
         },
         "chatbot": {
           "n": 7,
@@ -731,7 +737,9 @@
               "bairro": "Esplanada",
               "motivo": "Propriedade Particular"
             }
-          ]
+          ],
+          "tempoSoma": 283.2,
+          "tempoN": 6
         },
         "app": {
           "n": 12,
@@ -753,7 +761,9 @@
             "Sem acesso ao ponto de serviço": 1,
             "Propriedade Particular": 6
           },
-          "atrasos": []
+          "atrasos": [],
+          "tempoSoma": 545.9,
+          "tempoN": 12
         },
         "internet": {
           "n": 0,
@@ -761,7 +771,9 @@
           "nok": 0,
           "bairros": {},
           "motivos": {},
-          "atrasos": []
+          "atrasos": [],
+          "tempoSoma": 0,
+          "tempoN": 0
         },
         "outros": {
           "n": 0,
@@ -769,7 +781,9 @@
           "nok": 0,
           "bairros": {},
           "motivos": {},
-          "atrasos": []
+          "atrasos": [],
+          "tempoSoma": 0,
+          "tempoN": 0
         }
       },
       "origem_ronda": 204,
@@ -1174,7 +1188,9 @@
               "bairro": "Boa Vista",
               "motivo": ""
             }
-          ]
+          ],
+          "tempoSoma": 4826.1,
+          "tempoN": 114
         },
         "tele": {
           "n": 0,
@@ -1182,7 +1198,9 @@
           "nok": 0,
           "bairros": {},
           "motivos": {},
-          "atrasos": []
+          "atrasos": [],
+          "tempoSoma": 0,
+          "tempoN": 0
         },
         "callcenter": {
           "n": 56,
@@ -1243,7 +1261,9 @@
               "bairro": "Morro Bonito",
               "motivo": "Chuva"
             }
-          ]
+          ],
+          "tempoSoma": 2018.5,
+          "tempoN": 53
         },
         "chatbot": {
           "n": 9,
@@ -1259,7 +1279,9 @@
             "Propriedade Particular": 3,
             "Chuva": 2
           },
-          "atrasos": []
+          "atrasos": [],
+          "tempoSoma": 368.7,
+          "tempoN": 9
         },
         "app": {
           "n": 7,
@@ -1277,7 +1299,9 @@
             "Lâmpada queimada": 2,
             "Sem acesso ao ponto de serviço": 3
           },
-          "atrasos": []
+          "atrasos": [],
+          "tempoSoma": 344.4,
+          "tempoN": 7
         },
         "internet": {
           "n": 0,
@@ -1285,7 +1309,9 @@
           "nok": 0,
           "bairros": {},
           "motivos": {},
-          "atrasos": []
+          "atrasos": [],
+          "tempoSoma": 0,
+          "tempoN": 0
         },
         "outros": {
           "n": 0,
@@ -1293,7 +1319,9 @@
           "nok": 0,
           "bairros": {},
           "motivos": {},
-          "atrasos": []
+          "atrasos": [],
+          "tempoSoma": 0,
+          "tempoN": 0
         }
       },
       "origem_ronda": 140,
@@ -1545,7 +1573,9 @@
               "bairro": "Esplanada",
               "motivo": ""
             }
-          ]
+          ],
+          "tempoSoma": 5675.5,
+          "tempoN": 103
         },
         "tele": {
           "n": 0,
@@ -1553,7 +1583,9 @@
           "nok": 0,
           "bairros": {},
           "motivos": {},
-          "atrasos": []
+          "atrasos": [],
+          "tempoSoma": 0,
+          "tempoN": 0
         },
         "callcenter": {
           "n": 46,
@@ -1590,7 +1622,9 @@
             "Conexão": 3,
             "Chuva": 1
           },
-          "atrasos": []
+          "atrasos": [],
+          "tempoSoma": 1772.6,
+          "tempoN": 46
         },
         "chatbot": {
           "n": 18,
@@ -1620,7 +1654,9 @@
               "bairro": "Presidente Vargas",
               "motivo": ""
             }
-          ]
+          ],
+          "tempoSoma": 756.0,
+          "tempoN": 17
         },
         "app": {
           "n": 11,
@@ -1640,7 +1676,9 @@
             "Luminária LED 30W": 1,
             "Conexão": 2
           },
-          "atrasos": []
+          "atrasos": [],
+          "tempoSoma": 376.2,
+          "tempoN": 11
         },
         "internet": {
           "n": 0,
@@ -1648,7 +1686,9 @@
           "nok": 0,
           "bairros": {},
           "motivos": {},
-          "atrasos": []
+          "atrasos": [],
+          "tempoSoma": 0,
+          "tempoN": 0
         },
         "outros": {
           "n": 0,
@@ -1656,7 +1696,9 @@
           "nok": 0,
           "bairros": {},
           "motivos": {},
-          "atrasos": []
+          "atrasos": [],
+          "tempoSoma": 0,
+          "tempoN": 0
         }
       },
       "origem_ronda": 108,
@@ -1895,7 +1937,9 @@
               "bairro": "Liri",
               "motivo": ""
             }
-          ]
+          ],
+          "tempoSoma": 11525.6,
+          "tempoN": 179
         },
         "tele": {
           "n": 0,
@@ -1903,7 +1947,9 @@
           "nok": 0,
           "bairros": {},
           "motivos": {},
-          "atrasos": []
+          "atrasos": [],
+          "tempoSoma": 0,
+          "tempoN": 0
         },
         "callcenter": {
           "n": 41,
@@ -1939,7 +1985,9 @@
             "Base com defeito": 1,
             "Luminária LED 30W": 3
           },
-          "atrasos": []
+          "atrasos": [],
+          "tempoSoma": 1763.9,
+          "tempoN": 41
         },
         "chatbot": {
           "n": 9,
@@ -1956,7 +2004,9 @@
             "Propriedade Particular": 1,
             "Luminária LED 30W": 1
           },
-          "atrasos": []
+          "atrasos": [],
+          "tempoSoma": 406.9,
+          "tempoN": 9
         },
         "app": {
           "n": 8,
@@ -1977,7 +2027,9 @@
             "Luminária LED 30W": 1,
             "Rele queimado": 1
           },
-          "atrasos": []
+          "atrasos": [],
+          "tempoSoma": 240.8,
+          "tempoN": 8
         },
         "internet": {
           "n": 0,
@@ -1985,7 +2037,9 @@
           "nok": 0,
           "bairros": {},
           "motivos": {},
-          "atrasos": []
+          "atrasos": [],
+          "tempoSoma": 0,
+          "tempoN": 0
         },
         "outros": {
           "n": 0,
@@ -1993,7 +2047,9 @@
           "nok": 0,
           "bairros": {},
           "motivos": {},
-          "atrasos": []
+          "atrasos": [],
+          "tempoSoma": 0,
+          "tempoN": 0
         }
       },
       "origem_ronda": 182,
@@ -2259,7 +2315,9 @@
               "bairro": "Boa Vista",
               "motivo": ""
             }
-          ]
+          ],
+          "tempoSoma": 6559.8,
+          "tempoN": 120
         },
         "tele": {
           "n": 112,
@@ -2324,7 +2382,9 @@
               "bairro": "Poço 8",
               "motivo": "Lâmpada queimada"
             }
-          ]
+          ],
+          "tempoSoma": 6353.6,
+          "tempoN": 108
         },
         "callcenter": {
           "n": 37,
@@ -2362,7 +2422,9 @@
             "Luminária LED 30W": 1,
             "Chuva": 2
           },
-          "atrasos": []
+          "atrasos": [],
+          "tempoSoma": 1423.4,
+          "tempoN": 37
         },
         "chatbot": {
           "n": 11,
@@ -2380,7 +2442,9 @@
             "Lâmpada queimada": 4,
             "Propriedade Particular": 2
           },
-          "atrasos": []
+          "atrasos": [],
+          "tempoSoma": 473.2,
+          "tempoN": 11
         },
         "app": {
           "n": 4,
@@ -2396,7 +2460,9 @@
             "Lâmpada queimada": 1,
             "Rele queimado": 1
           },
-          "atrasos": []
+          "atrasos": [],
+          "tempoSoma": 125.5,
+          "tempoN": 4
         },
         "internet": {
           "n": 1,
@@ -2406,7 +2472,9 @@
             "Vila São Pedro": 1
           },
           "motivos": {},
-          "atrasos": []
+          "atrasos": [],
+          "tempoSoma": 38.5,
+          "tempoN": 1
         },
         "outros": {
           "n": 0,
@@ -2414,7 +2482,9 @@
           "nok": 0,
           "bairros": {},
           "motivos": {},
-          "atrasos": []
+          "atrasos": [],
+          "tempoSoma": 0,
+          "tempoN": 0
         }
       },
       "origem_ronda": 126,
