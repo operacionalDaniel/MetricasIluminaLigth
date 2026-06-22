@@ -59,6 +59,12 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:#1a2535;min-heig
 .mes-tab.mes-has{border-color:#1a8a3c;color:#1a8a3c}
 .mes-tab.mes-active.mes-has{color:#fff;border-color:#008fa8}
 .mes-sep{width:1px;height:18px;background:var(--border);margin:0 2px;flex-shrink:0;display:inline-block}
+.pan-btn{display:inline-block;padding:5px 14px;border-radius:6px;border:1.5px solid #7b35b8;
+  background:#fff;color:#7b35b8;font-size:.72rem;font-family:'Barlow Condensed',sans-serif;font-weight:800;
+  letter-spacing:.05em;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;
+  box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.pan-btn:hover{background:#f5edfc}
+.pan-btn.pan-active{background:#7b35b8;color:#fff;border-color:#7b35b8}
 
 /* ── TABS ── */
 .tabs{display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 28px;
@@ -283,7 +289,6 @@ canvas{display:block;width:100%;max-height:220px}
   <div class="tab" onclick="showTab('prazos',this)">⏱ Prazos</div>
   <div class="tab" onclick="showTab('comparativo',this)">📈 Comparativo</div>
   <div class="tab" onclick="showTab('contraprestacao',this)">💰 Contraprestação</div>
-  <div class="tab" onclick="showTab('panorama',this)">📅 Panorama Anual</div>
 </div>
 
 <div class="content active" id="tab-visao"></div>
@@ -312,6 +317,7 @@ const ALL_MESES = ['jan/26','fev/26','mar/26','abr/26','mai/26','jun/26',
                    'jul/26','ago/26','set/26','out/26','nov/26','dez/26'];
 let DB_OP = {};
 let CUR_MES = null;
+let PANORAMA_ACTIVE = false;
 let CUR_DATA = null;
 const FILES = {oc:null, mat:null, pr:null};
 
@@ -1683,8 +1689,15 @@ function renderMesesBar(){
     btn.title=m+(has?' — clique para visualizar':' — sem dados');
     if(has) btn.onclick=()=>mudarMes(m); else btn.disabled=true;
     bar.appendChild(btn);
-    if(i<ALL_MESES.length-1){const sep=document.createElement('div');sep.className='mes-sep';bar.appendChild(sep);}
+    const sep=document.createElement('div');sep.className='mes-sep';bar.appendChild(sep);
   });
+  // Botão Panorama Anual — ao final da escala, após dezembro
+  const panBtn=document.createElement('button');
+  panBtn.className='pan-btn'+(PANORAMA_ACTIVE?' pan-active':'');
+  panBtn.textContent='📅 Panorama Anual';
+  panBtn.title='Ver consolidado de todos os meses carregados';
+  panBtn.onclick=()=>abrirPanorama(panBtn);
+  bar.appendChild(panBtn);
 }
 
 function mudarMes(mes){
@@ -1693,11 +1706,19 @@ function mudarMes(mes){
   const abaAtual = document.querySelector('.content.active')?.id?.replace('tab-','');
   CUR_MES=mes;
   applyData(DB_OP[mes]);
+  // Se o usuário estava no Panorama Anual, mantém essa visualização (independe do mês)
+  if(abaAtual==='panorama'){
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
+    document.getElementById('tab-panorama').classList.add('active');
+    setTimeout(()=>drawPanoramaCharts(),60);
+    return;
+  }
   // Mantém a aba que o usuário estava visualizando
   if(abaAtual){
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
     document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
-    const ids=['visao','trabalho','ronda','telegestao','origens','materiais','prazos','comparativo','contraprestacao','panorama'];
+    const ids=['visao','trabalho','ronda','telegestao','origens','materiais','prazos','comparativo','contraprestacao'];
     const idx=ids.indexOf(abaAtual);
     if(idx>=0){
       document.getElementById('tab-'+abaAtual).classList.add('active');
@@ -1707,16 +1728,28 @@ function mudarMes(mes){
 }
 
 function showTab(id,el){
+  PANORAMA_ACTIVE=false;
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
   if(el) el.classList.add('active');
+  renderMesesBar();
   if(CUR_DATA) setTimeout(()=>drawAll(CUR_DATA),60);
+}
+
+function abrirPanorama(el){
+  PANORAMA_ACTIVE=true;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-panorama').classList.add('active');
+  document.getElementById('tab-panorama').innerHTML = renderPanoramaAnual();
+  renderMesesBar();
+  setTimeout(()=>drawPanoramaCharts(),60);
 }
 
 function showTabById(id){
   const tabs=document.querySelectorAll('.tab');
-  const ids=['visao','trabalho','ronda','telegestao','origens','materiais','prazos','comparativo','contraprestacao','panorama'];
+  const ids=['visao','trabalho','ronda','telegestao','origens','materiais','prazos','comparativo','contraprestacao'];
   const idx=ids.indexOf(id);
   if(idx>=0&&tabs[idx]) showTab(id,tabs[idx]);
 }
