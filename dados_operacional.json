@@ -1,5 +1,5 @@
 {
-  "ultima_atualizacao": "16/06/2026 13:38",
+  "ultima_atualizacao": "22/06/2026 11:21",
   "meses": {
     "jan/26": {
       "mes": "jan/26",
@@ -146,243 +146,423 @@
           "atrasos": [
             {
               "label": "4d +14h49",
-              "h": 110.82
+              "h": 110.82,
+              "status": "Atendido",
+              "bairro": "São Rafael",
+              "motivo": "Rele queimado"
             },
             {
               "label": "4d +14h19",
-              "h": 110.32
+              "h": 110.32,
+              "status": "Encontrado normal",
+              "bairro": "Poço 8",
+              "motivo": ""
             },
             {
               "label": "4d +14h32",
-              "h": 110.53
+              "h": 110.53,
+              "status": "Atendido",
+              "bairro": "Rio dos Anjos",
+              "motivo": "Conexão"
             },
             {
               "label": "4d +14h33",
-              "h": 110.55
+              "h": 110.55,
+              "status": "Atendido",
+              "bairro": "Rio dos Anjos",
+              "motivo": "Lâmpada queimada"
             },
             {
               "label": "4d +19h34",
-              "h": 115.57
+              "h": 115.57,
+              "status": "Repetido",
+              "bairro": "Sanga Funda",
+              "motivo": ""
             },
             {
               "label": "4d +19h34",
-              "h": 115.57
+              "h": 115.57,
+              "status": "Encontrado normal",
+              "bairro": "Sanga Funda",
+              "motivo": ""
             },
             {
               "label": "4d +12h29",
-              "h": 108.48
+              "h": 108.48,
+              "status": "Atendido",
+              "bairro": "Vila São José",
+              "motivo": "Lâmpada queimada"
             },
             {
               "label": "4d +12h07",
-              "h": 108.12
+              "h": 108.12,
+              "status": "Atendido",
+              "bairro": "Jaqueline",
+              "motivo": "Conexão"
             },
             {
               "label": "4d +11h52",
-              "h": 107.87
+              "h": 107.87,
+              "status": "Atendido",
+              "bairro": "Jaqueline",
+              "motivo": "Lâmpada queimada"
             },
             {
               "label": "4d +18h22",
-              "h": 114.37
+              "h": 114.37,
+              "status": "Repetido",
+              "bairro": "Centro",
+              "motivo": ""
             },
             {
               "label": "4d +18h22",
-              "h": 114.37
+              "h": 114.37,
+              "status": "Repetido",
+              "bairro": "Centro",
+              "motivo": ""
             },
             {
               "label": "+7h02",
-              "h": 7.03
+              "h": 7.03,
+              "status": "Atendido",
+              "bairro": "Lombas",
+              "motivo": "Rele queimado"
             },
             {
               "label": "1d +21h19",
-              "h": 45.32
+              "h": 45.32,
+              "status": "Atendido",
+              "bairro": "Presidente Vargas",
+              "motivo": "Lâmpada queimada"
             },
             {
               "label": "1d +21h56",
-              "h": 45.93
+              "h": 45.93,
+              "status": "Atendido",
+              "bairro": "Presidente Vargas",
+              "motivo": "Conexão"
             },
             {
               "label": "1d +2h49",
-              "h": 26.82
+              "h": 26.82,
+              "status": "Repetido",
+              "bairro": "Presidente Vargas",
+              "motivo": ""
             },
             {
               "label": "+4h24",
-              "h": 4.4
+              "h": 4.4,
+              "status": "Atendido",
+              "bairro": "Demboski",
+              "motivo": "Conexão"
             },
             {
               "label": "+22h21",
-              "h": 22.35
+              "h": 22.35,
+              "status": "Atendido",
+              "bairro": "Centro",
+              "motivo": "Conexão"
             },
             {
               "label": "1d +7h05",
-              "h": 31.08
+              "h": 31.08,
+              "status": "Atendido",
+              "bairro": "Sanga Funda",
+              "motivo": "Rele queimado"
             },
             {
               "label": "+10h18",
-              "h": 10.3
+              "h": 10.3,
+              "status": "Repetido",
+              "bairro": "Centro",
+              "motivo": ""
             },
             {
               "label": "+11h01",
-              "h": 11.02
+              "h": 11.02,
+              "status": "Outro Atendimento",
+              "bairro": "Vila São José",
+              "motivo": ""
             },
             {
               "label": "+10h59",
-              "h": 10.98
+              "h": 10.98,
+              "status": "Outro Atendimento",
+              "bairro": "Vila São José",
+              "motivo": ""
             },
             {
               "label": "+10h58",
-              "h": 10.97
+              "h": 10.97,
+              "status": "Outro Atendimento",
+              "bairro": "Vila São José",
+              "motivo": ""
             },
             {
               "label": "+10h58",
-              "h": 10.97
+              "h": 10.97,
+              "status": "Outro Atendimento",
+              "bairro": "Vila São José",
+              "motivo": ""
             },
             {
               "label": "1d +7h10",
-              "h": 31.17
+              "h": 31.17,
+              "status": "Outro Atendimento",
+              "bairro": "Jaqueline",
+              "motivo": ""
             },
             {
               "label": "1d +7h04",
-              "h": 31.07
+              "h": 31.07,
+              "status": "Outro Atendimento",
+              "bairro": "Jaqueline",
+              "motivo": ""
             },
             {
               "label": "+7h37",
-              "h": 7.62
+              "h": 7.62,
+              "status": "Atendido",
+              "bairro": "Ronco DÁgua",
+              "motivo": "Lâmpada queimada"
             },
             {
               "label": "1d +3h35",
-              "h": 27.58
+              "h": 27.58,
+              "status": "Atendido",
+              "bairro": "Presidente Vargas",
+              "motivo": "Rele queimado"
             },
             {
               "label": "1d +4h20",
-              "h": 28.33
+              "h": 28.33,
+              "status": "Atendido",
+              "bairro": "Nossa Senhora De Fátima",
+              "motivo": "Lâmpada queimada"
             },
             {
               "label": "+19h50",
-              "h": 19.83
+              "h": 19.83,
+              "status": "Atendido",
+              "bairro": "Esperança",
+              "motivo": "Conexão"
             },
             {
               "label": "+0h24",
-              "h": 0.4
+              "h": 0.4,
+              "status": "Atendido",
+              "bairro": "Jaqueline",
+              "motivo": "Rele queimado"
             },
             {
               "label": "1d +18h02",
-              "h": 42.03
+              "h": 42.03,
+              "status": "Atendido",
+              "bairro": "Raichaski",
+              "motivo": "Lâmpada queimada"
             },
             {
               "label": "1d +6h08",
-              "h": 30.13
+              "h": 30.13,
+              "status": "Outro Atendimento",
+              "bairro": "Jardim Elizabeth",
+              "motivo": ""
             },
             {
               "label": "+18h10",
-              "h": 18.17
+              "h": 18.17,
+              "status": "Atendido",
+              "bairro": "Lombas",
+              "motivo": "Lâmpada queimada"
             },
             {
               "label": "+18h24",
-              "h": 18.4
+              "h": 18.4,
+              "status": "Atendido",
+              "bairro": "Lombas",
+              "motivo": "Lâmpada queimada"
             },
             {
               "label": "+5h22",
-              "h": 5.37
+              "h": 5.37,
+              "status": "Atendido",
+              "bairro": "Sanga Funda",
+              "motivo": "Conexão"
             },
             {
               "label": "+5h15",
-              "h": 5.25
+              "h": 5.25,
+              "status": "Atendido",
+              "bairro": "Sanga Funda",
+              "motivo": "Conexão"
             },
             {
               "label": "1d +1h29",
-              "h": 25.48
+              "h": 25.48,
+              "status": "Outro Atendimento",
+              "bairro": "Sanga Funda",
+              "motivo": ""
             },
             {
               "label": "+4h16",
-              "h": 4.27
+              "h": 4.27,
+              "status": "Encontrado normal",
+              "bairro": "Barracão",
+              "motivo": ""
             },
             {
               "label": "+4h17",
-              "h": 4.28
+              "h": 4.28,
+              "status": "Encontrado normal",
+              "bairro": "Barracão",
+              "motivo": ""
             },
             {
               "label": "1d +0h02",
-              "h": 24.03
+              "h": 24.03,
+              "status": "Encontrado normal",
+              "bairro": "Barracão",
+              "motivo": ""
             },
             {
               "label": "+4h20",
-              "h": 4.33
+              "h": 4.33,
+              "status": "Encontrado normal",
+              "bairro": "Sanga Funda",
+              "motivo": ""
             },
             {
               "label": "+22h45",
-              "h": 22.75
+              "h": 22.75,
+              "status": "Outro Atendimento",
+              "bairro": "Lombas",
+              "motivo": ""
             },
             {
               "label": "+5h41",
-              "h": 5.68
+              "h": 5.68,
+              "status": "Atendido",
+              "bairro": "Sanga Funda",
+              "motivo": "Rele queimado"
             },
             {
               "label": "+3h24",
-              "h": 3.4
+              "h": 3.4,
+              "status": "Atendido",
+              "bairro": "Vila Nova",
+              "motivo": "Lâmpada queimada"
             },
             {
               "label": "+0h40",
-              "h": 0.67
+              "h": 0.67,
+              "status": "Atendido",
+              "bairro": "Aurora",
+              "motivo": "Lâmpada quebrada"
             },
             {
               "label": "+3h10",
-              "h": 3.17
+              "h": 3.17,
+              "status": "Atendido",
+              "bairro": "Aurora",
+              "motivo": "Rele queimado"
             },
             {
               "label": "+3h41",
-              "h": 3.68
+              "h": 3.68,
+              "status": "Outro Atendimento",
+              "bairro": "João Dagostin",
+              "motivo": ""
             },
             {
               "label": "+3h31",
-              "h": 3.52
+              "h": 3.52,
+              "status": "Atendido",
+              "bairro": "Zona Rural",
+              "motivo": "Conexão"
             },
             {
               "label": "+3h50",
-              "h": 3.83
+              "h": 3.83,
+              "status": "Outro Atendimento",
+              "bairro": "Primeiro de Maio",
+              "motivo": ""
             },
             {
               "label": "1d +2h52",
-              "h": 26.87
+              "h": 26.87,
+              "status": "Atendido",
+              "bairro": "Centro",
+              "motivo": "Conexão"
             },
             {
               "label": "1d +2h57",
-              "h": 26.95
+              "h": 26.95,
+              "status": "Encontrado normal",
+              "bairro": "Cristo Rei",
+              "motivo": ""
             },
             {
               "label": "+3h55",
-              "h": 3.92
+              "h": 3.92,
+              "status": "Atendido",
+              "bairro": "Jardim Silvana",
+              "motivo": "Rele queimado"
             },
             {
               "label": "+4h10",
-              "h": 4.17
+              "h": 4.17,
+              "status": "Atendido",
+              "bairro": "Tereza Cristina",
+              "motivo": "Lâmpada queimada"
             },
             {
               "label": "+4h55",
-              "h": 4.92
+              "h": 4.92,
+              "status": "Atendido",
+              "bairro": "Tereza Cristina",
+              "motivo": "Rele queimado"
             },
             {
               "label": "+5h29",
-              "h": 5.48
+              "h": 5.48,
+              "status": "Atendido",
+              "bairro": "Liri",
+              "motivo": "Rele queimado"
             },
             {
               "label": "+5h11",
-              "h": 5.18
+              "h": 5.18,
+              "status": "Atendido",
+              "bairro": "Liri",
+              "motivo": "Rele queimado"
             },
             {
               "label": "+5h02",
-              "h": 5.03
+              "h": 5.03,
+              "status": "Atendido",
+              "bairro": "Liri",
+              "motivo": "Rele queimado"
             },
             {
               "label": "+5h55",
-              "h": 5.92
+              "h": 5.92,
+              "status": "Atendido",
+              "bairro": "Liri",
+              "motivo": "Lâmpada queimada"
             },
             {
               "label": "1d +2h50",
-              "h": 26.83
+              "h": 26.83,
+              "status": "Encontrado normal",
+              "bairro": "Presidente Vargas",
+              "motivo": ""
             },
             {
               "label": "+5h06",
-              "h": 5.1
+              "h": 5.1,
+              "status": "Atendido",
+              "bairro": "Demboski",
+              "motivo": "Lâmpada queimada"
             }
           ]
         },
@@ -407,43 +587,73 @@
           "atrasos": [
             {
               "label": "1d +5h43",
-              "h": 29.72
+              "h": 29.72,
+              "status": "Encontrado normal",
+              "bairro": "Sanga Funda",
+              "motivo": ""
             },
             {
               "label": "2d +4h50",
-              "h": 52.83
+              "h": 52.83,
+              "status": "Encontrado normal",
+              "bairro": "Sanga Funda",
+              "motivo": ""
             },
             {
               "label": "2d +4h58",
-              "h": 52.97
+              "h": 52.97,
+              "status": "Encontrado normal",
+              "bairro": "Presidente Vargas",
+              "motivo": ""
             },
             {
               "label": "2d +4h55",
-              "h": 52.92
+              "h": 52.92,
+              "status": "Encontrado normal",
+              "bairro": "Presidente Vargas",
+              "motivo": ""
             },
             {
               "label": "2d +5h02",
-              "h": 53.03
+              "h": 53.03,
+              "status": "Encontrado normal",
+              "bairro": "Presidente Vargas",
+              "motivo": ""
             },
             {
               "label": "2d +5h12",
-              "h": 53.2
+              "h": 53.2,
+              "status": "Encontrado normal",
+              "bairro": "Presidente Vargas",
+              "motivo": ""
             },
             {
               "label": "1d +4h19",
-              "h": 28.32
+              "h": 28.32,
+              "status": "Encontrado normal",
+              "bairro": "Presidente Vargas",
+              "motivo": ""
             },
             {
               "label": "1d +3h44",
-              "h": 27.73
+              "h": 27.73,
+              "status": "Atendido",
+              "bairro": "Presidente Vargas",
+              "motivo": "Rele queimado"
             },
             {
               "label": "1d +3h08",
-              "h": 27.13
+              "h": 27.13,
+              "status": "Atendido",
+              "bairro": "Presidente Vargas",
+              "motivo": "Rele queimado"
             },
             {
               "label": "+4h48",
-              "h": 4.8
+              "h": 4.8,
+              "status": "Atendido",
+              "bairro": "Presidente Vargas",
+              "motivo": "Conexão"
             }
           ]
         },
@@ -489,7 +699,10 @@
           "atrasos": [
             {
               "label": "+6h53",
-              "h": 6.88
+              "h": 6.88,
+              "status": "Atendido",
+              "bairro": "Ronco DÁgua",
+              "motivo": "Lâmpada queimada"
             }
           ]
         },
@@ -513,7 +726,10 @@
           "atrasos": [
             {
               "label": "2d +19h28",
-              "h": 67.47
+              "h": 67.47,
+              "status": "Fora do escopo do contrato",
+              "bairro": "Esplanada",
+              "motivo": "Propriedade Particular"
             }
           ]
         },
@@ -778,107 +994,185 @@
           "atrasos": [
             {
               "label": "5d +18h06",
-              "h": 138.1
+              "h": 138.1,
+              "status": "Projeto",
+              "bairro": "Campo Mãe Luzia",
+              "motivo": ""
             },
             {
               "label": "5d +18h04",
-              "h": 138.07
+              "h": 138.07,
+              "status": "Projeto",
+              "bairro": "Campo Mãe Luzia",
+              "motivo": ""
             },
             {
               "label": "5d +18h02",
-              "h": 138.03
+              "h": 138.03,
+              "status": "Projeto",
+              "bairro": "Campo Mãe Luzia",
+              "motivo": ""
             },
             {
               "label": "5d +18h00",
-              "h": 138.0
+              "h": 138.0,
+              "status": "Projeto",
+              "bairro": "Campo Mãe Luzia",
+              "motivo": ""
             },
             {
               "label": "5d +17h55",
-              "h": 137.92
+              "h": 137.92,
+              "status": "Projeto",
+              "bairro": "Campo Mãe Luzia",
+              "motivo": ""
             },
             {
               "label": "5d +17h54",
-              "h": 137.9
+              "h": 137.9,
+              "status": "Projeto",
+              "bairro": "Campo Mãe Luzia",
+              "motivo": ""
             },
             {
               "label": "5d +17h48",
-              "h": 137.8
+              "h": 137.8,
+              "status": "Projeto",
+              "bairro": "Campo Mãe Luzia",
+              "motivo": ""
             },
             {
               "label": "5d +17h47",
-              "h": 137.78
+              "h": 137.78,
+              "status": "Projeto",
+              "bairro": "Campo Mãe Luzia",
+              "motivo": ""
             },
             {
               "label": "5d +17h45",
-              "h": 137.75
+              "h": 137.75,
+              "status": "Projeto",
+              "bairro": "Campo Mãe Luzia",
+              "motivo": ""
             },
             {
               "label": "5d +17h44",
-              "h": 137.73
+              "h": 137.73,
+              "status": "Projeto",
+              "bairro": "Campo Mãe Luzia",
+              "motivo": ""
             },
             {
               "label": "+12h34",
-              "h": 12.57
+              "h": 12.57,
+              "status": "Atendido",
+              "bairro": "Vila Nova",
+              "motivo": "Rele queimado"
             },
             {
               "label": "+13h22",
-              "h": 13.37
+              "h": 13.37,
+              "status": "Atendido",
+              "bairro": "Lombas",
+              "motivo": "Lâmpada queimada"
             },
             {
               "label": "+10h54",
-              "h": 10.9
+              "h": 10.9,
+              "status": "Projeto",
+              "bairro": "Zona Rural",
+              "motivo": ""
             },
             {
               "label": "+10h54",
-              "h": 10.9
+              "h": 10.9,
+              "status": "Projeto",
+              "bairro": "Zona Rural",
+              "motivo": ""
             },
             {
               "label": "2d +16h47",
-              "h": 64.78
+              "h": 64.78,
+              "status": "Repetido",
+              "bairro": "Sanga Funda",
+              "motivo": ""
             },
             {
               "label": "2d +16h47",
-              "h": 64.78
+              "h": 64.78,
+              "status": "Repetido",
+              "bairro": "Sanga Funda",
+              "motivo": ""
             },
             {
               "label": "2d +16h47",
-              "h": 64.78
+              "h": 64.78,
+              "status": "Repetido",
+              "bairro": "Barracão",
+              "motivo": ""
             },
             {
               "label": "1d +18h12",
-              "h": 42.2
+              "h": 42.2,
+              "status": "Atendido",
+              "bairro": "Presidente Vargas",
+              "motivo": "Rele queimado"
             },
             {
               "label": "1d +17h29",
-              "h": 41.48
+              "h": 41.48,
+              "status": "Projeto",
+              "bairro": "Boa Vista",
+              "motivo": ""
             },
             {
               "label": "4d +16h32",
-              "h": 112.53
+              "h": 112.53,
+              "status": "Outro Atendimento",
+              "bairro": "Esplanada",
+              "motivo": ""
             },
             {
               "label": "4d +16h35",
-              "h": 112.58
+              "h": 112.58,
+              "status": "Outro Atendimento",
+              "bairro": "Esplanada",
+              "motivo": ""
             },
             {
               "label": "4d +16h34",
-              "h": 112.57
+              "h": 112.57,
+              "status": "Outro Atendimento",
+              "bairro": "Esplanada",
+              "motivo": ""
             },
             {
               "label": "+2h47",
-              "h": 2.78
+              "h": 2.78,
+              "status": "Atendido",
+              "bairro": "Zona Rural",
+              "motivo": "Rele queimado"
             },
             {
               "label": "+2h52",
-              "h": 2.87
+              "h": 2.87,
+              "status": "Atendido",
+              "bairro": "Zona Rural",
+              "motivo": "Rele queimado"
             },
             {
               "label": "+1h01",
-              "h": 1.02
+              "h": 1.02,
+              "status": "Repetido",
+              "bairro": "Vila Nova",
+              "motivo": ""
             },
             {
               "label": "+0h44",
-              "h": 0.73
+              "h": 0.73,
+              "status": "Repetido",
+              "bairro": "Boa Vista",
+              "motivo": ""
             }
           ]
         },
@@ -930,15 +1224,24 @@
           "atrasos": [
             {
               "label": "+4h15",
-              "h": 4.25
+              "h": 4.25,
+              "status": "Impossibilidade",
+              "bairro": "",
+              "motivo": "Chuva"
             },
             {
               "label": "+4h14",
-              "h": 4.23
+              "h": 4.23,
+              "status": "Impossibilidade",
+              "bairro": "Poço 3",
+              "motivo": "Chuva"
             },
             {
               "label": "+1h50",
-              "h": 1.83
+              "h": 1.83,
+              "status": "Impossibilidade",
+              "bairro": "Morro Bonito",
+              "motivo": "Chuva"
             }
           ]
         },
@@ -1209,23 +1512,38 @@
           "atrasos": [
             {
               "label": "1d +23h46",
-              "h": 47.77
+              "h": 47.77,
+              "status": "Outro Atendimento",
+              "bairro": "Liri",
+              "motivo": ""
             },
             {
               "label": "+18h22",
-              "h": 18.37
+              "h": 18.37,
+              "status": "Atendido",
+              "bairro": "Presidente Vargas",
+              "motivo": "Rele queimado"
             },
             {
               "label": "+18h30",
-              "h": 18.5
+              "h": 18.5,
+              "status": "Atendido",
+              "bairro": "Lombas",
+              "motivo": "Rele queimado"
             },
             {
               "label": "2d +17h38",
-              "h": 65.63
+              "h": 65.63,
+              "status": "Repetido",
+              "bairro": "Esplanada",
+              "motivo": ""
             },
             {
               "label": "2d +17h38",
-              "h": 65.63
+              "h": 65.63,
+              "status": "Repetido",
+              "bairro": "Esplanada",
+              "motivo": ""
             }
           ]
         },
@@ -1297,7 +1615,10 @@
           "atrasos": [
             {
               "label": "+3h15",
-              "h": 3.25
+              "h": 3.25,
+              "status": "Outro Atendimento",
+              "bairro": "Presidente Vargas",
+              "motivo": ""
             }
           ]
         },
@@ -1555,15 +1876,24 @@
           "atrasos": [
             {
               "label": "+12h38",
-              "h": 12.63
+              "h": 12.63,
+              "status": "Atendido",
+              "bairro": "Centro",
+              "motivo": "Lâmpada queimada"
             },
             {
               "label": "1d +11h07",
-              "h": 35.12
+              "h": 35.12,
+              "status": "Repetido",
+              "bairro": "Barracão",
+              "motivo": ""
             },
             {
               "label": "+13h08",
-              "h": 13.13
+              "h": 13.13,
+              "status": "Repetido",
+              "bairro": "Liri",
+              "motivo": ""
             }
           ]
         },
@@ -1889,27 +2219,45 @@
           "atrasos": [
             {
               "label": "+12h17",
-              "h": 12.28
+              "h": 12.28,
+              "status": "Outro Atendimento",
+              "bairro": "Esplanada",
+              "motivo": ""
             },
             {
               "label": "+12h19",
-              "h": 12.32
+              "h": 12.32,
+              "status": "Outro Atendimento",
+              "bairro": "Esplanada",
+              "motivo": ""
             },
             {
               "label": "3d +20h36",
-              "h": 92.6
+              "h": 92.6,
+              "status": "Impossibilidade",
+              "bairro": "Centro",
+              "motivo": "Chuva"
             },
             {
               "label": "+3h50",
-              "h": 3.83
+              "h": 3.83,
+              "status": "Impossibilidade",
+              "bairro": "Esplanada",
+              "motivo": "Chuva"
             },
             {
               "label": "+17h23",
-              "h": 17.38
+              "h": 17.38,
+              "status": "Repetido",
+              "bairro": "Boa Vista",
+              "motivo": ""
             },
             {
               "label": "+17h24",
-              "h": 17.4
+              "h": 17.4,
+              "status": "Repetido",
+              "bairro": "Boa Vista",
+              "motivo": ""
             }
           ]
         },
@@ -1950,19 +2298,31 @@
           "atrasos": [
             {
               "label": "3d +20h37",
-              "h": 92.62
+              "h": 92.62,
+              "status": "Encontrado normal",
+              "bairro": "Liri",
+              "motivo": ""
             },
             {
               "label": "+2h22",
-              "h": 2.37
+              "h": 2.37,
+              "status": "Encontrado normal",
+              "bairro": "Vila São José",
+              "motivo": ""
             },
             {
               "label": "+2h25",
-              "h": 2.42
+              "h": 2.42,
+              "status": "Atendido",
+              "bairro": "Poço 8",
+              "motivo": "Rele queimado"
             },
             {
               "label": "+2h37",
-              "h": 2.62
+              "h": 2.62,
+              "status": "Atendido",
+              "bairro": "Poço 8",
+              "motivo": "Lâmpada queimada"
             }
           ]
         },
