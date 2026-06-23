@@ -677,7 +677,7 @@ function drawAll(d){
   if(!d) return;
   const cats=d.cats||{};
   const r=cats.ronda||mkCat(), tl=cats.tele||mkCat();
-  const cc=cats.callcenter||mkCat(), cb=cats.chatbot||mkCat(), ap=cats.app||mkCat();
+  const cc=cats.callcenter||mkCat(), cb=cats.chatbot||mkCat(), ap=cats.app||mkCat(), it=cats.internet||mkCat(), ot=cats.outros||mkCat();
 
   // Origens donut (Visão Geral)
   drawDonut('c-origens',
