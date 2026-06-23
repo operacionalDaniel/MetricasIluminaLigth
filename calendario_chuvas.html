@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Calendário de Chuvas · IluminaBoard</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#f0f4f8;--surface:#e8edf3;--card:#ffffff;
+  --border:#d1dae6;--border2:#b8c5d3;
+  --teal:#008fa8;--amber:#c47900;--red:#d42b2b;--green:#1a8a3c;--blue:#1a52b0;--purple:#7b35b8;
+  --text:#1a2535;--muted:#5a6e82;
+  --shadow:0 1px 4px rgba(0,0,0,.10),0 2px 12px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:20px}
+
+.header{background:linear-gradient(135deg,#1a2a40 0%,#1e3554 100%);
+  border-bottom:2px solid #b8c5d3;padding:20px 28px;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:28px;border-radius:12px 12px 0 0}
+.h-brand{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:900;color:#fff;letter-spacing:.03em}
+.h-brand em{font-style:normal;color:#00d4c8}
+
+.wrap{max-width:900px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+
+.container{padding:28px}
+
+.sec{font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;
+  margin-top:24px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+
+.cal-wrapper{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+@media(max-width:800px){.cal-wrapper{grid-template-columns:1fr}}
+
+.cal-panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
+
+.cal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.cal-month{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:800;color:var(--text)}
+.cal-nav{display:flex;gap:6px}
+.cal-btn{padding:6px 10px;border:1px solid var(--border2);background:#fff;cursor:pointer;border-radius:6px;font-size:.75rem;font-weight:700;color:var(--muted)}
+.cal-btn:hover{border-color:var(--teal);color:var(--teal)}
+
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-day-header{font-size:.65rem;font-weight:800;color:var(--muted);text-align:center;text-transform:uppercase;padding:8px 4px}
+.cal-day{padding:12px 4px;border:1px solid var(--border);border-radius:6px;text-align:center;font-size:.8rem;cursor:pointer;
+  background:#fff;transition:all .15s;user-select:none}
+.cal-day:hover{border-color:var(--teal);background:#f0f9fb}
+.cal-day.inactive{opacity:.3;pointer-events:none}
+.cal-day.rainy{background:linear-gradient(135deg,#e0f7fa 0%,#b2ebf2 100%);border-color:var(--teal);color:var(--teal);font-weight:700}
+.cal-day.today{border:2px solid var(--amber)}
+
+.input-panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
+.input-label{display:block;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.input-textarea{width:100%;padding:10px;border:1px solid var(--border2);border-radius:8px;font-family:monospace;font-size:.8rem;resize:vertical;min-height:100px}
+.input-textarea:focus{outline:none;border-color:var(--teal)}
+
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.btn{padding:10px 16px;border-radius:6px;border:none;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700;
+  font-size:.8rem;transition:all .2s}
+.btn-primary{background:var(--teal);color:#fff}
+.btn-primary:hover{background:#0077a0;transform:translateY(-2px)}
+.btn-danger{background:#d42b2b;color:#fff}
+.btn-danger:hover{background:#b00;transform:translateY(-2px)}
+.btn-secondary{background:var(--border2);color:var(--text)}
+.btn-secondary:hover{background:#a0b4c8}
+
+.info-box{padding:12px;border-radius:8px;font-size:.75rem;margin-bottom:12px;line-height:1.5}
+.info-teal{background:rgba(0,143,168,.08);border:1px solid rgba(0,143,168,.2);color:var(--teal)}
+.info-green{background:rgba(26,138,60,.08);border:1px solid rgba(26,138,60,.2);color:var(--green)}
+.info-amber{background:rgba(196,121,0,.08);border:1px solid rgba(196,121,0,.2);color:var(--amber)}
+
+.summary-box{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px}
+.summary-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
+.summary-val{font-family:'Barlow Condensed',sans-serif;font-size:1.6rem;font-weight:800;color:var(--teal)}
+.summary-label{font-size:.65rem;color:var(--muted);margin-top:4px;text-transform:uppercase}
+
+.pcne-result{background:linear-gradient(135deg,rgba(0,143,168,.05),rgba(26,138,60,.05));
+  border:2px solid var(--teal);border-radius:10px;padding:16px;margin-top:16px}
+.pcne-title{font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:800;color:var(--teal);text-transform:uppercase;margin-bottom:10px}
+.pcne-calc{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pcne-item{background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center}
+.pcne-label{font-size:.65rem;color:var(--muted);font-weight:700}
+.pcne-val{font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:800;color:var(--blue)}
+
+footer{background:var(--border);padding:12px;text-align:center;font-size:.65rem;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="h-brand">🌧️ <em>CALENDÁRIO DE CHUVAS</em></div>
+    <div style="font-size:.75rem;color:#a0b4c8;margin-top:4px">Força Maior · Recálculo automático do PCNE (SLA 3)</div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="container">
+    
+    <div class="sec">Seleção de Dias</div>
+    
+    <div class="cal-wrapper">
+      <div class="cal-panel">
+        <div class="cal-header">
+          <div class="cal-month" id="calMonth">Junho / 2026</div>
+          <div class="cal-nav">
+            <button class="cal-btn" onclick="prevMonth()">← Anterior</button>
+            <button class="cal-btn" onclick="nextMonth()">Próximo →</button>
+          </div>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+      </div>
+      
+      <div class="input-panel">
+        <div class="input-label">📋 Colar Lista de Datas</div>
+        <div class="info-box info-teal" style="font-size:.7rem">
+          Cole uma lista no formato: <strong>01, 05, 12, 23</strong> ou <strong>01/06, 05/06, 12/06</strong><br/>
+          Separe por vírgula ou quebra de linha. As datas se aplicam ao mês selecionado.
+        </div>
+        <textarea class="input-textarea" id="dateInput" placeholder="01, 05, 12, 23"></textarea>
+        <div class="actions">
+          <button class="btn btn-primary" onclick="importDates()">📥 Importar Datas</button>
+          <button class="btn btn-secondary" onclick="document.getElementById('dateInput').value=''">🗑️ Limpar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-box">
+      <div class="summary-card">
+        <div class="summary-val" id="totalRainy">0</div>
+        <div class="summary-label">Dias Chuvosos</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-val" id="totalDays">30</div>
+        <div class="summary-label">Total de Dias</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-val" id="percentRainy">0%</div>
+        <div class="summary-label">% do Mês</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+      <button class="btn btn-danger" onclick="clearAllRainy()">🔄 Limpar Todos os Dias</button>
+      <button class="btn btn-primary" onclick="saveAndSync()">💾 Salvar Dados</button>
+    </div>
+
+    <div class="info-box info-green">
+      ✅ Os dados são salvos automaticamente no navegador (localStorage). Nenhuma informação é enviada para o servidor.
+    </div>
+
+    <!-- PCNE Integration -->
+    <div class="sec">Impacto no PCNE (SLA 3) — Recálculo com Força Maior</div>
+    
+    <div class="info-box info-amber">
+      <strong>⚠️ Regra de Força Maior:</strong> Chamados com atraso que caem em dias com chuva são 
+      <strong>desconsiderados do indicador PCNE</strong>, aplicando a exceção contratual (Impossibilidade = Chuva).
+    </div>
+
+    <div id="pcneContainer" style="display:none">
+      <div class="pcne-result">
+        <div class="pcne-title">Dados do PCNE Atual (exemplo)</div>
+        <div class="pcne-calc">
+          <div class="pcne-item">
+            <div class="pcne-label">Chamados Não-Emergenciais</div>
+            <div class="pcne-val" id="pcneNCNEi">—</div>
+          </div>
+          <div class="pcne-item">
+            <div class="pcne-label">Atendidos no Prazo</div>
+            <div class="pcne-val" id="pcneNCNEa">—</div>
+          </div>
+          <div class="pcne-item">
+            <div class="pcne-label">Atrasos em Dias Chuvosos</div>
+            <div class="pcne-val" id="pcneRainyDelay">—</div>
+          </div>
+          <div class="pcne-item">
+            <div class="pcne-label">PCNE Recalculado</div>
+            <div class="pcne-val" id="pcneFinal">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box info-teal">
+      ℹ️ O recálculo do PCNE é realizado automaticamente nos dashboards quando você marca dias chuvosos aqui.
+      Os atrasos serão reclassificados como "Força Maior" no relatório operacional.
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  🌧️ IluminaBoard · Calendário de Chuvas · Força Maior no PCNE · Junho 2026
+</footer>
+
+<script>
+// ═════════════════════════════════════════════════════════════
+//  CALENDÁRIO DE CHUVAS COM INTEGRAÇÃO PCNE
+// ═════════════════════════════════════════════════════════════
+
+const DIAS_MES = {jan:31,fev:28,mar:31,abr:30,mai:31,jun:30,jul:31,ago:31,set:30,out:31,nov:30,dez:31};
+const MESES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const MESES_LONG = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+let currentMonth = new Date().getMonth(); // 0-11
+let currentYear = new Date().getFullYear();
+let rainyDays = new Set(); // Set de dias marcados
+
+const today = new Date();
+const todayMonth = today.getMonth();
+const todayYear = today.getFullYear();
+const todayDate = today.getDate();
+
+// ─────────────────────────────────────────────────────────────
+//  localStorage
+// ─────────────────────────────────────────────────────────────
+function getStorageKey() {
+  return `ilumina_chuvas_${MESES[currentMonth]}_${currentYear}`;
+}
+
+function loadRainyDays() {
+  const key = getStorageKey();
+  const saved = localStorage.getItem(key);
+  rainyDays = new Set(saved ? JSON.parse(saved) : []);
+}
+
+function saveRainyDays() {
+  const key = getStorageKey();
+  localStorage.setItem(key, JSON.stringify(Array.from(rainyDays).sort((a,b)=>a-b)));
+}
+
+// ─────────────────────────────────────────────────────────────
+//  Calendário
+// ─────────────────────────────────────────────────────────────
+function renderCalendar() {
+  loadRainyDays();
+  const monthName = MESES_LONG[currentMonth];
+  document.getElementById('calMonth').textContent = `${monthName} / ${currentYear}`;
+
+  const daysInMonth = DIAS_MES[MESES[currentMonth]];
+  const firstDay = new Date(currentYear, currentMonth, 1).getDay(); // 0=Dom, 1=Seg...
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+
+  // Headers
+  const headers = ['Dom','Seg','Ter','Qua','Qui','Sex','Sab'];
+  headers.forEach(h => {
+    const el = document.createElement('div');
+    el.className = 'cal-day-header';
+    el.textContent = h;
+    grid.appendChild(el);
+  });
+
+  // Empty slots before first day
+  for(let i=0; i<firstDay; i++) {
+    const el = document.createElement('div');
+    el.className = 'cal-day inactive';
+    grid.appendChild(el);
+  }
+
+  // Days
+  for(let d=1; d<=daysInMonth; d++) {
+    const el = document.createElement('div');
+    el.className = 'cal-day';
+    
+    if(rainyDays.has(d)) el.classList.add('rainy');
+    if(currentMonth === todayMonth && currentYear === todayYear && d === todayDate) {
+      el.classList.add('today');
+    }
+    
+    el.textContent = d;
+    el.onclick = () => toggleDay(d);
+    grid.appendChild(el);
+  }
+
+  updateSummary();
+}
+
+function toggleDay(day) {
+  if(rainyDays.has(day)) {
+    rainyDays.delete(day);
+  } else {
+    rainyDays.add(day);
+  }
+  renderCalendar();
+}
+
+function prevMonth() {
+  if(currentMonth === 0) {
+    currentMonth = 11;
+    currentYear--;
+  } else {
+    currentMonth--;
+  }
+  renderCalendar();
+}
+
+function nextMonth() {
+  if(currentMonth === 11) {
+    currentMonth = 0;
+    currentYear++;
+  } else {
+    currentMonth++;
+  }
+  renderCalendar();
+}
+
+// ─────────────────────────────────────────────────────────────
+//  Importar Datas
+// ─────────────────────────────────────────────────────────────
+function importDates() {
+  const input = document.getElementById('dateInput').value;
+  if(!input.trim()) return;
+
+  rainyDays.clear();
+
+  // Parse: "01, 05, 12" ou "01/06, 05/06" ou "01\n05\n12"
+  const parts = input.split(/[,\n]/).map(s => s.trim()).filter(s => s);
+  
+  parts.forEach(part => {
+    // Extrai primeiro número (01 ou 01/06 → 01)
+    const match = part.match(/^(\d{1,2})/);
+    if(match) {
+      const day = parseInt(match[1], 10);
+      if(day >= 1 && day <= DIAS_MES[MESES[currentMonth]]) {
+        rainyDays.add(day);
+      }
+    }
+  });
+
+  renderCalendar();
+  document.getElementById('dateInput').value = '';
+}
+
+// ─────────────────────────────────────────────────────────────
+//  Utilitários
+// ─────────────────────────────────────────────────────────────
+function updateSummary() {
+  const daysInMonth = DIAS_MES[MESES[currentMonth]];
+  const count = rainyDays.size;
+  const percent = daysInMonth > 0 ? Math.round((count / daysInMonth) * 100) : 0;
+
+  document.getElementById('totalRainy').textContent = count;
+  document.getElementById('totalDays').textContent = daysInMonth;
+  document.getElementById('percentRainy').textContent = percent + '%';
+}
+
+function clearAllRainy() {
+  if(confirm('Tem certeza que quer limpar todos os dias chuvosos deste mês?')) {
+    rainyDays.clear();
+    renderCalendar();
+  }
+}
+
+function saveAndSync() {
+  saveRainyDays();
+  alert('✅ Dados salvos com sucesso! Os dashboards usarão essas informações para recalcular o PCNE.');
+  // Dispara evento para avisar possíveis listeners
+  window.dispatchEvent(new CustomEvent('rainyChuvasUpdated', { detail: { mes: MESES[currentMonth], year: currentYear, days: Array.from(rainyDays) } }));
+}
+
+// ─────────────────────────────────────────────────────────────
+//  Init
+// ─────────────────────────────────────────────────────────────
+window.addEventListener('load', function() {
+  renderCalendar();
+});
+</script>
+
+</body>
+</html>
