@@ -853,7 +853,7 @@ function renderVisao(d){
     <div class="card cb"><div class="clabel">Outros Status</div><div class="cval" style="color:#1a52b0">${fmt(t-at)}</div><div class="csub">Modernização, Projeto, Escopo…</div></div>
     <div class="card ca"><div class="clabel">No Prazo</div><div class="cval" style="color:#c47900">${fmt(np)}</div><div class="csub">${sla}% dos atendimentos</div></div>
     <div class="card cr"><div class="clabel">Fora do Prazo</div><div class="cval" style="color:#d42b2b">${fmt(fp)}</div><div class="csub">${pct(fp,t)}% — investigar causas</div></div>
-    <div class="card" style="border-top:3px solid ${slaColor}"><div class="clabel">SLA Geral</div><div class="cval" style="color:${slaColor}">${sla}%</div><div class="csub">Prazo contratual: 48h</div></div>
+    <div class="card" style="border-top:3px solid ${slaColor}"><div class="clabel">SLA Geral</div><div class="cval" style="color:${slaColor}">${sla}%</div><div class="csub">Prazo médio de 48hrs</div></div>
   </div>
   <div class="g3">
     <div class="card ct">
@@ -1041,7 +1041,7 @@ function renderTelegestao(d){
       <div style="font-size:2.5rem;margin-bottom:10px">${tl.nok>0?'⚠️':'⏱'}</div>
       <div class="clabel">Fora do Prazo</div>
       <div style="font-family:'Barlow Condensed',sans-serif;font-size:3rem;font-weight:900;color:${tl.nok>0?'#d42b2b':'#5a6e82'}">${fmt(tl.nok)}</div>
-      <div style="font-size:.76rem;color:#5a6e82;margin-top:6px">Prazo contratual: 48h</div>
+      <div style="font-size:.76rem;color:#5a6e82;margin-top:6px">Prazo médio de 48hrs</div>
     </div>
   </div>
 
