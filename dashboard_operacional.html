@@ -706,10 +706,10 @@ function drawAll(d){
 
   // Prazos por origem (Prazos)
   const prazosData=[
-    {l:'Ronda própria',v:r.ok},{l:'Tele Gestão',v:tl.ok},{l:'Call Center',v:cc.ok},{l:'Chatbot',v:cb.ok},{l:'App',v:ap.ok}
+    {l:'Ronda própria',v:r.ok},{l:'Tele Gestão',v:tl.ok},{l:'Call Center',v:cc.ok},{l:'Chatbot',v:cb.ok},{l:'App',v:ap.ok},{l:'Internet',v:it.ok},{l:'Outros',v:ot.ok}
   ].filter(x=>x.v>0||(x.l==='Ronda própria'&&r.n>0));
   if(prazosData.length) drawBar('c-prazos',prazosData.map(x=>x.l),prazosData.map(x=>x.v),
-    ['#22c55e','#0077a0','#3b82f6','#a855f7','#f59e0b'],`No Prazo por Origem · ${d.mes||''}`);
+    ['#22c55e','#0077a0','#3b82f6','#a855f7','#f59e0b','#06b6d4','#6b7280'],`No Prazo por Origem · ${d.mes||''}`);
 
   // Causas bar (Comparativo)
   const causaTop=topN(d.motivoC||{},5);
