@@ -1306,7 +1306,7 @@ function renderPrazos(d){
   // ── BLOCO 2: KPIs gerais — TELE GESTÃO ──
   var teleSla = pct(tl.ok, tl.n);
   var teleSlaCor = teleSla>=98?'var(--green)':teleSla>=95?'var(--amber)':'var(--red)';
-  var teleTempoMedio = (tl.tempoN||0)>0 ? +(tl.tempoSoma||0)/tl.tempoN : 0;
+  var teleTempoMedio = (tl.tempoN||0)>0 ? +((tl.tempoSoma||0)/tl.tempoN).toFixed(1) : 0;
   out += '<div class="sec">📡 Indicadores de Prazo — Tele Gestão</div>';
   out += kpiBlock(teleSla, teleSlaCor, tl.ok, tl.n, tl.nok, teleTempoMedio);
 
