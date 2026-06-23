@@ -1724,10 +1724,66 @@ function renderMapa(d){
 
 // ══════════════════════════════════════════════
 //  CALENDÁRIO DE CHUVAS — Força Maior no PCNE
+//  (calendário interativo embutido direto na aba)
 // ══════════════════════════════════════════════
-// ══════════════════════════════════════════════
-//  CALENDÁRIO DE CHUVAS — Força Maior no PCNE
-// ══════════════════════════════════════════════
+let CHUVA_DATA = {}, CHUVA_MES_KEY = '', CHUVA_TOTAL_DIAS = 30, CHUVA_MES_NUM = 6, CHUVA_ANO_NUM = 2026;
+
+function chuvaEsc(s){
+  return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function chuvaLoad(){
+  try { CHUVA_DATA = JSON.parse(localStorage.getItem(CHUVA_MES_KEY) || '{}'); }
+  catch(e){ CHUVA_DATA = {}; }
+}
+function chuvaSave(){
+  localStorage.setItem(CHUVA_MES_KEY, JSON.stringify(CHUVA_DATA));
+}
+function chuvaRefreshTab(){
+  var el = document.getElementById('tab-chuva');
+  if(el && CUR_DATA) el.innerHTML = renderChuvas(CUR_DATA);
+}
+function chuvaToggleDay(day){
+  var k = String(day);
+  if(CHUVA_DATA.hasOwnProperty(k)) delete CHUVA_DATA[k];
+  else CHUVA_DATA[k] = {obs:''};
+  chuvaSave();
+  chuvaRefreshTab();
+}
+function chuvaUpdateObs(day, value){
+  var k = String(day);
+  if(!CHUVA_DATA[k]) CHUVA_DATA[k] = {obs:''};
+  CHUVA_DATA[k].obs = value;
+  chuvaSave();
+}
+function chuvaRemoveDay(day){
+  delete CHUVA_DATA[String(day)];
+  chuvaSave();
+  chuvaRefreshTab();
+}
+function chuvaImportDates(){
+  var elInput = document.getElementById('chuva-dateInput');
+  if(!elInput || !elInput.value.trim()) return;
+  var parts = elInput.value.split(/[,\n]/).map(function(s){return s.trim();}).filter(Boolean);
+  parts.forEach(function(p){
+    var m = p.match(/^(\d{1,2})/);
+    if(m){
+      var day = parseInt(m[1],10);
+      if(day>=1 && day<=CHUVA_TOTAL_DIAS && !CHUVA_DATA.hasOwnProperty(String(day))){
+        CHUVA_DATA[String(day)] = {obs:''};
+      }
+    }
+  });
+  chuvaSave();
+  chuvaRefreshTab();
+}
+function chuvaClearAll(){
+  if(confirm('Tem certeza que quer limpar todos os dias chuvosos deste mês?')){
+    CHUVA_DATA = {};
+    chuvaSave();
+    chuvaRefreshTab();
+  }
+}
+
 function renderChuvas(d){
   var mes = d.mes || '';
   var partes = String(mes).split('/');
@@ -1737,90 +1793,107 @@ function renderChuvas(d){
 
   var MESES_ORDEM = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
   var mesIdx = MESES_ORDEM.indexOf(mesAbrev);
-  if(mesIdx === -1) mesIdx = 5; // fallback: junho
+  if(mesIdx === -1) mesIdx = 5;
   var mesNum = mesIdx+1;
 
   var diasMes = [0,31,28,31,30,31,30,31,31,30,31,30,31];
-  // Ano bissexto simplificado (fevereiro)
   var anoNum = parseInt(anoFull,10);
   if(mesNum===2 && ((anoNum%4===0 && anoNum%100!==0) || anoNum%400===0)) diasMes[2]=29;
   var totalDias = diasMes[mesNum] || 30;
 
-  // Mesma chave usada pelo calendario_chuvas.html: ilumina_chuvas_{mesAbrev}_{anoFull}
-  var storageKey = 'ilumina_chuvas_'+mesAbrev+'_'+anoFull;
-  var rainData = {};
-  try {
-    rainData = JSON.parse(localStorage.getItem(storageKey) || '{}');
-  } catch(e) { rainData = {}; }
+  CHUVA_MES_KEY = 'ilumina_chuvas_'+mesAbrev+'_'+anoFull;
+  CHUVA_TOTAL_DIAS = totalDias;
+  CHUVA_MES_NUM = mesNum;
+  CHUVA_ANO_NUM = anoNum;
+  chuvaLoad();
 
-  var diasRegistrados = Object.keys(rainData).map(Number).sort(function(a,b){return a-b;});
+  var hoje = new Date();
+  var diasRegistrados = Object.keys(CHUVA_DATA).map(Number).sort(function(a,b){return a-b;});
+  var pct2 = totalDias>0 ? Math.round((diasRegistrados.length/totalDias)*100) : 0;
 
   var out = '';
   out += '<div style="padding:20px">';
-  out += '<div class="sec" style="margin-bottom:20px">📅 Calendário de Chuvas — '+mesLong(mes)+'</div>';
+  out += '<div class="sec">🌧️ Calendário de Chuvas — '+mesLong(mes)+'</div>';
+  out += '<div class="info-box" style="background:#f0f9fb;border:1px solid rgba(0,143,168,.2);font-size:.76rem">';
+  out += 'Clique nos dias do calendário para marcar chuva. Tudo é salvo automaticamente no navegador deste dispositivo (localStorage) — sem necessidade de publicar.';
+  out += '</div>';
 
-  if(diasRegistrados.length === 0) {
-    out += '<div class="info-box info-amber">ℹ️ Nenhum dia chuvoso registrado para este mês. ';
-    out += '<a href="calendario_chuvas.html" target="_blank" style="color:var(--amber);text-decoration:underline">Abra o Calendário de Chuvas →</a></div>';
+  // ── Resumo ──
+  out += '<div class="g4" style="grid-template-columns:repeat(3,1fr)">';
+  out += '<div class="card cg" style="text-align:center"><div class="prazo-gauge"><div class="prazo-big" style="color:var(--teal)">'+diasRegistrados.length+'</div><div class="prazo-label">Dias Chuvosos</div></div></div>';
+  out += '<div class="card ca" style="text-align:center"><div class="prazo-gauge"><div class="prazo-big" style="color:#c47900">'+totalDias+'</div><div class="prazo-label">Total de Dias</div></div></div>';
+  out += '<div class="card ct" style="text-align:center"><div class="prazo-gauge"><div class="prazo-big" style="color:var(--cyan)">'+pct2+'%</div><div class="prazo-label">% do Mês</div></div></div>';
+  out += '</div>';
+
+  // ── Calendário + Importação (lado a lado, responsivo) ──
+  out += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-bottom:16px">';
+
+  // Painel calendário
+  out += '<div class="card" style="padding:16px">';
+  out += '<div class="clabel" style="margin-bottom:10px">Clique para marcar/desmarcar chuva</div>';
+  out += '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">';
+  ['Dom','Seg','Ter','Qua','Qui','Sex','Sab'].forEach(function(h){
+    out += '<div style="text-align:center;font-size:.62rem;font-weight:800;color:var(--muted);padding:4px">'+h+'</div>';
+  });
+  var firstDay = new Date(anoNum, mesNum-1, 1).getDay();
+  for(var i=0;i<firstDay;i++){ out += '<div></div>'; }
+  for(var dd=1; dd<=totalDias; dd++){
+    var isRainy = CHUVA_DATA.hasOwnProperty(String(dd));
+    var isToday = (anoNum===hoje.getFullYear() && mesNum-1===hoje.getMonth() && dd===hoje.getDate());
+    var bg = isRainy ? 'linear-gradient(135deg,#e0f7fa 0%,#b2ebf2 100%)' : '#fff';
+    var color = isRainy ? 'var(--teal)' : 'var(--text)';
+    var weight = isRainy ? '800' : '400';
+    var border = isToday ? '2px solid var(--amber)' : (isRainy ? '1px solid var(--teal)' : '1px solid var(--border)');
+    out += '<div onclick="chuvaToggleDay('+dd+')" style="cursor:pointer;text-align:center;padding:9px 2px;border-radius:5px;border:'+border+';background:'+bg+';color:'+color+';font-weight:'+weight+';font-size:.74rem;user-select:none">'+dd+(isRainy?' 💧':'')+'</div>';
+  }
+  out += '</div></div>';
+
+  // Painel importação
+  out += '<div class="card" style="padding:16px">';
+  out += '<div class="clabel" style="margin-bottom:10px">📋 Colar Lista de Datas</div>';
+  out += '<div class="info-box" style="background:#f0f9fb;border:1px solid rgba(0,143,168,.2);font-size:.68rem;margin-bottom:8px">';
+  out += 'Formato: <strong>07, 08, 12, 13</strong> — separe por vírgula ou linha. Datas coladas se <strong>somam</strong> às já marcadas.';
+  out += '</div>';
+  out += '<textarea id="chuva-dateInput" placeholder="07, 08, 12, 13, 22, 23" style="width:100%;min-height:80px;padding:8px;border:1px solid var(--border2);border-radius:6px;font-family:monospace;font-size:.78rem;resize:vertical;box-sizing:border-box"></textarea>';
+  out += '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">';
+  out += '<button onclick="chuvaImportDates()" style="padding:8px 14px;border:none;border-radius:6px;background:var(--teal);color:#fff;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:.76rem;cursor:pointer">📥 Importar Datas</button>';
+  out += '<button onclick="chuvaClearAll()" style="padding:8px 14px;border:none;border-radius:6px;background:#d42b2b;color:#fff;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:.76rem;cursor:pointer">🔄 Limpar Mês</button>';
+  out += '</div></div>';
+
+  out += '</div>';
+
+  // ── Observações de período ──
+  out += '<div class="sec" style="margin-top:6px">📝 Observações — Período(s) de Precipitação</div>';
+  out += '<div class="info-box" style="background:#fdf8f0;border:1px solid rgba(196,121,0,.25);font-size:.72rem">';
+  out += 'Para cada dia marcado, registre em qual período ocorreu a chuva (ex: "manhã", "tarde e noite", "madrugada").';
+  out += '</div>';
+
+  if(diasRegistrados.length === 0){
+    out += '<div style="text-align:center;padding:18px;color:var(--muted);font-size:.78rem">Nenhum dia chuvoso registrado neste mês ainda.</div>';
   } else {
-    out += '<div class="info-box info-teal">';
-    out += '🌧️ <strong>'+diasRegistrados.length+' dia(s) com chuva registrados</strong> ('+Math.round((diasRegistrados.length/totalDias)*100)+'% do mês)';
-    out += '</div>';
-
-    // Mini calendário
-    out += '<div style="background:var(--surface);border-radius:10px;padding:16px;margin:14px 0">';
-    out += '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:12px">';
-    var headers = ['Dom','Seg','Ter','Qua','Qui','Sex','Sab'];
-    headers.forEach(function(h){
-      out += '<div style="text-align:center;font-size:.65rem;font-weight:800;color:var(--muted);padding:6px">'+h+'</div>';
-    });
-
-    var firstDay = new Date(anoNum, mesNum-1, 1).getDay();
-    for(var i=0; i<firstDay; i++) {
-      out += '<div></div>';
-    }
-
-    for(var dd=1; dd<=totalDias; dd++) {
-      var isRainy = rainData.hasOwnProperty(String(dd));
-      var bg = isRainy ? 'linear-gradient(135deg,#e0f7fa 0%,#b2ebf2 100%)' : '#fff';
-      var color = isRainy ? 'var(--teal)' : 'var(--text)';
-      var weight = isRainy ? '800' : '400';
-      var border = isRainy ? 'border:1px solid var(--teal);' : 'border:1px solid var(--border);';
-      out += '<div style="text-align:center;padding:8px 4px;border-radius:4px;'+border+'background:'+bg+';color:'+color+';font-weight:'+weight+';font-size:.75rem">'+dd+(isRainy?' 💧':'')+'</div>';
-    }
-    out += '</div></div>';
-
-    // Lista de observações de período
-    out += '<div style="margin-top:14px">';
-    out += '<div class="clabel" style="margin-bottom:8px">Observações registradas — Período(s) de Precipitação</div>';
-    out += '<div style="display:flex;flex-direction:column;gap:6px">';
+    out += '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">';
     diasRegistrados.forEach(function(dia){
-      var obs = (rainData[String(dia)] && rainData[String(dia)].obs) ? rainData[String(dia)].obs : '<em style="color:var(--muted)">sem observação registrada</em>';
+      var obsVal = (CHUVA_DATA[String(dia)] && CHUVA_DATA[String(dia)].obs) || '';
       out += '<div style="display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px">';
-      out += '<div style="flex-shrink:0;width:40px;height:32px;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid var(--teal);border-radius:6px;font-family:\'Barlow Condensed\',sans-serif;font-weight:800;color:var(--teal);font-size:.85rem">'+String(dia).padStart(2,'0')+'</div>';
-      out += '<div style="font-size:.78rem;color:var(--text)">'+obs+'</div>';
+      out += '<div style="flex-shrink:0;width:46px;height:34px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#e0f7fa 0%,#b2ebf2 100%);border:1px solid var(--teal);border-radius:6px;font-family:\'Barlow Condensed\',sans-serif;font-weight:800;color:var(--teal);font-size:.88rem">'+String(dia).padStart(2,'0')+'</div>';
+      out += '<input type="text" value="'+chuvaEsc(obsVal)+'" placeholder="Em qual período(s) ocorreu a chuva?" oninput="chuvaUpdateObs('+dia+',this.value)" style="flex:1;padding:7px 10px;border:1px solid var(--border2);border-radius:6px;font-size:.78rem;font-family:\'Barlow\',sans-serif;box-sizing:border-box">';
+      out += '<button onclick="chuvaRemoveDay('+dia+')" title="Remover este dia" style="flex-shrink:0;width:28px;height:28px;border:1px solid rgba(212,43,43,.3);background:#fff5f5;color:#d42b2b;border-radius:6px;cursor:pointer;font-size:.8rem">✕</button>';
       out += '</div>';
     });
-    out += '</div></div>';
-
-    // Info sobre impacto no PCNE
-    out += '<div class="info-box info-green" style="margin-top:14px">';
-    out += '<strong>✅ Regra de Força Maior (Contrato):</strong> Chamados com atraso que caem em dias com chuva ';
-    out += 'são desconsiderados do indicador PCNE (SLA 3). ';
-    out += 'Os atrasos serão automaticamente reclassificados como "Impossibilidade = Chuva" no relatório.';
     out += '</div>';
   }
 
-  out += '<div style="margin-top:20px;text-align:center;border-top:1px solid var(--border);padding-top:14px">';
-  out += '<a href="calendario_chuvas.html" target="_blank" style="';
-  out += 'display:inline-block;padding:10px 20px;background:var(--teal);color:#fff;border-radius:6px;';
-  out += 'text-decoration:none;font-weight:700;font-family:\'Barlow Condensed\',sans-serif">';
-  out += '🌧️ Abrir / Editar Calendário de Chuvas';
-  out += '</a></div>';
+  // ── Impacto no PCNE ──
+  out += '<div class="sec">Impacto no PCNE (SLA 3) — Força Maior</div>';
+  out += '<div class="info-box" style="background:#f0fdf4;border:1px solid rgba(26,138,60,.25)">';
+  out += '<strong style="color:var(--green)">✅ Regra de Força Maior (Contrato):</strong> Chamados com atraso que caem em dias com chuva são ';
+  out += 'desconsiderados do indicador PCNE (SLA 3). Os atrasos serão automaticamente reclassificados como "Impossibilidade = Chuva" no relatório.';
+  out += '</div>';
 
   out += '</div>';
   return out;
 }
+
 
 
 
