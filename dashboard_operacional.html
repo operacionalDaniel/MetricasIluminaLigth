@@ -1218,12 +1218,12 @@ function renderPrazos(d){
   var r=cats.ronda||mkCat(), tl=cats.tele||mkCat();
   var cc=cats.callcenter||mkCat(), cb=cats.chatbot||mkCat(), ap=cats.app||mkCat(), it=cats.internet||mkCat(), ot=cats.outros||mkCat();
 
-  // ── Totais das DEMAIS origens (tudo exceto Ronda Própria) ──
-  var demaisN   = tl.n+cc.n+cb.n+ap.n+it.n+ot.n;
-  var demaisOk  = tl.ok+cc.ok+cb.ok+ap.ok+it.ok+ot.ok;
-  var demaisNok = tl.nok+cc.nok+cb.nok+ap.nok+it.nok+ot.nok;
-  var demaisTempoSoma = (tl.tempoSoma||0)+(cc.tempoSoma||0)+(cb.tempoSoma||0)+(ap.tempoSoma||0)+(it.tempoSoma||0)+(ot.tempoSoma||0);
-  var demaisTempoN    = (tl.tempoN||0)+(cc.tempoN||0)+(cb.tempoN||0)+(ap.tempoN||0)+(it.tempoN||0)+(ot.tempoN||0);
+  // ── Totais das DEMAIS origens (SEM Tele Gestão: Call Center + Chatbot + App + Internet + Outros) ──
+  var demaisN   = cc.n+cb.n+ap.n+it.n+ot.n;
+  var demaisOk  = cc.ok+cb.ok+ap.ok+it.ok+ot.ok;
+  var demaisNok = cc.nok+cb.nok+ap.nok+it.nok+ot.nok;
+  var demaisTempoSoma = (cc.tempoSoma||0)+(cb.tempoSoma||0)+(ap.tempoSoma||0)+(it.tempoSoma||0)+(ot.tempoSoma||0);
+  var demaisTempoN    = (cc.tempoN||0)+(cb.tempoN||0)+(ap.tempoN||0)+(it.tempoN||0)+(ot.tempoN||0);
   var demaisTempoMedio = demaisTempoN>0 ? +(demaisTempoSoma/demaisTempoN).toFixed(1) : 0;
   var demaisSla = pct(demaisOk, demaisN);
   var demaisSlaCor = demaisSla>=98?'var(--green)':demaisSla>=95?'var(--amber)':'var(--red)';
@@ -1233,7 +1233,7 @@ function renderPrazos(d){
   var rondaSla = pct(r.ok, r.n);
   var rondaSlaCor = rondaSla>=98?'var(--green)':rondaSla>=95?'var(--amber)':'var(--red)';
 
-  var demaisAtrasos = [].concat(tl.atrasos||[], cc.atrasos||[], cb.atrasos||[], ap.atrasos||[], it.atrasos||[], ot.atrasos||[]);
+  var demaisAtrasos = [].concat(cc.atrasos||[], cb.atrasos||[], ap.atrasos||[], it.atrasos||[], ot.atrasos||[]);
 
   function statusColor(s){
     var u = norm(s);
@@ -1286,8 +1286,8 @@ function renderPrazos(d){
 
   var out = '';
 
-  // ── BLOCO 1: KPIs gerais — DEMAIS ORIGENS (sem Ronda Própria) ──
-  out += '<div class="sec">🔍 Indicadores de Prazo — Demais Origens (Tele Gestão + Call Center + Chatbot + App), sem Ronda Própria</div>';
+  // ── BLOCO 1: KPIs gerais — DEMAIS ORIGENS (sem Tele Gestão e sem Ronda Própria) ──
+  out += '<div class="sec">🔍 Indicadores de Prazo — Demais Origens (Call Center + Chatbot + App + Internet + Outros)</div>';
   out += kpiBlock(demaisSla, demaisSlaCor, demaisOk, demaisN, demaisNok, demaisTempoMedio);
 
   // ── Atrasos das Demais Origens ──
@@ -1303,7 +1303,14 @@ function renderPrazos(d){
   }
   out += '</div>';
 
-  // ── Card dedicado: Tele Gestão — apenas atrasados + status de fechamento ──
+  // ── BLOCO 2: KPIs gerais — TELE GESTÃO ──
+  var teleSla = pct(tl.ok, tl.n);
+  var teleSlaCor = teleSla>=98?'var(--green)':teleSla>=95?'var(--amber)':'var(--red)';
+  var teleTempoMedio = (tl.tempoN||0)>0 ? +(tl.tempoSoma||0)/tl.tempoN : 0;
+  out += '<div class="sec">📡 Indicadores de Prazo — Tele Gestão</div>';
+  out += kpiBlock(teleSla, teleSlaCor, tl.ok, tl.n, tl.nok, teleTempoMedio);
+
+  // ── Detalhes: Tele Gestão — Atendimentos Atrasados e Status de Fechamento ──
   out += '<div class="sec">📡 Tele Gestão — Atendimentos Atrasados e Status de Fechamento</div>';
   out += '<div class="card" style="border-top:3px solid var(--cyan);padding:18px;margin-bottom:18px">';
   if(tl.n===0){
@@ -1331,7 +1338,7 @@ function renderPrazos(d){
   }
   out += '</div>';
 
-  // ── BLOCO 2 (replicado): KPIs gerais — APENAS RONDA PRÓPRIA ──
+  // ── BLOCO 3: KPIs gerais — RONDA PRÓPRIA ──
   out += '<div class="sec">🚐 Indicadores de Prazo — Ronda Própria</div>';
   out += kpiBlock(rondaSla, rondaSlaCor, r.ok, r.n, r.nok, rondaTempoMedio);
 
